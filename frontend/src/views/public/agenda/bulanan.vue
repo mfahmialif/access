@@ -15,7 +15,7 @@
           <span class="material-symbols-outlined text-2xl md:text-3xl">live_tv</span>
         </div>
         <div class="flex flex-col">
-          <h1 class="text-base md:text-xl font-bold tracking-tight text-white uppercase leading-none">Dalwa Vision</h1>
+          <h1 class="text-base md:text-xl font-bold tracking-tight text-white uppercase leading-none">Access</h1>
           <span class="text-[10px] md:text-xs text-accent/80 font-medium tracking-widest uppercase">Sistem Informasi Pesantren</span>
         </div>
       </div>

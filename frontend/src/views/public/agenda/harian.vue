@@ -18,7 +18,7 @@
             <span class="material-symbols-outlined text-2xl md:text-3xl font-bold">mosque</span>
           </div>
           <div>
-            <h1 class="text-xl md:text-3xl font-bold tracking-tight text-white leading-none drop-shadow-md">Dalwa Vision</h1>
+            <h1 class="text-xl md:text-3xl font-bold tracking-tight text-white leading-none drop-shadow-md">Access</h1>
             <p class="text-yellow-300 text-xs md:text-sm font-medium tracking-wide uppercase mt-1">Sistem Informasi Pesantren</p>
           </div>
         </div>

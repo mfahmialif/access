@@ -61,7 +61,7 @@
           <button @click="goToLanding"
                   class="group relative flex items-center gap-3 bg-accent hover:bg-yellow-400 active:scale-95 transition-all duration-200 text-[#001226] font-bold text-base md:text-xl px-8 md:px-10 py-3 md:py-4 rounded-full shadow-[0_0_30px_-5px_rgba(251,191,36,0.3)] overflow-hidden border border-yellow-300/50 cursor-pointer">
             <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">play_arrow</span>
-            <span>Mulai Dalwa Vision</span>
+            <span>Mulai Access</span>
             <div class="absolute inset-0 -translate-x-full group-hover:animate-shimmer bg-linear-to-r from-transparent via-white/40 to-transparent skew-x-12"></div>
           </button>
           <p class="text-blue-200 text-sm md:text-base font-medium animate-pulse">

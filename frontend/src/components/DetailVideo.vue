@@ -31,7 +31,7 @@
           <div class="flex flex-col gap-2 max-w-2xl">
             <div class="inline-flex items-center gap-2 mb-1">
               <span class="px-2 py-0.5 rounded text-xs font-bold bg-accent text-[#0a192f] uppercase tracking-wider">{{ item.videoTag || 'Video' }}</span>
-              <span class="text-white/80 text-sm font-medium tracking-wide">Dalwa Vision TV</span>
+              <span class="text-white/80 text-sm font-medium tracking-wide">Access TV</span>
             </div>
             <h1 class="text-3xl md:text-5xl font-bold text-white drop-shadow-md leading-tight">
               {{ item.title }}

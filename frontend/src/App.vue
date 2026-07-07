@@ -31,7 +31,7 @@
               {{ globalBanner.type === 'emergency' ? 'warning' : globalBanner.type === 'announcement' ? 'notifications_active' : 'info' }}
             </span>
           </div>
-          <h2 class="font-bold text-xl tracking-wider text-center uppercase mb-2" :style="{ color: bannerAccent }">Dalwa Vision Alert</h2>
+          <h2 class="font-bold text-xl tracking-wider text-center uppercase mb-2" :style="{ color: bannerAccent }">Access Alert</h2>
           <p class="text-slate-400 text-center text-sm">System Broadcast</p>
         </div>
 

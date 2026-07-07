@@ -1,12 +1,12 @@
 ---
-name: dalwa-vision
-description: Dalwa Vision TV Interaktif Pesantren — conventions, patterns, and project context for the full-stack application (Vue 3 frontend + Laravel 13 backend).
+name: access
+description: Access TV Interaktif Pesantren — conventions, patterns, and project context for the full-stack application (Vue 3 frontend + Laravel 13 backend).
 ---
 
-# Dalwa Vision — Project Skill
+# Access — Project Skill
 
 ## Overview
-**Dalwa Vision** is an interactive TV dashboard for Pondok Pesantren Darullughah Wadda'wah (Dalwa), Pasuruan. It displays announcements, agendas, news, and media on large screens within the pesantren campus.
+**Access** is an interactive TV dashboard for Pondok Pesantren Darullughah Wadda'wah (Dalwa), Pasuruan. It displays announcements, agendas, news, and media on large screens within the pesantren campus.
 
 **CRITICAL**: This app runs **fully offline** on a local network **without internet**. Never use external CDNs, Google Fonts links, or any `https://` external resources.
 
@@ -35,12 +35,12 @@ description: Dalwa Vision TV Interaktif Pesantren — conventions, patterns, and
 | Auth | Laravel Sanctum (token-based) | ^4.3 |
 | PHP | PHP 8.3 | 8.3.26 |
 | Database | MySQL | — |
-| DB Name | `dalwavision` | — |
+| DB Name | `access` | — |
 
 ## Project Structure
 
 ```
-dalwavision/
+access/
 ├── frontend/                      # Vue 3 SPA
 │   ├── index.html
 │   ├── vite.config.js             # Proxy /api → localhost:8000
@@ -77,7 +77,7 @@ dalwavision/
     │   └── seeders/
     │       └── DatabaseSeeder.php  # Admin user seed
     ├── bootstrap/app.php           # statefulApi() middleware
-    └── .env                        # MySQL dalwavision config
+    └── .env                        # MySQL access config
 ```
 
 ## Design System
@@ -124,7 +124,7 @@ Every view follows this pattern:
 ### Header/Navbar
 Every page header MUST display:
 1. **Back button** → `router.push({ name: 'Landing' })`
-2. **Logo icon** + "DALWA VISION" title + page subtitle
+2. **Logo icon** + "ACCESS" title + page subtitle
 3. **Date/time pill** showing:
    - **Hijri date** (larger, e.g. "Jumat, 17 Ramadan 1447 H")
    - **Masehi date** (smaller, e.g. "Jumat, 6 Maret 2026")
@@ -163,7 +163,7 @@ Use `<Transition name="detail">` with scoped CSS:
 
 ### Router
 - All routes are in `src/router/index.js`
-- Each route has `meta: { title: 'Dalwa Vision — ...' }`
+- Each route has `meta: { title: 'Access — ...' }`
 - Title is auto-set via `router.beforeEach`
 - LandingPage uses a `routeMap` object to map card clicks → route names
 

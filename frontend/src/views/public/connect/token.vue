@@ -25,7 +25,7 @@
           <div class="size-8 md:size-10 flex items-center justify-center rounded-lg bg-accent/10 border border-accent/20">
             <span class="material-symbols-outlined text-2xl md:text-3xl">token</span>
           </div>
-          <h1 class="text-white text-xl md:text-2xl lg:text-3xl font-bold tracking-tight uppercase">Dalwa Vision</h1>
+          <h1 class="text-white text-xl md:text-2xl lg:text-3xl font-bold tracking-tight uppercase">Access</h1>
         </div>
       </header>
 

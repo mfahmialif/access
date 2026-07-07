@@ -18,7 +18,7 @@
             <span class="material-symbols-outlined text-2xl! md:text-3xl!">campaign</span>
           </div>
           <div>
-            <h1 class="text-lg md:text-2xl font-black uppercase tracking-tight text-white leading-none">Dalwa Vision</h1>
+            <h1 class="text-lg md:text-2xl font-black uppercase tracking-tight text-white leading-none">Access</h1>
             <span class="text-xs md:text-sm font-bold text-accent uppercase tracking-widest">Pengumuman</span>
           </div>
         </div>
@@ -324,7 +324,7 @@ function priorityBgIcon(p) {
   return 'tips_and_updates'
 }
 
-const tickerText = 'Selamat Datang di Dalwa Vision TV  •  Harap menjaga ketenangan selama jam belajar malam berlangsung  •  Pengambilan paket kiriman dapat dilakukan di pos satpam pada pukul 16:00 - 17:30  •  Jangan lupa mematikan lampu kamar saat meninggalkan ruangan  •  Mari kita jaga kebersihan lingkungan pesantren bersama-sama'
+const tickerText = 'Selamat Datang di Access TV  •  Harap menjaga ketenangan selama jam belajar malam berlangsung  •  Pengambilan paket kiriman dapat dilakukan di pos satpam pada pukul 16:00 - 17:30  •  Jangan lupa mematikan lampu kamar saat meninggalkan ruangan  •  Mari kita jaga kebersihan lingkungan pesantren bersama-sama'
 
 const patternBg = `
   radial-gradient(circle at 0% 0%, rgba(251,191,36,0.15) 2px, transparent 2px),

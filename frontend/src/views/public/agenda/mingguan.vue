@@ -19,7 +19,7 @@
             <span class="material-symbols-outlined text-2xl md:text-3xl text-accent">live_tv</span>
           </div>
           <div>
-            <h1 class="text-lg md:text-2xl font-bold tracking-tight text-white leading-none">DALWA VISION</h1>
+            <h1 class="text-lg md:text-2xl font-bold tracking-tight text-white leading-none">ACCESS</h1>
             <p class="text-blue-200/60 text-xs md:text-sm font-medium tracking-wide mt-1">BROADCAST SYSTEM</p>
           </div>
         </div>
@@ -202,7 +202,7 @@
         </div>
         <div class="whitespace-nowrap overflow-hidden w-full relative">
           <p class="text-blue-100 text-base font-medium tracking-wide animate-marquee">
-            Selamat datang di Dalwa Vision TV. Jadwal ini berlaku untuk setiap minggu. • Perubahan jadwal akan diumumkan melalui pengumuman resmi.
+            Selamat datang di Access TV. Jadwal ini berlaku untuk setiap minggu. • Perubahan jadwal akan diumumkan melalui pengumuman resmi.
           </p>
         </div>
       </footer>

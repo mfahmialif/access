@@ -18,7 +18,7 @@
             <span class="material-symbols-outlined text-2xl! md:text-3xl!">photo_library</span>
           </div>
           <div>
-            <h1 class="text-lg md:text-2xl font-black uppercase tracking-tight text-white leading-none">Dalwa Vision</h1>
+            <h1 class="text-lg md:text-2xl font-black uppercase tracking-tight text-white leading-none">Access</h1>
             <span class="text-xs md:text-sm font-bold text-accent uppercase tracking-widest">Gallery & Video</span>
           </div>
         </div>

@@ -21,9 +21,9 @@ class DatabaseSeeder extends Seeder
         $user = Role::create(['name' => 'User', 'description' => 'Read-only access to specific modules.', 'status' => 'Active']);
 
         // ── Users ──
-        $adminUser = User::create(['username' => 'admin', 'name' => 'Administrator', 'email' => 'admin@dalwavision.com', 'password' => bcrypt('password'), 'role_id' => $admin->id, 'status' => 'Active', 'last_active_at' => now()]);
-        User::create(['username' => 'operator', 'name' => 'Operator Konten', 'email' => 'operator@dalwavision.com', 'password' => bcrypt('password'), 'role_id' => $operator->id, 'status' => 'Active', 'last_active_at' => now()->subHours(2)]);
-        User::create(['username' => 'user', 'name' => 'User Biasa', 'email' => 'user@dalwavision.com', 'password' => bcrypt('password'), 'role_id' => $user->id, 'status' => 'Active', 'last_active_at' => now()->subDays(1)]);
+        $adminUser = User::create(['username' => 'admin', 'name' => 'Administrator', 'email' => 'admin@access.id', 'password' => bcrypt('password'), 'role_id' => $admin->id, 'status' => 'Active', 'last_active_at' => now()]);
+        User::create(['username' => 'operator', 'name' => 'Operator Konten', 'email' => 'operator@access.id', 'password' => bcrypt('password'), 'role_id' => $operator->id, 'status' => 'Active', 'last_active_at' => now()->subHours(2)]);
+        User::create(['username' => 'user', 'name' => 'User Biasa', 'email' => 'user@access.id', 'password' => bcrypt('password'), 'role_id' => $user->id, 'status' => 'Active', 'last_active_at' => now()->subDays(1)]);
 
         $icons = ['mosque', 'menu_book', 'school', 'groups', 'auto_stories', 'record_voice_over', 'campaign', 'sports_soccer', 'live_tv', 'cleaning_services', 'videocam', 'palette', 'computer', 'flag', 'work'];
         $cats = ['Artikel', 'Video', 'Gambar'];

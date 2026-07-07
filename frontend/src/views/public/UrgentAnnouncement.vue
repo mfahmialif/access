@@ -24,7 +24,7 @@
           <div class="w-32 h-32 rounded-full bg-accent/10 flex items-center justify-center mb-6 ring-1 ring-accent/30 shadow-[0_0_20px_rgba(251,191,36,0.2)] animate-pulse-slow">
             <span class="material-symbols-outlined text-accent text-[64px]">notifications_active</span>
           </div>
-          <h2 class="text-accent font-bold text-xl tracking-wider text-center uppercase mb-2">Dalwa Vision Alert</h2>
+          <h2 class="text-accent font-bold text-xl tracking-wider text-center uppercase mb-2">Access Alert</h2>
           <p class="text-slate-400 text-center text-sm">System Broadcast • {{ currentTime }} WIB</p>
         </div>
 

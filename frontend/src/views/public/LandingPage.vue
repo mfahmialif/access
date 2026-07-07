@@ -18,7 +18,7 @@
             <span class="material-symbols-outlined text-xl md:text-3xl text-accent">mosque</span>
           </div>
           <div>
-            <h1 class="text-lg md:text-3xl font-serif font-bold tracking-tight text-white drop-shadow-lg">Dalwa Vision</h1>
+            <h1 class="text-lg md:text-3xl font-serif font-bold tracking-tight text-white drop-shadow-lg">Access</h1>
             <div class="flex items-center gap-2">
               <span class="h-px w-4 md:w-6 bg-accent/60"></span>
               <p class="text-accent/90 text-[10px] md:text-xs font-medium tracking-[0.2em] uppercase">TV Interaktif Pesantren</p>
@@ -372,7 +372,7 @@ const latestMonthly = ref([])
 const galleryThumbs = ref([])
 const galleryCount = ref(0)
 const latestAnnouncement = ref(null)
-const tickerItems = ref(['Selamat Datang di Dalwa Vision Interactive Dashboard...'])
+const tickerItems = ref(['Selamat Datang di Access Interactive Dashboard...'])
 
 function timeAgo(dateStr) {
   if (!dateStr) return '-'

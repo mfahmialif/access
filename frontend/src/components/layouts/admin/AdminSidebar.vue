@@ -3,7 +3,7 @@
     <!-- Logo — fixed at top -->
     <div class="flex items-center px-3 pb-4 shrink-0" :class="collapsed ? 'justify-center' : 'justify-between'">
       <div class="overflow-hidden transition-all duration-300" :style="collapsed ? 'width: 0; opacity: 0' : 'width: auto; opacity: 1'">
-        <h1 class="text-heading text-lg font-bold leading-normal whitespace-nowrap">Dalwa Vision</h1>
+        <h1 class="text-heading text-lg font-bold leading-normal whitespace-nowrap">Access</h1>
         <p class="text-muted text-sm font-medium leading-normal whitespace-nowrap">Admin CMS</p>
       </div>
       <span v-if="collapsed" class="material-symbols-outlined text-accent text-[28px]">mosque</span>

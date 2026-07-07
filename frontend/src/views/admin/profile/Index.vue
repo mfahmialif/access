@@ -17,7 +17,7 @@
         <!-- Info -->
         <div class="text-center sm:text-left flex-1">
           <h2 class="text-2xl font-bold" style="color: var(--text-heading)">Administrator</h2>
-          <p class="text-sm mt-1" style="color: var(--text-muted)">admin@dalwavision.id</p>
+          <p class="text-sm mt-1" style="color: var(--text-muted)">admin@access.id</p>
           <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 mt-3">
             <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-accent/20 text-accent border border-accent/30">
               <span class="material-symbols-outlined text-[14px]">shield</span>
@@ -129,7 +129,7 @@ const personalFields = [
 
 const accountFields = [
   { label: 'Username', value: 'admin' },
-  { label: 'Email', value: 'admin@dalwavision.id' },
+  { label: 'Email', value: 'admin@access.id' },
   { label: 'Role', value: 'Super Admin' },
   { label: 'Status', value: 'Active' },
   { label: 'Last Login', value: 'Hari ini, 21:30 WIB' }

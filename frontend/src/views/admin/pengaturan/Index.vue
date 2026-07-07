@@ -240,7 +240,7 @@
 <script setup>
 import { ref } from 'vue'
 
-const systemName = ref('Dalwa Vision')
+const systemName = ref('Access')
 const idleTimeout = ref(120)
 const bannerDuration = ref(30)
 
@@ -262,10 +262,10 @@ const themeModes = [
 ]
 const selectedMode = ref('dark')
 
-const wsUrl = ref('wss://dalwavision.id/ws')
+const wsUrl = ref('wss://access.id/ws')
 const autoReconnect = ref(true)
 const heartbeat = ref(15)
-const broadcastChannel = ref('dalwa-vision-broadcast')
+const broadcastChannel = ref('access-broadcast')
 </script>
 
 <style scoped>

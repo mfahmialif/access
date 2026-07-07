@@ -105,7 +105,7 @@ const activeTab = ref('login')
 const allLogs = ref([
   // Login logs
   { id: 1, type: 'login', time: '21:30:15', date: '06 Mar 2026', action: 'Login Berhasil', actor: 'Administrator', ip: '192.168.1.100', detail: 'Chrome 120 / Windows 11', status: 'Success' },
-  { id: 2, type: 'login', time: '21:28:40', date: '06 Mar 2026', action: 'Login Gagal', actor: 'admin@dalwa.id', ip: '192.168.1.55', detail: 'Password salah (3x percobaan)', status: 'Failed' },
+  { id: 2, type: 'login', time: '21:28:40', date: '06 Mar 2026', action: 'Login Gagal', actor: 'admin@access.id', ip: '192.168.1.55', detail: 'Password salah (3x percobaan)', status: 'Failed' },
   { id: 3, type: 'login', time: '18:00:00', date: '06 Mar 2026', action: 'Logout', actor: 'Administrator', ip: '192.168.1.100', detail: 'Sesi berakhir normal', status: 'Info' },
   { id: 4, type: 'login', time: '14:22:10', date: '06 Mar 2026', action: 'Login Berhasil', actor: 'Editor Konten', ip: '192.168.1.42', detail: 'Firefox 121 / macOS', status: 'Success' },
   { id: 5, type: 'login', time: '08:15:30', date: '06 Mar 2026', action: 'Login Berhasil', actor: 'Administrator', ip: '192.168.1.100', detail: 'Chrome 120 / Windows 11', status: 'Success' },

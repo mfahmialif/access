@@ -14,10 +14,10 @@
             <h2 class="text-accent text-xl font-medium tracking-widest uppercase">Secure Portal</h2>
           </div>
           <h1 class="font-serif text-7xl text-white font-black leading-tight tracking-tight mb-6 drop-shadow-lg">
-            Dalwa Vision
+            Access
           </h1>
           <p class="text-white/80 text-2xl font-light max-w-xl leading-relaxed">
-            Portal administratif premium untuk kontrol dan manajemen penyiaran Dalwa Vision secara menyeluruh.
+            Portal administratif premium untuk kontrol dan manajemen penyiaran Access secara menyeluruh.
           </p>
         </div>
       </div>
@@ -27,7 +27,7 @@
         <!-- Mobile header -->
         <div class="lg:hidden p-8 pb-0 flex flex-col gap-2">
           <h1 class="font-serif text-4xl text-white font-black leading-tight tracking-tight">
-            Dalwa Vision
+            Access
           </h1>
           <p class="text-accent/80 text-sm font-medium uppercase tracking-wider">
             Secure Portal
@@ -49,7 +49,7 @@
                 <span class="material-symbols-outlined absolute left-4 text-slate-500">person</span>
                 <input v-model="username"
                        class="w-full h-14 pl-12 pr-4 rounded-xl bg-[#1a254c] border border-[#1c2c5c] text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-shadow"
-                       placeholder="admin@dalwavision.com"
+                       placeholder="admin@access.id"
                        type="text" />
               </div>
             </label>
@@ -107,7 +107,7 @@
 
           <!-- Footer -->
           <div class="mt-8 text-center">
-            <p class="text-xs text-slate-500">© 2025 Dalwa Vision TV Network. Hak cipta dilindungi.</p>
+            <p class="text-xs text-slate-500">© 2025 Access TV Network. Hak cipta dilindungi.</p>
           </div>
         </div>
       </div>

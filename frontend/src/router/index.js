@@ -11,6 +11,7 @@ import ConnectToken from '../views/public/connect/token.vue'
 import ConnectSuccess from '../views/public/connect/success.vue'
 import ConnectFail from '../views/public/connect/fail.vue'
 import DetailPage from '../views/public/DetailPage.vue'
+import Apps from '../views/public/Apps.vue'
 import Login from '../views/public/Login.vue'
 import AdminLayout from '../layouts/AdminLayout.vue'
 import AdminDashboard from '../views/admin/dashboard/Index.vue'
@@ -20,115 +21,121 @@ const routes = [
     path: '/',
     name: 'Landing',
     component: LandingPage,
-    meta: { title: 'Dalwa Vision — Smart TV Management System', requiresTv: true }
+    meta: { title: 'Access — Smart TV Management System', requiresTv: true }
   },
   {
     path: '/info-terkini',
     name: 'InfoTerkini',
     component: InfoTerkini,
-    meta: { title: 'Dalwa Vision — Info Terkini', requiresTv: true }
+    meta: { title: 'Access — Info Terkini', requiresTv: true }
   },
   {
     path: '/info-terkini/:id',
     name: 'DetailNews',
     component: DetailPage,
-    meta: { title: 'Dalwa Vision — Detail Berita', requiresTv: true, detailType: 'news' }
+    meta: { title: 'Access — Detail Berita', requiresTv: true, detailType: 'news' }
   },
 
   {
     path: '/agenda-harian',
     name: 'AgendaHarian',
     component: AgendaHarian,
-    meta: { title: 'Dalwa Vision — Agenda Harian', requiresTv: true }
+    meta: { title: 'Access — Agenda Harian', requiresTv: true }
   },
   {
     path: '/agenda-harian/:id',
     name: 'DetailAgenda',
     component: DetailPage,
-    meta: { title: 'Dalwa Vision — Detail Agenda Harian', requiresTv: true, detailType: 'agenda' }
+    meta: { title: 'Access — Detail Agenda Harian', requiresTv: true, detailType: 'agenda' }
   },
 
   {
     path: '/agenda-mingguan',
     name: 'AgendaMingguan',
     component: AgendaMingguan,
-    meta: { title: 'Dalwa Vision — Agenda Mingguan', requiresTv: true }
+    meta: { title: 'Access — Agenda Mingguan', requiresTv: true }
   },
   {
     path: '/agenda-mingguan/:id',
     name: 'DetailWeekly',
     component: DetailPage,
-    meta: { title: 'Dalwa Vision — Detail Agenda Mingguan', requiresTv: true, detailType: 'weekly' }
+    meta: { title: 'Access — Detail Agenda Mingguan', requiresTv: true, detailType: 'weekly' }
   },
 
   {
     path: '/agenda-bulanan',
     name: 'AgendaBulanan',
     component: AgendaBulanan,
-    meta: { title: 'Dalwa Vision — Agenda Bulanan', requiresTv: true }
+    meta: { title: 'Access — Agenda Bulanan', requiresTv: true }
   },
   {
     path: '/agenda-bulanan/:id',
     name: 'DetailMonthly',
     component: DetailPage,
-    meta: { title: 'Dalwa Vision — Detail Agenda Bulanan', requiresTv: true, detailType: 'monthly' }
+    meta: { title: 'Access — Detail Agenda Bulanan', requiresTv: true, detailType: 'monthly' }
   },
 
   {
     path: '/gallery-video',
     name: 'GalleryVideo',
     component: GalleryVideo,
-    meta: { title: 'Dalwa Vision — Gallery & Video', requiresTv: true }
+    meta: { title: 'Access — Gallery & Video', requiresTv: true }
   },
   {
     path: '/gallery-video/:id',
     name: 'DetailGallery',
     component: DetailPage,
-    meta: { title: 'Dalwa Vision — Detail Gallery', requiresTv: true, detailType: 'gallery' }
+    meta: { title: 'Access — Detail Gallery', requiresTv: true, detailType: 'gallery' }
   },
 
   {
     path: '/pengumuman',
     name: 'Pengumuman',
     component: Pengumuman,
-    meta: { title: 'Dalwa Vision — Pengumuman', requiresTv: true }
+    meta: { title: 'Access — Pengumuman', requiresTv: true }
   },
   {
     path: '/pengumuman/:id',
     name: 'DetailAnnouncement',
     component: DetailPage,
-    meta: { title: 'Dalwa Vision — Detail Pengumuman', requiresTv: true, detailType: 'announcement' }
+    meta: { title: 'Access — Detail Pengumuman', requiresTv: true, detailType: 'announcement' }
   },
 
   {
     path: '/urgent',
     name: 'UrgentAnnouncement',
     component: UrgentAnnouncement,
-    meta: { title: 'Dalwa Vision — Urgent Announcement', requiresTv: true }
+    meta: { title: 'Access — Urgent Announcement', requiresTv: true }
   },
   {
     path: '/connect',
     name: 'ConnectToken',
     component: ConnectToken,
-    meta: { title: 'Dalwa Vision — Hubungkan Perangkat' }
+    meta: { title: 'Access — Hubungkan Perangkat' }
   },
   {
     path: '/connect/success',
     name: 'ConnectSuccess',
     component: ConnectSuccess,
-    meta: { title: 'Dalwa Vision — Terhubung Berhasil' }
+    meta: { title: 'Access — Terhubung Berhasil' }
   },
   {
     path: '/connect/fail',
     name: 'ConnectFail',
     component: ConnectFail,
-    meta: { title: 'Dalwa Vision — Koneksi Gagal' }
+    meta: { title: 'Access — Koneksi Gagal' }
+  },
+  {
+    path: '/apps',
+    name: 'Apps',
+    component: Apps,
+    meta: { title: 'Access — Dalwa Apps' }
   },
   {
     path: '/login',
     name: 'Login',
     component: Login,
-    meta: { title: 'Dalwa Vision — Login' }
+    meta: { title: 'Access — Login' }
   },
 
   // ═══ Admin Pages (wrapped in AdminLayout) ═══
@@ -141,157 +148,157 @@ const routes = [
         path: 'dashboard',
         name: 'AdminDashboard',
         component: AdminDashboard,
-        meta: { title: 'Dalwa Vision — Admin Dashboard', pageTitle: 'Dashboard Overview', requiresAuth: true }
+        meta: { title: 'Access — Admin Dashboard', pageTitle: 'Dashboard Overview', requiresAuth: true }
       },
       {
         path: 'manajemen-user',
         name: 'AdminManajemenUser',
         component: () => import('../views/admin/user/User.vue'),
-        meta: { title: 'Dalwa Vision — Manajemen User', pageTitle: 'Manajemen User', requiresAuth: true }
+        meta: { title: 'Access — Manajemen User', pageTitle: 'Manajemen User', requiresAuth: true }
       },
       {
         path: 'manajemen-role',
         name: 'AdminManajemenRole',
         component: () => import('../views/admin/user/Role.vue'),
-        meta: { title: 'Dalwa Vision — Manajemen Role', pageTitle: 'Manajemen Role', requiresAuth: true }
+        meta: { title: 'Access — Manajemen Role', pageTitle: 'Manajemen Role', requiresAuth: true }
       },
       {
         path: 'manajemen-tv',
         name: 'AdminManajemenTV',
         component: () => import('../views/admin/tv/Index.vue'),
-        meta: { title: 'Dalwa Vision — Manajemen TV', pageTitle: 'Manajemen TV', requiresAuth: true }
+        meta: { title: 'Access — Manajemen TV', pageTitle: 'Manajemen TV', requiresAuth: true }
       },
       {
         path: 'info-terkini',
         name: 'AdminInfoTerkini',
         component: () => import('../views/admin/info/Index.vue'),
-        meta: { title: 'Dalwa Vision — Info Terkini', pageTitle: 'Info Terkini', requiresAuth: true }
+        meta: { title: 'Access — Info Terkini', pageTitle: 'Info Terkini', requiresAuth: true }
       },
       {
         path: 'info-terkini/create',
         name: 'AdminInfoTerkiniCreate',
         component: () => import('../views/admin/info/Form.vue'),
-        meta: { title: 'Dalwa Vision — Tambah Konten', pageTitle: 'Tambah Konten', requiresAuth: true }
+        meta: { title: 'Access — Tambah Konten', pageTitle: 'Tambah Konten', requiresAuth: true }
       },
       {
         path: 'info-terkini/:id/edit',
         name: 'AdminInfoTerkiniEdit',
         component: () => import('../views/admin/info/Form.vue'),
-        meta: { title: 'Dalwa Vision — Edit Konten', pageTitle: 'Edit Konten', requiresAuth: true }
+        meta: { title: 'Access — Edit Konten', pageTitle: 'Edit Konten', requiresAuth: true }
       },
       {
         path: 'agenda-harian',
         name: 'AdminAgendaHarian',
         component: () => import('../views/admin/agenda/harian/Index.vue'),
-        meta: { title: 'Dalwa Vision — Agenda Harian', pageTitle: 'Agenda Harian', requiresAuth: true }
+        meta: { title: 'Access — Agenda Harian', pageTitle: 'Agenda Harian', requiresAuth: true }
       },
       {
         path: 'agenda-harian/create',
         name: 'AdminAgendaHarianCreate',
         component: () => import('../views/admin/agenda/harian/Form.vue'),
-        meta: { title: 'Dalwa Vision — Tambah Agenda', pageTitle: 'Tambah Agenda', requiresAuth: true }
+        meta: { title: 'Access — Tambah Agenda', pageTitle: 'Tambah Agenda', requiresAuth: true }
       },
       {
         path: 'agenda-harian/:id/edit',
         name: 'AdminAgendaHarianEdit',
         component: () => import('../views/admin/agenda/harian/Form.vue'),
-        meta: { title: 'Dalwa Vision — Edit Agenda', pageTitle: 'Edit Agenda', requiresAuth: true }
+        meta: { title: 'Access — Edit Agenda', pageTitle: 'Edit Agenda', requiresAuth: true }
       },
       {
         path: 'agenda-mingguan',
         name: 'AdminAgendaMingguan',
         component: () => import('../views/admin/agenda/mingguan/Index.vue'),
-        meta: { title: 'Dalwa Vision — Agenda Mingguan', pageTitle: 'Agenda Mingguan', requiresAuth: true }
+        meta: { title: 'Access — Agenda Mingguan', pageTitle: 'Agenda Mingguan', requiresAuth: true }
       },
       {
         path: 'agenda-mingguan/create',
         name: 'AdminAgendaMingguanCreate',
         component: () => import('../views/admin/agenda/mingguan/Form.vue'),
-        meta: { title: 'Dalwa Vision — Tambah Agenda Mingguan', pageTitle: 'Tambah Agenda Mingguan', requiresAuth: true }
+        meta: { title: 'Access — Tambah Agenda Mingguan', pageTitle: 'Tambah Agenda Mingguan', requiresAuth: true }
       },
       {
         path: 'agenda-mingguan/:id/edit',
         name: 'AdminAgendaMingguanEdit',
         component: () => import('../views/admin/agenda/mingguan/Form.vue'),
-        meta: { title: 'Dalwa Vision — Edit Agenda Mingguan', pageTitle: 'Edit Agenda Mingguan', requiresAuth: true }
+        meta: { title: 'Access — Edit Agenda Mingguan', pageTitle: 'Edit Agenda Mingguan', requiresAuth: true }
       },
       {
         path: 'agenda-bulanan',
         name: 'AdminAgendaBulanan',
         component: () => import('../views/admin/agenda/bulanan/Index.vue'),
-        meta: { title: 'Dalwa Vision — Agenda Bulanan', pageTitle: 'Agenda Bulanan', requiresAuth: true }
+        meta: { title: 'Access — Agenda Bulanan', pageTitle: 'Agenda Bulanan', requiresAuth: true }
       },
       {
         path: 'agenda-bulanan/create',
         name: 'AdminAgendaBulananCreate',
         component: () => import('../views/admin/agenda/bulanan/Form.vue'),
-        meta: { title: 'Dalwa Vision — Tambah Agenda Bulanan', pageTitle: 'Tambah Agenda Bulanan', requiresAuth: true }
+        meta: { title: 'Access — Tambah Agenda Bulanan', pageTitle: 'Tambah Agenda Bulanan', requiresAuth: true }
       },
       {
         path: 'agenda-bulanan/:id/edit',
         name: 'AdminAgendaBulananEdit',
         component: () => import('../views/admin/agenda/bulanan/Form.vue'),
-        meta: { title: 'Dalwa Vision — Edit Agenda Bulanan', pageTitle: 'Edit Agenda Bulanan', requiresAuth: true }
+        meta: { title: 'Access — Edit Agenda Bulanan', pageTitle: 'Edit Agenda Bulanan', requiresAuth: true }
       },
       {
         path: 'gallery-video',
         name: 'AdminGalleryVideo',
         component: () => import('../views/admin/gallery/video/Index.vue'),
-        meta: { title: 'Dalwa Vision — Gallery & Video', pageTitle: 'Gallery & Video', requiresAuth: true }
+        meta: { title: 'Access — Gallery & Video', pageTitle: 'Gallery & Video', requiresAuth: true }
       },
       {
         path: 'gallery-video/create',
         name: 'AdminGalleryVideoCreate',
         component: () => import('../views/admin/gallery/video/Form.vue'),
-        meta: { title: 'Dalwa Vision — Upload Media', pageTitle: 'Upload Media', requiresAuth: true }
+        meta: { title: 'Access — Upload Media', pageTitle: 'Upload Media', requiresAuth: true }
       },
       {
         path: 'gallery-video/:id/edit',
         name: 'AdminGalleryVideoEdit',
         component: () => import('../views/admin/gallery/video/Form.vue'),
-        meta: { title: 'Dalwa Vision — Edit Media', pageTitle: 'Edit Media', requiresAuth: true }
+        meta: { title: 'Access — Edit Media', pageTitle: 'Edit Media', requiresAuth: true }
       },
       {
         path: 'pengumuman',
         name: 'AdminPengumuman',
         component: () => import('../views/admin/pengumuman/Index.vue'),
-        meta: { title: 'Dalwa Vision — Pengumuman', pageTitle: 'Pengumuman', requiresAuth: true }
+        meta: { title: 'Access — Pengumuman', pageTitle: 'Pengumuman', requiresAuth: true }
       },
       {
         path: 'pengumuman/create',
         name: 'AdminPengumumanCreate',
         component: () => import('../views/admin/pengumuman/Form.vue'),
-        meta: { title: 'Dalwa Vision — Tambah Pengumuman', pageTitle: 'Tambah Pengumuman', requiresAuth: true }
+        meta: { title: 'Access — Tambah Pengumuman', pageTitle: 'Tambah Pengumuman', requiresAuth: true }
       },
       {
         path: 'pengumuman/:id/edit',
         name: 'AdminPengumumanEdit',
         component: () => import('../views/admin/pengumuman/Form.vue'),
-        meta: { title: 'Dalwa Vision — Edit Pengumuman', pageTitle: 'Edit Pengumuman', requiresAuth: true }
+        meta: { title: 'Access — Edit Pengumuman', pageTitle: 'Edit Pengumuman', requiresAuth: true }
       },
       {
         path: 'profile',
         name: 'AdminProfile',
         component: () => import('../views/admin/profile/Index.vue'),
-        meta: { title: 'Dalwa Vision — Profile', pageTitle: 'Profile', requiresAuth: true }
+        meta: { title: 'Access — Profile', pageTitle: 'Profile', requiresAuth: true }
       },
       {
         path: 'control-center',
         name: 'AdminControlCenter',
         component: () => import('../views/admin/control/Index.vue'),
-        meta: { title: 'Dalwa Vision — Control Center', pageTitle: 'Control Center', requiresAuth: true }
+        meta: { title: 'Access — Control Center', pageTitle: 'Control Center', requiresAuth: true }
       },
       {
         path: 'pengaturan',
         name: 'AdminPengaturan',
         component: () => import('../views/admin/pengaturan/Index.vue'),
-        meta: { title: 'Dalwa Vision — Pengaturan', pageTitle: 'Pengaturan', requiresAuth: true }
+        meta: { title: 'Access — Pengaturan', pageTitle: 'Pengaturan', requiresAuth: true }
       },
       {
         path: 'log-aktivitas',
         name: 'AdminLogAktivitas',
         component: () => import('../views/admin/log/Index.vue'),
-        meta: { title: 'Dalwa Vision — Log Aktivitas', pageTitle: 'Log Aktivitas', requiresAuth: true }
+        meta: { title: 'Access — Log Aktivitas', pageTitle: 'Log Aktivitas', requiresAuth: true }
       }
     ]
   }
@@ -310,7 +317,7 @@ const router = createRouter({
 
 // ── Navigation guard ──
 router.beforeEach((to) => {
-  document.title = to.meta.title || 'Dalwa Vision'
+  document.title = to.meta.title || 'Access'
 
   const isAuthenticated = !!localStorage.getItem('auth_token')
 
