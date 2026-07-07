@@ -100,27 +100,29 @@
           <template v-else>
             <div class="absolute inset-0 bg-gradient-to-t from-[#0f172a]/95 via-[#0f172a]/40 to-transparent z-10"></div>
             <div class="absolute inset-0 bg-cover bg-center transition-transform duration-1000 group-hover:scale-110"
-                 :style="{ backgroundImage: latestNews ? `url(${latestNews.image})` : `url('/img/hero-bg.jpg')` }"></div>
+                 :style="{ backgroundImage: latestNews ? `url(${latestNews.image})` : `url('/img/default-agenda.png')` }"></div>
             <div class="relative z-20 h-full flex flex-col justify-end p-4 md:p-6">
               <div class="flex flex-wrap items-center gap-2 md:gap-3 mb-3">
                 <span class="bg-accent text-[#0f172a] text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest shadow-lg shadow-accent/20">Berita Utama</span>
-                <span class="text-white/80 text-xs flex items-center gap-1 bg-[#0f172a]/50 backdrop-blur-sm px-2 py-1 rounded-full border border-white/10">
+                <div class="text-white/80 text-xs flex items-center gap-1 bg-[#0f172a]/50 px-2 py-1 rounded-full border border-white/10">
                   <span class="material-symbols-outlined text-[14px]">schedule</span> {{ latestNews ? timeAgo(latestNews.created_at) : '-' }}
-                </span>
+                </div>
               </div>
               <h2 class="text-lg md:text-2xl font-serif font-bold text-white mb-2 leading-tight group-hover:text-accent-light transition-colors drop-shadow-md">{{ latestNews?.title || 'Memuat...' }}</h2>
               <p class="text-slate-300 line-clamp-2 text-sm md:text-base font-light leading-relaxed">{{ latestNews?.excerpt || '' }}</p>
             </div>
-            <div class="absolute top-3 right-3 md:top-4 md:right-4 z-20 bg-[#0f172a]/60 backdrop-blur-md w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-full border border-white/10 group-hover:bg-accent group-hover:text-[#0f172a] transition-all duration-300 group-hover:scale-110">
+            <div class="absolute top-3 right-3 md:top-4 md:right-4 z-20 bg-[#0f172a]/60 w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-full border border-white/10 group-hover:bg-accent group-hover:text-[#0f172a] transition-all duration-300 group-hover:scale-110">
               <span class="material-symbols-outlined text-lg md:text-xl">newspaper</span>
             </div>
           </template>
         </div>
 
         <!-- CARD 2: Agenda Harian -->
-        <div class="group relative rounded-2xl glass-panel glass-panel-hover p-4 md:p-6 flex flex-col transition-all duration-500 cursor-pointer"
+        <div class="group relative rounded-2xl glass-panel glass-panel-hover p-4 md:p-6 flex flex-col transition-all duration-500 cursor-pointer overflow-hidden"
              @click="navigateTo('agenda-harian')">
-          <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
+          <div class="absolute inset-0 bg-cover bg-center opacity-10 transition-transform duration-1000 group-hover:scale-110 mix-blend-overlay" style="background-image: url('/img/default-agenda.png')"></div>
+          <div class="absolute inset-0 bg-gradient-to-b from-[#0f172a]/20 to-[#0f172a]/90 z-0"></div>
+          <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity z-10">
             <span class="material-symbols-outlined !text-6xl md:!text-8xl text-accent">calendar_today</span>
           </div>
           <div class="flex justify-between items-center mb-4 md:mb-6 relative z-10">
@@ -154,9 +156,11 @@
         </div>
 
         <!-- CARD 3: Agenda Mingguan -->
-        <div class="group relative rounded-2xl glass-panel glass-panel-hover p-4 md:p-6 flex flex-col transition-all duration-500 cursor-pointer"
+        <div class="group relative rounded-2xl glass-panel glass-panel-hover p-4 md:p-6 flex flex-col transition-all duration-500 cursor-pointer overflow-hidden"
              @click="navigateTo('agenda-mingguan')">
-          <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
+          <div class="absolute inset-0 bg-cover bg-center opacity-10 transition-transform duration-1000 group-hover:scale-110 mix-blend-overlay" style="background-image: url('/img/default-agenda.png')"></div>
+          <div class="absolute inset-0 bg-gradient-to-b from-[#0f172a]/20 to-[#0f172a]/90 z-0"></div>
+          <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity z-10">
             <span class="material-symbols-outlined !text-6xl md:!text-8xl text-accent">calendar_view_week</span>
           </div>
           <div class="flex justify-between items-center mb-4 md:mb-6 relative z-10">
@@ -177,7 +181,7 @@
               </div>
             </template>
             <template v-else>
-              <div v-if="latestWeekly" class="bg-gradient-to-r from-white/5 to-transparent rounded-xl p-4 md:p-5 border-l-4 border-accent backdrop-blur-sm">
+              <div v-if="latestWeekly" class="bg-gradient-to-r from-white/5 to-transparent rounded-xl p-4 md:p-5 border-l-4 border-accent">
                 <p class="text-accent text-xs font-bold uppercase tracking-widest mb-2 flex items-center gap-2">
                   <span class="w-2 h-2 bg-accent rounded-full animate-pulse"></span> Terbaru
                 </p>
@@ -187,7 +191,7 @@
                   {{ latestWeekly.location || '-' }}
                 </div>
               </div>
-              <div v-else class="bg-gradient-to-r from-white/5 to-transparent rounded-xl p-4 md:p-5 border-l-4 border-accent/30 backdrop-blur-sm">
+              <div v-else class="bg-gradient-to-r from-white/5 to-transparent rounded-xl p-4 md:p-5 border-l-4 border-accent/30">
                 <p class="text-slate-400 text-sm italic">Belum ada agenda minggu ini</p>
               </div>
             </template>
@@ -195,9 +199,11 @@
         </div>
 
         <!-- CARD 4: Agenda Bulanan -->
-        <div class="group relative rounded-2xl glass-panel glass-panel-hover p-4 md:p-6 flex flex-col transition-all duration-500 cursor-pointer"
+        <div class="group relative rounded-2xl glass-panel glass-panel-hover p-4 md:p-6 flex flex-col transition-all duration-500 cursor-pointer overflow-hidden"
              @click="navigateTo('agenda-bulanan')">
-          <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
+          <div class="absolute inset-0 bg-cover bg-center opacity-10 transition-transform duration-1000 group-hover:scale-110 mix-blend-overlay" style="background-image: url('/img/default-agenda.png')"></div>
+          <div class="absolute inset-0 bg-gradient-to-b from-[#0f172a]/20 to-[#0f172a]/90 z-0"></div>
+          <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity z-10">
             <span class="material-symbols-outlined !text-6xl md:!text-8xl text-blue-400">calendar_month</span>
           </div>
           <div class="flex justify-between items-center mb-4 md:mb-6 relative z-10">
@@ -238,7 +244,7 @@
           <div class="absolute inset-0 bg-gradient-to-t from-[#020617] via-[#020617]/90 to-transparent"></div>
           <div class="relative z-10 h-full p-4 md:p-6 flex flex-col min-h-[200px]">
             <div class="flex justify-between items-start mb-4">
-              <div class="bg-gradient-to-br from-indigo-500/20 to-indigo-600/10 backdrop-blur-md p-2 md:p-2.5 rounded-xl text-indigo-400 border border-indigo-500/20 group-hover:border-indigo-400/50 transition-colors shadow-[0_0_15px_rgba(129,140,248,0.15)]">
+              <div class="bg-gradient-to-br from-indigo-500/20 to-indigo-600/10 p-2 md:p-2.5 rounded-xl text-indigo-400 border border-indigo-500/20 group-hover:border-indigo-400/50 transition-colors shadow-[0_0_15px_rgba(129,140,248,0.15)]">
                 <span class="material-symbols-outlined text-2xl md:text-3xl">play_circle</span>
               </div>
               <span class="material-symbols-outlined text-slate-500 group-hover:text-indigo-400 transition-colors">arrow_forward_ios</span>
@@ -253,7 +259,7 @@
                     <img :alt="thumb.title" class="w-full h-full object-cover" :src="thumb.image" />
                   </div>
                 </template>
-                <div v-if="galleryCount > 2" class="h-12 w-12 rounded-lg border border-white/10 flex items-center justify-center bg-white/5 backdrop-blur-sm text-xs font-bold text-white hover:bg-white/10 transition-colors">
+                <div v-if="galleryCount > 2" class="h-12 w-12 rounded-lg border border-white/10 flex items-center justify-center bg-white/5 text-xs font-bold text-white hover:bg-white/10 transition-colors">
                   +{{ galleryCount - 2 }}
                 </div>
               </div>
@@ -262,7 +268,7 @@
         </div>
 
         <!-- CARD 6: Pengumuman -->
-        <div class="col-span-full group relative rounded-2xl bg-gradient-to-br from-yellow-900/40 to-yellow-950/40 backdrop-blur-xl border border-yellow-500/30 hover:border-yellow-500/60 p-4 md:p-6 flex flex-col transition-all duration-500 cursor-pointer shadow-[0_0_30px_rgba(234,179,8,0.1)] hover:shadow-[0_0_40px_rgba(234,179,8,0.2)]"
+        <div class="col-span-full group relative rounded-2xl bg-gradient-to-br from-yellow-900/40 to-yellow-950/40 border border-yellow-500/30 hover:border-yellow-500/60 p-4 md:p-6 flex flex-col transition-all duration-500 cursor-pointer shadow-[0_0_30px_rgba(234,179,8,0.1)] hover:shadow-[0_0_40px_rgba(234,179,8,0.2)]"
              @click="navigateTo('pengumuman')">
           <div class="absolute -right-2 -top-2 z-20">
             <span class="relative flex h-5 w-5">
@@ -441,7 +447,7 @@ function fetchLandingData() {
       const n = items[0]
       latestNews.value = {
         ...n,
-        image: n.image_path ? storageUrl(n.image_path) : '/img/hero-bg.jpg',
+        image: n.image_path ? storageUrl(n.image_path) : '/img/default-agenda.png',
         excerpt: n.body ? n.body.replace(/<[^>]*>/g, '').substring(0, 120) + '...' : '',
       }
       tickerItems.value = items.map(n => n.title)

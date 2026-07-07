@@ -1,5 +1,5 @@
 <template>
-  <div class="relative w-screen h-screen overflow-hidden text-white font-display antialiased bg-[#0a192f]">
+  <div class="relative w-screen h-screen flex flex-col overflow-hidden text-white font-display antialiased bg-[#0a192f]">
     <!-- ═══════ AMBIENT ═══════ -->
     <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-accent/5 rounded-full blur-[120px] pointer-events-none"></div>
     <div class="absolute bottom-[-10%] right-[-10%] w-[30%] h-[30%] bg-blue-500/5 rounded-full blur-[100px] pointer-events-none"></div>
@@ -29,10 +29,10 @@
     </header>
 
     <!-- ═══════ MAIN CONTENT ═══════ -->
-    <main class="flex flex-col md:flex-row portrait:flex-col overflow-hidden p-2 md:p-6 gap-3 md:gap-6 relative" style="height: calc(100vh - 56px - 40px)">
+    <main class="flex-1 flex flex-col md:flex-row portrait:flex-col overflow-hidden p-2 md:p-6 gap-3 md:gap-6 relative">
 
       <!-- ═══ LEFT: CALENDAR GRID (70%) ═══ -->
-      <section class="flex-[0.7] flex flex-col gap-4 h-full">
+      <section class="flex-1 md:flex-[0.7] flex flex-col gap-4 h-full">
         <!-- Calendar Header -->
         <div class="glass-panel rounded-2xl p-3 md:p-5 flex items-center justify-between">
           <div>
@@ -86,7 +86,7 @@
       </section>
 
       <!-- ═══ RIGHT: EVENTS PANEL (30%) ═══ -->
-      <aside class="flex-[0.3] min-h-[200px] md:min-h-0 flex flex-col h-full gap-4">
+      <aside class="hidden md:flex portrait:hidden flex-[0.3] min-h-[200px] md:min-h-0 flex-col h-full gap-4">
         <div class="events-panel h-full rounded-2xl flex flex-col overflow-hidden">
 
           <!-- ─── Selected Date Events ─── -->
@@ -205,17 +205,135 @@
           <div class="h-6 bg-linear-to-t from-[#0b1711] to-transparent w-full shrink-0"></div>
         </div>
       </aside>
-    </main>
 
-    <!-- ═══════ FOOTER ═══════ -->
-    <footer class="h-10 bg-[#0b1711] border-t border-white/10 flex items-center px-4 overflow-hidden relative z-50">
-      <div class="bg-accent text-[#0a192f] text-xs font-bold px-3 py-1 rounded mr-4 shrink-0 uppercase shadow-[0_0_10px_rgba(251,191,36,0.4)]">Info</div>
-      <div class="whitespace-nowrap overflow-hidden w-full relative">
-        <p class="text-slate-300 text-sm animate-marquee inline-block">
-          "Barangsiapa yang menempuh jalan untuk menuntut ilmu, maka Allah akan mudahkan baginya jalan menuju surga." (HR. Muslim) • Pendaftaran santri baru gelombang 2 dibuka mulai bulan depan.
-        </p>
-      </div>
-    </footer>
+      <!-- ═══════ MOBILE DETAIL MODAL ═══════ -->
+      <Transition name="detail">
+        <div v-if="showMobileModal" @click.self="showMobileModal = false" class="fixed inset-0 z-[100] flex items-center justify-center p-4 md:hidden portrait:flex bg-[#0a192f]/90 backdrop-blur-sm">
+          <div class="relative w-full max-w-lg h-[80vh] max-h-[90vh] events-panel rounded-2xl flex flex-col overflow-hidden shadow-2xl border border-white/10">
+            <!-- Close Button -->
+            <button @click="showMobileModal = false" class="absolute top-4 right-4 z-50 size-8 rounded-full bg-red-500/80 text-white flex items-center justify-center shadow-lg hover:bg-red-600 transition-colors cursor-pointer border border-white/20">
+              <span class="material-symbols-outlined text-base">close</span>
+            </button>
+            
+            <div class="flex flex-col h-full">
+              <!-- ─── Selected Date Events ─── -->
+              <template v-if="selectedDateEvents.length > 0 && !showAllMonth">
+                <div class="p-5 border-b border-white/10 bg-[#0b1711]/50 flex flex-col gap-2 shrink-0 pr-14">
+                  <div class="flex items-center gap-3 flex-wrap">
+                    <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                      <span class="material-symbols-outlined text-accent">event_note</span>
+                      {{ selectedDay }} {{ months[currentMonth] }}
+                    </h3>
+                    <span class="text-xs font-bold text-[#0a192f] bg-accent px-2 py-0.5 rounded-full shadow-sm">{{ selectedDateEvents.length }} event</span>
+                  </div>
+                  <button @click="showAllMonth = true" class="flex items-center justify-center gap-1.5 w-full py-1.5 rounded-lg bg-accent/10 border border-accent/30 text-accent text-xs font-bold hover:bg-accent/20 transition-all cursor-pointer mt-2">
+                    <span class="material-symbols-outlined text-[14px]">calendar_month</span>
+                    Event Bulan Ini
+                  </button>
+                </div>
+                <div class="flex-1 overflow-y-auto p-4 space-y-3 no-scrollbar" style="will-change: transform; transform: translateZ(0)">
+                  <!-- Grouped by time -->
+                  <div v-for="group in selectedDateGroups" :key="group.time">
+                    <div class="flex items-center gap-2 mb-2">
+                      <span class="text-accent font-bold text-lg font-mono">{{ group.time }}</span>
+                      <div class="h-px bg-white/10 flex-1"></div>
+                      <span v-if="group.items.length > 1" class="text-[10px] text-yellow-300 font-bold">{{ group.items.length }} kegiatan</span>
+                    </div>
+                    <div v-for="(item, iIdx) in group.items" :key="item.id"
+                         @click="router.push({ name: 'DetailMonthly', params: { id: item.id } })"
+                         :class="[
+                           'rounded-xl p-4 cursor-pointer transition-all duration-300 hover:scale-[1.02]',
+                           'bg-linear-to-br from-blue-900/40 to-[#0b1711] border border-blue-500/20 hover:border-accent/50',
+                           iIdx > 0 ? 'mt-2' : ''
+                         ]">
+                      <div class="flex gap-3">
+                        <div class="w-10 h-10 rounded-lg flex items-center justify-center shrink-0 bg-accent/10 border border-accent/30">
+                          <span class="material-symbols-outlined text-accent text-xl">{{ item.icon || 'event' }}</span>
+                        </div>
+                        <div class="flex flex-col flex-1 min-w-0">
+                          <h4 class="text-base font-bold text-white leading-tight truncate">{{ item.title }}</h4>
+                          <div class="flex items-center gap-2 mt-1">
+                            <span :class="categoryBadgeClass(item.category)">{{ item.category }}</span>
+                            <span class="text-slate-400 text-xs flex items-center gap-1">
+                              <span class="material-symbols-outlined text-[12px]">location_on</span>
+                              {{ item.location || '-' }}
+                            </span>
+                          </div>
+                          <span v-if="item.teacher" class="text-xs text-blue-200/60 mt-0.5 flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[12px]">person</span>
+                            {{ item.teacher }}
+                          </span>
+                        </div>
+                        <div class="flex items-center">
+                          <span class="material-symbols-outlined text-white/30 text-lg">chevron_right</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </template>
+
+              <!-- ─── All month events (fallback or toggled) ─── -->
+              <template v-else>
+                <div class="p-5 border-b border-white/10 bg-[#0b1711]/50 flex flex-col gap-2 shrink-0 pr-14">
+                  <div class="flex items-center gap-3 flex-wrap">
+                    <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                      <span class="material-symbols-outlined text-accent">event_upcoming</span>
+                      Event Bulan Ini
+                    </h3>
+                    <span class="text-xs font-bold text-[#0a192f] bg-accent px-2 py-0.5 rounded-full shadow-sm">{{ monthEventGroups.reduce((a, g) => a + g.items.length, 0) }} event</span>
+                  </div>
+                  <button v-if="showAllMonth && selectedDateEvents.length > 0" @click="showAllMonth = false" class="flex items-center justify-center gap-1.5 w-full py-1.5 rounded-lg bg-white/5 border border-white/10 text-white/70 text-xs font-bold hover:bg-white/10 transition-all cursor-pointer mt-2">
+                    <span class="material-symbols-outlined text-[14px]">arrow_back</span>
+                    Kembali ke {{ selectedDay }} {{ months[currentMonth] }}
+                  </button>
+                  <p v-if="!showAllMonth && selectedDateEvents.length === 0" class="text-xs text-slate-400 mt-2">Tidak ada event pada tanggal {{ selectedDay }}.</p>
+                </div>
+                <div class="flex-1 overflow-y-auto p-4 space-y-3 no-scrollbar" style="will-change: transform; transform: translateZ(0)">
+                  <div v-for="group in monthEventGroups" :key="group.key"
+                       @click="router.push({ name: 'DetailMonthly', params: { id: group.items[0].id } })"
+                       :class="[
+                         'rounded-xl p-4 cursor-pointer',
+                         group.isToday
+                           ? 'bg-linear-to-br from-blue-900/60 to-[#0b1711] border border-accent/40 relative overflow-hidden'
+                           : 'bg-[#0b1711]/40 border border-white/5 hover:bg-[#0b1711]/60',
+                         group.isPast ? 'opacity-50' : ''
+                       ]">
+                    <div v-if="group.isToday" class="absolute top-0 right-0 p-2 opacity-10">
+                      <span class="material-symbols-outlined text-7xl text-accent">{{ group.items[0].icon || 'event' }}</span>
+                    </div>
+                    <div class="flex gap-3 relative z-10">
+                      <div class="flex flex-col items-center justify-center bg-white/5 rounded-lg w-14 h-14 shrink-0 border border-white/5">
+                        <span class="text-[10px] text-slate-400 font-bold uppercase">{{ monthShort }}</span>
+                        <span class="text-xl font-bold text-white leading-tight">{{ group.dateNum }}</span>
+                      </div>
+                      <div class="flex flex-col justify-center flex-1 min-w-0">
+                        <h4 class="text-base font-bold text-white leading-tight truncate">
+                          {{ group.items[0].title }}
+                          <span v-if="group.items.length > 1" class="text-xs text-yellow-300 ml-1">+{{ group.items.length - 1 }}</span>
+                        </h4>
+                        <div class="flex items-center gap-2 mt-0.5">
+                          <span :class="categoryBadgeClass(group.items[0].category)">{{ group.items[0].category }}</span>
+                        </div>
+                        <div class="flex items-center gap-1 text-slate-400 text-xs mt-0.5">
+                          <span class="material-symbols-outlined text-sm">schedule</span>
+                          <span>{{ group.time }} — {{ group.items[0].location || '-' }}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div v-if="monthEventGroups.length === 0" class="flex flex-col items-center justify-center py-12 gap-3">
+                    <span class="material-symbols-outlined text-4xl text-white/20">event_busy</span>
+                    <p class="text-slate-400 text-sm">Tidak ada event bulan ini</p>
+                  </div>
+                </div>
+              </template>
+              <div class="h-6 bg-linear-to-t from-[#0b1711] to-transparent w-full shrink-0"></div>
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </main>
   </div>
 </template>
 
@@ -276,7 +394,12 @@ function nextMonth() {
   selectedDay.value = 1
 }
 const showAllMonth = ref(false)
-function selectDate(day) { selectedDay.value = day; showAllMonth.value = false }
+const showMobileModal = ref(false)
+function selectDate(day) { 
+  selectedDay.value = day; 
+  showAllMonth.value = false;
+  showMobileModal.value = true;
+}
 
 watch([currentMonth, currentYear], () => loadMonthlies())
 

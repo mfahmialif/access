@@ -1,11 +1,11 @@
 <template>
-  <div class="relative w-full min-h-dvh lg:h-dvh overflow-x-hidden lg:overflow-hidden font-display text-slate-100 selection:bg-accent selection:text-[#0a192f]">
+  <div class="relative w-full min-h-screen overflow-x-hidden font-display text-slate-100 selection:bg-accent selection:text-[#0a192f]">
     <!-- ═══════ PATTERN OVERLAY ═══════ -->
     <div class="absolute inset-0 pointer-events-none z-0"
          :style="{ backgroundImage: patternBg, backgroundSize: '30px 30px' }"></div>
 
     <!-- ═══════ MAIN WRAPPER ═══════ -->
-    <div class="relative z-10 flex flex-col min-h-dvh lg:h-dvh w-full px-3 py-3 sm:px-4 md:px-6 lg:px-10 md:py-5 lg:py-6 max-w-[1920px] mx-auto">
+    <div class="relative z-10 flex flex-col min-h-screen w-full px-3 py-3 sm:px-4 md:px-6 lg:px-10 md:py-5 lg:py-6 max-w-[1920px] mx-auto">
 
       <!-- ═══════ HEADER ═══════ -->
       <header class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-3 md:mb-6 pb-2 md:pb-4 border-b border-accent/20 gap-2 md:gap-3">
@@ -36,7 +36,7 @@
       </header>
 
       <!-- ═══════ CONTENT ═══════ -->
-      <main class="flex-1 flex flex-col gap-4 md:gap-5 overflow-visible lg:overflow-hidden">
+      <main class="flex-1 flex flex-col gap-4 md:gap-5 overflow-visible">
         <!-- Title + Filter Controls -->
         <div class="flex flex-col xl:flex-row xl:items-end justify-between px-1 md:px-2 gap-4">
           <div class="space-y-0.5 md:space-y-1 shrink-0">
@@ -97,7 +97,7 @@
         <div v-if="loading" class="flex items-center justify-center flex-1">
           <span class="material-symbols-outlined text-5xl text-accent animate-spin">progress_activity</span>
         </div>
-        <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4 lg:gap-6 flex-1 pb-4 overflow-y-auto lg:overflow-y-auto">
+        <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4 lg:gap-6 flex-1 pb-4">
           <!-- Featured Item -->
           <article v-if="galleryItems.length > 0"
                    @click="router.push({ name: 'DetailGallery', params: { id: galleryItems[0].id } })"

@@ -1,11 +1,11 @@
 <template>
-  <div class="relative w-screen h-screen overflow-hidden font-display text-slate-100 selection:bg-accent selection:text-[#0a192f]">
+  <div class="relative w-full min-h-screen overflow-x-hidden font-display text-slate-100 selection:bg-accent selection:text-[#0a192f]">
     <!-- ═══════ PATTERN OVERLAY ═══════ -->
     <div class="absolute inset-0 pointer-events-none z-0"
          :style="{ backgroundImage: patternBg, backgroundSize: '30px 30px' }"></div>
 
     <!-- ═══════ MAIN WRAPPER ═══════ -->
-    <div class="relative z-10 flex flex-col h-screen w-full px-4 py-3 md:px-8 md:py-5 max-w-[1920px] mx-auto">
+    <div class="relative z-10 flex flex-col min-h-screen w-full px-4 py-3 md:px-8 md:py-5 max-w-[1920px] mx-auto">
 
       <!-- ═══════ HEADER ═══════ -->
       <header class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-3 md:mb-5 pb-3 md:pb-4 border-b border-accent/20 gap-3">
@@ -36,36 +36,40 @@
       </header>
 
       <!-- ═══════ CONTENT ═══════ -->
-      <main class="flex-1 flex flex-col gap-4 overflow-hidden">
+      <main class="flex-1 flex flex-col gap-4 overflow-visible pb-4">
 
         <!-- ═══ FILTER TOOLBAR ═══ -->
-        <div class="flex items-end justify-between px-1">
-          <div class="space-y-0.5 md:space-y-1">
+        <div class="flex flex-col xl:flex-row xl:items-end justify-between px-1 md:px-2 gap-4">
+          <div class="space-y-0.5 md:space-y-1 shrink-0">
             <h2 class="text-2xl md:text-3xl font-black text-accent tracking-tight drop-shadow-sm">Pengumuman</h2>
             <p class="text-slate-300 font-medium text-sm md:text-base">Informasi penting untuk seluruh warga</p>
           </div>
-          <div class="flex items-center gap-2 flex-wrap">
+          <div class="grid w-full grid-cols-1 gap-2 sm:grid-cols-2 xl:flex xl:w-auto xl:items-center xl:flex-wrap">
             <!-- Search -->
-            <div class="relative">
-              <span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-500 text-sm!">search</span>
+            <div class="relative sm:col-span-2 xl:col-span-1 xl:w-56">
+              <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-base!">search</span>
               <input v-model="searchQuery" @input="onSearch" type="text" placeholder="Cari pengumuman..."
-                     class="w-44 pl-8 pr-3 py-1.5 rounded-full bg-[#050e1f]/60 border border-white/10 text-xs text-white placeholder-slate-500 outline-none focus:border-accent/50 focus:shadow-[0_0_10px_rgba(251,191,36,0.15)] transition-all" />
+                     class="w-full pl-9 pr-3 py-2.5 xl:py-1.5 rounded-full bg-[#050e1f]/60 border border-white/10 text-sm xl:text-xs text-white placeholder-slate-500 outline-none focus:border-accent/50 focus:shadow-[0_0_10px_rgba(251,191,36,0.15)] transition-all" />
             </div>
             <!-- Priority Filter -->
-            <div class="flex items-center gap-1 bg-[#050e1f]/60 border border-white/10 rounded-full p-1">
+            <div class="flex items-center gap-1 bg-[#050e1f]/60 border border-white/10 rounded-full p-1 overflow-x-auto sm:col-span-2 xl:col-span-1">
               <button v-for="tab in priorityTabs" :key="tab.value"
                       @click="setPriority(tab.value)"
-                      :class="[activePriority === tab.value ? 'bg-accent text-[#0a192f] shadow-[0_0_10px_rgba(251,191,36,0.3)]' : 'text-slate-400 hover:text-white hover:bg-white/5']"
-                      class="px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-200 cursor-pointer flex items-center gap-1">
+                      :class="[
+                        'flex-1 xl:flex-none px-3 md:px-4 py-2 xl:py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-200 cursor-pointer flex items-center justify-center gap-1.5 whitespace-nowrap',
+                        activePriority === tab.value ? 'bg-accent text-[#0a192f] shadow-[0_0_10px_rgba(251,191,36,0.3)]' : 'text-slate-400 hover:text-white hover:bg-white/5'
+                      ]">
                 <span class="material-symbols-outlined text-sm!">{{ tab.icon }}</span>
                 {{ tab.label }}
               </button>
             </div>
             <!-- Sort -->
-            <div class="flex items-center gap-1 bg-[#050e1f]/60 border border-white/10 rounded-full p-1">
+            <div class="flex items-center gap-1 bg-[#050e1f]/60 border border-white/10 rounded-full p-1 overflow-x-auto">
               <button v-for="opt in sortOptions" :key="opt.value" @click="setSort(opt.value)"
-                      :class="[activeSortBy === opt.value ? 'bg-white/15 text-accent' : 'text-slate-500 hover:text-white']"
-                      class="px-3 py-1.5 rounded-full text-xs font-bold tracking-wider transition-all cursor-pointer flex items-center gap-1">
+                      :class="[
+                        'flex-1 xl:flex-none px-3 md:px-4 py-2 xl:py-1.5 rounded-full text-xs font-bold tracking-wider transition-all cursor-pointer flex items-center justify-center gap-1 whitespace-nowrap',
+                        activeSortBy === opt.value ? 'bg-white/15 text-accent' : 'text-slate-500 hover:text-white'
+                      ]">
                 {{ opt.label }}
                 <span v-if="activeSortBy === opt.value" class="material-symbols-outlined text-xs!">
                   {{ activeSortDir === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
@@ -73,10 +77,10 @@
               </button>
             </div>
             <!-- Per Page -->
-            <div class="flex items-center gap-1.5 bg-[#050e1f]/60 border border-white/10 rounded-full px-3 py-1.5">
-              <span class="text-xs text-slate-400 font-semibold">Tampil:</span>
+            <div class="flex items-center gap-1.5 bg-[#050e1f]/60 border border-white/10 rounded-full px-3 md:px-4 py-2 xl:py-1.5">
+              <span class="text-xs text-slate-400 font-semibold whitespace-nowrap">Tampil:</span>
               <select v-model="perPage" @change="currentPage = 1; loadData()"
-                      class="bg-transparent text-xs text-accent font-bold outline-none cursor-pointer appearance-none">
+                      class="bg-transparent text-xs md:text-sm text-accent font-bold outline-none cursor-pointer appearance-none px-1">
                 <option v-for="n in [6,9,12,18]" :key="n" :value="n" class="bg-[#0a192f]">{{ n }}</option>
               </select>
             </div>
@@ -100,36 +104,36 @@
         </div>
 
         <!-- ═══ CARDS GRID ═══ -->
-        <div v-else class="flex-1 overflow-y-auto custom-scrollbar pr-2">
+        <div v-else class="flex-1 pr-2">
           <!-- Urgent Hero (first urgent item) -->
           <section v-if="urgentHero" @click="openDetail(urgentHero)"
-                   class="relative rounded-2xl overflow-hidden group cursor-pointer mb-5 h-[180px] portrait:h-[200px] lg:h-[240px]">
+                   class="relative rounded-2xl overflow-hidden group cursor-pointer mb-5 min-h-[200px] h-auto lg:h-[240px]">
             <div class="absolute inset-0 bg-cover bg-center transition-transform duration-1000 group-hover:scale-105"
                  :style="{ backgroundImage: `url('${getImageUrl(urgentHero)}')` }"></div>
             <div class="absolute inset-0 bg-linear-to-r from-[#050e1f]/95 via-[#050e1f]/80 to-[#050e1f]/40"></div>
             <div class="absolute inset-0 border-4 border-red-600 rounded-2xl urgent-pulse pointer-events-none z-10"></div>
-            <div class="relative z-20 h-full flex flex-col justify-between p-8">
-              <div class="flex items-start justify-between">
+            <div class="relative z-20 h-full flex flex-col justify-between p-4 md:p-6 lg:p-8">
+              <div class="flex flex-col md:flex-row md:items-start justify-between gap-3 md:gap-0">
                 <div class="flex items-center gap-3">
-                  <div class="flex items-center gap-3 bg-red-600/90 text-white px-5 py-2 rounded-lg backdrop-blur-sm shadow-lg shadow-red-900/20">
-                    <span class="material-symbols-outlined animate-pulse">warning</span>
-                    <span class="text-lg font-bold tracking-wide">PENGUMUMAN PENTING</span>
+                  <div class="flex items-center gap-2 md:gap-3 bg-red-600/90 text-white px-3 py-1.5 md:px-5 md:py-2 rounded-lg backdrop-blur-sm shadow-lg shadow-red-900/20">
+                    <span class="material-symbols-outlined text-sm md:text-base animate-pulse">warning</span>
+                    <span class="text-sm md:text-lg font-bold tracking-wide">PENGUMUMAN PENTING</span>
                   </div>
                 </div>
-                <span class="text-slate-300 text-base font-medium bg-black/40 px-4 py-2 rounded-lg backdrop-blur-md">
+                <span class="text-slate-300 text-xs md:text-base font-medium bg-black/40 px-3 py-1.5 md:px-4 md:py-2 rounded-lg backdrop-blur-md self-start">
                   {{ formatDate(urgentHero.created_at) }}
                 </span>
               </div>
-              <div class="max-w-4xl mt-auto">
-                <h2 class="text-3xl lg:text-4xl font-extrabold text-white mb-3 leading-tight drop-shadow-lg">{{ urgentHero.title }}</h2>
-                <p class="text-lg text-slate-200 font-normal leading-relaxed max-w-5xl border-l-4 border-accent pl-6 line-clamp-2">{{ urgentHero.excerpt || urgentHero.body }}</p>
-                <div class="flex items-center gap-6 text-base font-medium text-slate-300 mt-3">
-                  <div v-if="urgentHero.location" class="flex items-center gap-2">
-                    <span class="material-symbols-outlined text-accent">location_on</span>
+              <div class="max-w-4xl mt-4 md:mt-auto">
+                <h2 class="text-xl md:text-3xl lg:text-4xl font-extrabold text-white mb-2 md:mb-3 leading-tight drop-shadow-lg">{{ urgentHero.title }}</h2>
+                <p class="text-sm md:text-lg text-slate-200 font-normal leading-relaxed max-w-5xl border-l-2 md:border-l-4 border-accent pl-3 md:pl-6 line-clamp-3 md:line-clamp-2">{{ urgentHero.excerpt || urgentHero.body }}</p>
+                <div class="flex items-center gap-3 md:gap-6 text-xs md:text-base font-medium text-slate-300 mt-3 flex-wrap">
+                  <div v-if="urgentHero.location" class="flex items-center gap-1.5 md:gap-2">
+                    <span class="material-symbols-outlined text-[16px] md:text-base text-accent">location_on</span>
                     {{ urgentHero.location }}
                   </div>
-                  <div v-if="urgentHero.audience" class="flex items-center gap-2">
-                    <span class="material-symbols-outlined text-accent">groups</span>
+                  <div v-if="urgentHero.audience" class="flex items-center gap-1.5 md:gap-2">
+                    <span class="material-symbols-outlined text-[16px] md:text-base text-accent">groups</span>
                     {{ urgentHero.audience }}
                   </div>
                 </div>
@@ -192,20 +196,6 @@
         </div>
       </main>
 
-      <!-- ═══════ TICKER FOOTER ═══════ -->
-      <footer class="mt-3 bg-[#050e1f]/80 border border-white/5 rounded-xl py-3 relative overflow-hidden">
-        <div class="flex items-center h-full">
-          <div class="bg-accent text-[#0a192f] px-6 py-1 h-full flex items-center justify-center font-bold text-sm uppercase tracking-wider absolute left-0 top-0 bottom-0 z-10 shadow-[4px_0_15px_rgba(0,0,0,0.5)] rounded-l-xl">
-            <span class="material-symbols-outlined mr-2 animate-pulse">info</span>
-            Info Terkini
-          </div>
-          <div class="w-full overflow-hidden whitespace-nowrap pl-44">
-            <div class="animate-ticker inline-block text-base text-slate-300 font-medium">
-              {{ tickerText }}
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   </div>
 </template>
