@@ -135,7 +135,7 @@ function toggleTheme() {
   --bg-sidebar: #0B1120;
   --bg-header: rgba(11, 17, 32, 0.92);
   --bg-card: #141d38;
-  --bg-input: #141d38;
+  --bg-input: #0f1a36;
   --bg-table-head: #141d38;
   --bg-table-body: #111a33;
   --border: #1c2850;
@@ -162,6 +162,20 @@ function toggleTheme() {
   --cat-gambar-text: #60a5fa;
   --cat-gambar-bg: rgba(96, 165, 250, 0.1);
   --cat-gambar-border: rgba(96, 165, 250, 0.3);
+
+  --badge-published-text: #4ade80;
+  --badge-published-bg: rgba(74, 222, 128, 0.12);
+  --badge-published-border: rgba(74, 222, 128, 0.3);
+  --badge-published-glow: 0 0 10px rgba(74, 222, 128, 0.3);
+
+  --badge-draft-text: #facc15;
+  --badge-draft-bg: rgba(250, 204, 21, 0.1);
+  --badge-draft-border: rgba(250, 204, 21, 0.25);
+  --badge-draft-glow: 0 0 8px rgba(250, 204, 21, 0.2);
+
+  --badge-artikel-text: #fbbf24;
+  --badge-artikel-bg: rgba(251, 191, 36, 0.12);
+  --badge-artikel-border: rgba(251, 191, 36, 0.3);
 }
 
 .admin-root[data-theme="light"] {
@@ -169,7 +183,7 @@ function toggleTheme() {
   --bg-sidebar: #eef2f7;
   --bg-header: rgba(238, 242, 247, 0.92);
   --bg-card: #ffffff;
-  --bg-input: #e2e8f0;
+  --bg-input: #ffffff;
   --bg-table-head: #e8ecf1;
   --bg-table-body: #ffffff;
   --border: #dce3ec;
@@ -196,6 +210,20 @@ function toggleTheme() {
   --cat-gambar-text: #2563eb;
   --cat-gambar-bg: rgba(37, 99, 235, 0.08);
   --cat-gambar-border: rgba(37, 99, 235, 0.2);
+
+  --badge-published-text: #16a34a;
+  --badge-published-bg: rgba(22, 163, 74, 0.1);
+  --badge-published-border: rgba(22, 163, 74, 0.35);
+  --badge-published-glow: 0 0 8px rgba(22, 163, 74, 0.15);
+
+  --badge-draft-text: #ca8a04;
+  --badge-draft-bg: rgba(202, 138, 4, 0.1);
+  --badge-draft-border: rgba(202, 138, 4, 0.35);
+  --badge-draft-glow: 0 0 6px rgba(202, 138, 4, 0.1);
+
+  --badge-artikel-text: #d97706;
+  --badge-artikel-bg: rgba(217, 119, 6, 0.1);
+  --badge-artikel-border: rgba(217, 119, 6, 0.35);
 }
 
 /* ═══ Overlay fade ═══ */
@@ -312,6 +340,56 @@ function toggleTheme() {
 }
 .admin-root :deep(.table-row-hover:hover td) {
   color: var(--text-heading);
+}
+
+/* ═══ Global Badge Classes ═══ */
+.admin-root :deep(.badge) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 12px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border: 1px solid;
+  transition: all 0.2s ease;
+}
+.admin-root :deep(.badge-published) {
+  color: var(--badge-published-text);
+  background: var(--badge-published-bg);
+  border-color: var(--badge-published-border);
+  box-shadow: var(--badge-published-glow);
+}
+.admin-root :deep(.badge-draft) {
+  color: var(--badge-draft-text);
+  background: var(--badge-draft-bg);
+  border-color: var(--badge-draft-border);
+  box-shadow: var(--badge-draft-glow);
+}
+.admin-root :deep(.badge-artikel) {
+  color: var(--badge-artikel-text);
+  background: var(--badge-artikel-bg);
+  border-color: var(--badge-artikel-border);
+}
+.admin-root :deep(.badge-video) {
+  color: var(--cat-video-text);
+  background: var(--cat-video-bg);
+  border-color: var(--cat-video-border);
+}
+.admin-root :deep(.badge-gambar) {
+  color: var(--cat-gambar-text);
+  background: var(--cat-gambar-bg);
+  border-color: var(--cat-gambar-border);
+}
+.admin-root :deep(.badge-aktif) {
+  color: var(--status-aktif-text);
+  background: var(--status-aktif-bg);
+  border-color: var(--status-aktif-border);
+}
+.admin-root :deep(.badge-default) {
+  color: var(--text-muted);
+  background: var(--bg-input);
+  border-color: var(--border);
 }
 
 /* ═══ Vue Multiselect — Admin Theme ═══ */

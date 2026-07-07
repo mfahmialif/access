@@ -41,8 +41,8 @@
         <!-- ═══ FILTER TOOLBAR ═══ -->
         <div class="flex items-end justify-between px-1">
           <div class="space-y-0.5 md:space-y-1">
-            <h2 class="text-2xl md:text-3xl font-black text-accent tracking-tight drop-shadow-sm">Pengumuman Pesantren</h2>
-            <p class="text-slate-300 font-medium text-sm md:text-base">Informasi penting untuk seluruh warga pesantren</p>
+            <h2 class="text-2xl md:text-3xl font-black text-accent tracking-tight drop-shadow-sm">Pengumuman</h2>
+            <p class="text-slate-300 font-medium text-sm md:text-base">Informasi penting untuk seluruh warga</p>
           </div>
           <div class="flex items-center gap-2 flex-wrap">
             <!-- Search -->

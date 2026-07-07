@@ -140,10 +140,9 @@ const activities = ref([])
 const statusLabels = { sent: 'Success', failed: 'Failed' }
 
 function statusBadge(status) {
-  const base = 'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold'
-  if (status === 'Success') return `${base} bg-green-500/15 text-green-500 border border-green-500/30`
-  if (status === 'Pending') return `${base} bg-accent/15 text-accent border border-accent/30`
-  return `${base} bg-red-500/15 text-red-500 border border-red-500/30`
+  if (status === 'Success') return 'badge badge-published'
+  if (status === 'Pending') return 'badge badge-draft'
+  return 'badge badge-video'
 }
 
 // ── Network Status ──

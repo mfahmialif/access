@@ -154,10 +154,9 @@ function logIconColor(type) {
 }
 
 function statusBadge(status) {
-  const base = 'inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-bold'
-  if (status === 'Success') return `${base} text-green-400 border border-green-500/30 bg-green-900/20`
-  if (status === 'Failed') return `${base} text-red-400 border border-red-500/30 bg-red-900/20`
-  return `${base} text-blue-400 border border-blue-500/30 bg-blue-900/20`
+  if (status === 'Success') return 'badge badge-published' // Using published (green) for success
+  if (status === 'Failed') return 'badge badge-video' // Using video (red) for failed
+  return 'badge badge-gambar' // Using gambar (blue) for others/pending
 }
 </script>
 

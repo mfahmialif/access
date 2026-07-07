@@ -1,12 +1,14 @@
 <template>
   <div class="relative w-full h-dvh overflow-hidden">
     <!-- ═══════ BACKGROUND LAYERS ═══════ -->
-    <div class="fixed inset-0 z-0 bg-gradient-to-br from-[#020617] via-[#0f172a] to-[#1e3a8a]"></div>
-    <div class="fixed inset-0 z-0 opacity-15 mix-blend-overlay"
-         :style="{ backgroundImage: patternBg }"></div>
-    <div class="fixed inset-0 z-0 opacity-30 bg-cover bg-center mix-blend-overlay blur-sm"
-         style="background-image: url('/img/hero-bg.jpg')"></div>
-    <div class="fixed inset-0 z-0 bg-[radial-gradient(circle_at_top_right,rgba(59,130,246,0.2),transparent_60%)] pointer-events-none"></div>
+    <div class="fixed inset-0 z-0 transform-gpu" style="will-change: transform">
+      <div class="absolute inset-0 bg-gradient-to-br from-[#020617] via-[#0f172a] to-[#1e3a8a]"></div>
+      <div class="absolute inset-0 opacity-15 mix-blend-overlay"
+           :style="{ backgroundImage: patternBg }"></div>
+      <div class="absolute inset-0 opacity-30 bg-cover bg-center mix-blend-overlay blur-sm"
+           style="background-image: url('/img/hero-bg.jpg')"></div>
+      <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(59,130,246,0.2),transparent_60%)] pointer-events-none"></div>
+    </div>
 
     <!-- ═══════ MAIN CONTENT ═══════ -->
     <div class="relative z-10 flex flex-col h-dvh p-3 md:p-4 lg:p-6">
@@ -14,15 +16,8 @@
       <!-- ═══════ HEADER ═══════ -->
       <header class="flex flex-wrap items-center justify-between mb-2 md:mb-3 pb-2 border-b border-white/5 gap-2">
         <div class="flex items-center gap-2 md:gap-4">
-          <div class="glass-panel flex items-center justify-center size-9 md:size-14 rounded-lg md:rounded-xl border border-accent/30 shadow-[0_0_20px_rgba(251,191,36,0.15)]">
-            <span class="material-symbols-outlined text-xl md:text-3xl text-accent">mosque</span>
-          </div>
-          <div>
-            <h1 class="text-lg md:text-3xl font-serif font-bold tracking-tight text-white drop-shadow-lg">Access</h1>
-            <div class="flex items-center gap-2">
-              <span class="h-px w-4 md:w-6 bg-accent/60"></span>
-              <p class="text-accent/90 text-[10px] md:text-xs font-medium tracking-[0.2em] uppercase">TV Interaktif Pesantren</p>
-            </div>
+          <div class="flex flex-col justify-center">
+            <img src="/img/logo-full.png" alt="Access" class="h-14 md:h-20 object-contain drop-shadow-lg" />
           </div>
         </div>
 
@@ -66,6 +61,30 @@
       <!-- ═══════ MAIN GRID ═══════ -->
       <simplebar class="flex-1 min-h-0 landing-scroll" :force-visible="true" :click-on-track="true">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 portrait:lg:grid-cols-2 gap-3 md:gap-5 lg:gap-6 pb-12 md:pb-16">
+
+        <!-- CARD 7: Portal Layanan / Apps -->
+        <div class="group relative rounded-2xl glass-panel glass-panel-hover p-4 md:p-6 flex flex-col transition-all duration-500 cursor-pointer"
+             @click="navigateTo('apps')">
+          <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
+            <span class="material-symbols-outlined !text-6xl md:!text-8xl text-emerald-400">apps</span>
+          </div>
+          <div class="flex justify-between items-center mb-4 md:mb-6 relative z-10">
+            <div class="flex items-center gap-3">
+              <div class="bg-gradient-to-br from-emerald-500/20 to-emerald-600/10 p-2 md:p-2.5 rounded-xl text-emerald-400 border border-emerald-500/20 group-hover:border-emerald-400/50 transition-colors shadow-[0_0_15px_rgba(52,211,153,0.1)]">
+                <span class="material-symbols-outlined text-2xl md:text-3xl">widgets</span>
+              </div>
+              <h3 class="text-base md:text-xl font-bold text-white tracking-wide">Portal Layanan</h3>
+            </div>
+            <span class="material-symbols-outlined text-slate-500 group-hover:text-emerald-400 transition-colors group-hover:translate-x-1 duration-300">arrow_forward_ios</span>
+          </div>
+          <div class="flex-1 flex flex-col justify-end relative z-10">
+            <div class="bg-gradient-to-r from-emerald-500/10 to-transparent rounded-xl p-4 md:p-5 border-l-4 border-emerald-500/50 backdrop-blur-sm">
+              <p class="text-slate-300 text-sm md:text-base font-medium leading-relaxed">
+                Kumpulan aplikasi web dan layanan digital.
+              </p>
+            </div>
+          </div>
+        </div>
 
         <!-- CARD 1: Berita Utama -->
         <div class="group relative overflow-hidden rounded-2xl glass-panel glass-panel-hover transition-all duration-500 cursor-pointer min-h-[220px] sm:min-h-[240px]"
@@ -243,7 +262,7 @@
         </div>
 
         <!-- CARD 6: Pengumuman -->
-        <div class="group relative rounded-2xl bg-gradient-to-br from-yellow-900/40 to-yellow-950/40 backdrop-blur-xl border border-yellow-500/30 hover:border-yellow-500/60 p-4 md:p-6 flex flex-col transition-all duration-500 cursor-pointer shadow-[0_0_30px_rgba(234,179,8,0.1)] hover:shadow-[0_0_40px_rgba(234,179,8,0.2)]"
+        <div class="col-span-full group relative rounded-2xl bg-gradient-to-br from-yellow-900/40 to-yellow-950/40 backdrop-blur-xl border border-yellow-500/30 hover:border-yellow-500/60 p-4 md:p-6 flex flex-col transition-all duration-500 cursor-pointer shadow-[0_0_30px_rgba(234,179,8,0.1)] hover:shadow-[0_0_40px_rgba(234,179,8,0.2)]"
              @click="navigateTo('pengumuman')">
           <div class="absolute -right-2 -top-2 z-20">
             <span class="relative flex h-5 w-5">
@@ -404,6 +423,7 @@ const routeMap = {
   'agenda-bulanan': 'AgendaBulanan',
   'gallery-video': 'GalleryVideo',
   pengumuman: 'Pengumuman',
+  apps: 'Apps',
 }
 
 function navigateTo(section) {

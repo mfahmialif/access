@@ -2,11 +2,12 @@
   <aside :class="['sidebar flex h-screen flex-col p-4 shrink-0 transition-all duration-300', collapsed ? 'sidebar-collapsed' : '']">
     <!-- Logo — fixed at top -->
     <div class="flex items-center px-3 pb-4 shrink-0" :class="collapsed ? 'justify-center' : 'justify-between'">
-      <div class="overflow-hidden transition-all duration-300" :style="collapsed ? 'width: 0; opacity: 0' : 'width: auto; opacity: 1'">
-        <h1 class="text-heading text-lg font-bold leading-normal whitespace-nowrap">Access</h1>
-        <p class="text-muted text-sm font-medium leading-normal whitespace-nowrap">Admin CMS</p>
+      <div class="overflow-hidden transition-all duration-300 flex items-center" :style="collapsed ? 'width: 0; opacity: 0' : 'width: auto; opacity: 1'">
+        <div class="overflow-hidden h-14">
+          <img src="/img/logo-full.png" alt="Access Admin" class="h-25 object-contain -mt-[22px]" />
+        </div>
       </div>
-      <span v-if="collapsed" class="material-symbols-outlined text-accent text-[28px]">mosque</span>
+      <img v-if="collapsed" src="/img/logo.png" alt="Access" class="w-12 h-12 object-contain mx-auto" />
       <button @click="$emit('close-sidebar')"
               class="close-btn p-1.5 rounded-lg transition-colors cursor-pointer lg:hidden">
         <span class="material-symbols-outlined text-[22px]">close</span>
@@ -35,6 +36,18 @@
             <p class="text-xs font-bold uppercase tracking-wider text-muted">Informasi</p>
           </div>
           <div v-else class="mt-3 mb-2 mx-3 border-t" style="border-color: var(--border)"></div>
+          <!-- Apps Portal -->
+          <router-link to="/administrator/apps"
+                       :class="[
+                         'flex items-center gap-3 px-3 py-2 rounded-lg transition-colors sidebar-link',
+                         isActiveRoute('/administrator/apps')
+                           ? 'bg-accent text-btn-text font-bold'
+                           : 'nav-item text-body font-medium cursor-pointer'
+                       ]"
+                       :title="collapsed ? 'Apps Portal' : ''">
+            <span class="material-symbols-outlined text-[24px] shrink-0">apps</span>
+            <span class="sidebar-label text-sm leading-normal">Apps Portal</span>
+          </router-link>
           <!-- Info Terkini -->
           <router-link to="/administrator/info-terkini"
                        :class="[

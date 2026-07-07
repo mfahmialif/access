@@ -86,6 +86,7 @@ const navItems = [
 ]
 
 const infoItems = [
+  { icon: 'apps', label: 'Apps Portal', route: '/administrator/apps' },
   { icon: 'newspaper', label: 'Info Terkini', route: '/administrator/info-terkini' },
   { icon: 'today', label: 'Agenda Harian', route: '/administrator/agenda-harian' },
   { icon: 'date_range', label: 'Agenda Mingguan', route: '/administrator/agenda-mingguan' },

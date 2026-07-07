@@ -3,14 +3,14 @@
 
     <!-- ═══ ACTION BAR ═══ -->
     <div class="flex items-center justify-between">
-      <router-link :to="{ name: 'AdminInfoTerkiniCreate' }" class="flex items-center gap-2 rounded-lg h-10 px-5 bg-accent text-btn-text font-bold transition-colors hover:bg-accent/90 shadow-[0_0_15px_rgba(251,191,36,0.3)] shrink-0 cursor-pointer active:scale-95" style="color: var(--text-btn)">
+      <router-link :to="{ name: 'AdminAppsCreate' }" class="flex items-center gap-2 rounded-lg h-10 px-5 bg-accent text-btn-text font-bold transition-colors hover:bg-accent/90 shadow-[0_0_15px_rgba(251,191,36,0.3)] shrink-0 cursor-pointer active:scale-95" style="color: var(--text-btn)">
         <span class="material-symbols-outlined text-[20px]">add_circle</span>
-        <span>Tambah Konten</span>
+        <span>Tambah Link</span>
       </router-link>
     </div>
 
     <!-- ═══ STATS ROW ═══ -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+    <div class="grid grid-cols-2 lg:grid-cols-3 gap-4">
       <div v-for="stat in statsCards" :key="stat.label" class="stat-card rounded-xl p-4 flex items-center gap-4 border border-transparent">
         <div class="p-3 rounded-lg" :class="stat.iconBg">
           <span class="material-symbols-outlined text-[24px]" :class="stat.iconColor">{{ stat.icon }}</span>
@@ -26,17 +26,11 @@
     <div class="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
       <div class="relative w-full lg:w-[400px]">
         <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-accent text-[20px] z-10">search</span>
-        <input v-model="searchQuery" @input="debouncedFetch" class="filter-input w-full rounded-xl py-2.5 pl-10 pr-4 text-sm focus:outline-none focus:ring-1 focus:ring-accent" placeholder="Search content..." type="text" />
+        <input v-model="searchQuery" @input="debouncedFetch" class="filter-input w-full rounded-xl py-2.5 pl-10 pr-4 text-sm focus:outline-none focus:ring-1 focus:ring-accent" placeholder="Cari link..." type="text" />
       </div>
-      <div class="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3 lg:gap-4">
-        <div class="flex items-center gap-2">
-          <span class="text-sm font-medium shrink-0" style="color: var(--text-body)">Kategori:</span>
-          <VueMultiselect v-model="filterCategory" :options="categoryOptions" :close-on-select="true" :searchable="false" :allow-empty="false" :show-labels="false" label="name" track-by="value" @select="fetchData" class="flex-1 sm:w-[160px] sm:flex-none" />
-        </div>
-        <div class="flex items-center gap-2">
-          <span class="text-sm font-medium shrink-0" style="color: var(--text-body)">Status:</span>
-          <VueMultiselect v-model="filterStatus" :options="statusOptions" :close-on-select="true" :searchable="false" :allow-empty="false" :show-labels="false" label="name" track-by="value" @select="fetchData" class="flex-1 sm:w-[150px] sm:flex-none" />
-        </div>
+      <div class="flex items-center gap-2">
+        <span class="text-sm font-medium shrink-0" style="color: var(--text-body)">Status:</span>
+        <VueMultiselect v-model="filterStatus" :options="statusOptions" :close-on-select="true" :searchable="false" :allow-empty="false" :show-labels="false" label="name" track-by="value" @select="fetchData" class="w-[150px]" />
       </div>
     </div>
 
@@ -51,34 +45,36 @@
         <table class="w-full text-left border-collapse">
           <thead><tr class="table-head">
             <th class="px-4 py-4 text-sm font-semibold w-16" style="color: var(--text-heading)">#</th>
-            <th class="px-4 py-4 text-sm font-semibold" style="color: var(--text-heading)">Thumbnail</th>
+            <th class="px-4 py-4 text-sm font-semibold w-16" style="color: var(--text-heading)">Icon</th>
             <th class="px-4 py-4 text-sm font-semibold" style="color: var(--text-heading)">Judul</th>
-            <th class="px-4 py-4 text-sm font-semibold" style="color: var(--text-heading)">Kategori</th>
-            <th class="px-4 py-4 text-sm font-semibold" style="color: var(--text-heading)">Waktu</th>
+            <th class="px-4 py-4 text-sm font-semibold" style="color: var(--text-heading)">URL</th>
+            <th class="px-4 py-4 text-sm font-semibold w-20" style="color: var(--text-heading)">Urutan</th>
             <th class="px-4 py-4 text-sm font-semibold" style="color: var(--text-heading)">Status</th>
             <th class="px-4 py-4 text-sm font-semibold text-right" style="color: var(--text-heading)">Actions</th>
           </tr></thead>
           <tbody class="table-body">
             <tr v-if="items.length === 0">
-              <td colspan="7" class="px-4 py-12 text-center text-sm" style="color: var(--text-muted)">Tidak ada data konten</td>
+              <td colspan="7" class="px-4 py-12 text-center text-sm" style="color: var(--text-muted)">Tidak ada data link</td>
             </tr>
             <tr v-for="(item, idx) in items" :key="item.id" class="table-row-hover">
               <td class="px-4 py-4 text-sm font-mono" style="color: var(--text-muted)">{{ (currentPage - 1) * perPage + idx + 1 }}</td>
               <td class="px-4 py-4">
-                <div class="w-16 h-10 rounded-lg overflow-hidden bg-cover bg-center border"
-                     :style="{ backgroundImage: item.image_path ? `url('${storageUrl(item.image_path)}')` : `url('/img/default-news.png')`, borderColor: 'var(--border)' }">
-                  <div v-if="item.category === 'Video'" class="w-full h-full flex items-center justify-center bg-black/40">
-                    <span class="material-symbols-outlined text-white text-[18px]">play_arrow</span>
-                  </div>
+                <div class="w-10 h-10 rounded-lg flex items-center justify-center" :class="colorIconBg(item.color)">
+                  <span class="material-symbols-outlined text-[22px]" :class="colorIconText(item.color)" style="font-variation-settings: 'FILL' 1;">{{ item.icon }}</span>
                 </div>
               </td>
-              <td class="px-4 py-4"><span class="text-sm font-bold line-clamp-1" style="color: var(--text-heading)">{{ item.title }}</span></td>
-              <td class="px-4 py-4"><span :class="categoryBadge(item.category)">{{ item.category }}</span></td>
-              <td class="px-4 py-4 text-sm" style="color: var(--text-muted)">{{ timeAgo(item.created_at) }}</td>
+              <td class="px-4 py-4">
+                <span class="text-sm font-bold line-clamp-1" style="color: var(--text-heading)">{{ item.title }}</span>
+                <span v-if="item.subtitle" class="text-xs block mt-0.5" style="color: var(--text-muted)">{{ item.subtitle }}</span>
+              </td>
+              <td class="px-4 py-4">
+                <span class="text-sm font-mono line-clamp-1" style="color: var(--text-muted)">{{ item.url }}</span>
+              </td>
+              <td class="px-4 py-4 text-sm text-center font-bold" style="color: var(--text-body)">{{ item.sort_order }}</td>
               <td class="px-4 py-4"><span :class="statusBadge(item.status)">{{ item.status }}</span></td>
               <td class="px-4 py-4 text-right">
                 <div class="flex items-center justify-end gap-1">
-                  <router-link :to="{ name: 'AdminInfoTerkiniEdit', params: { id: item.id } }" class="action-btn p-2 rounded-lg cursor-pointer" title="Edit"><span class="material-symbols-outlined text-[20px] text-accent">edit</span></router-link>
+                  <router-link :to="{ name: 'AdminAppsEdit', params: { id: item.id } }" class="action-btn p-2 rounded-lg cursor-pointer" title="Edit"><span class="material-symbols-outlined text-[20px] text-accent">edit</span></router-link>
                   <button @click="confirmDelete(item)" class="action-btn action-btn-delete p-2 rounded-lg cursor-pointer" title="Delete"><span class="material-symbols-outlined text-[20px] text-accent">delete</span></button>
                 </div>
               </td>
@@ -104,7 +100,7 @@
         <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" @click="showDeleteConfirm = false"></div>
         <div class="relative w-full max-w-md rounded-2xl p-6 shadow-2xl text-center" style="background: var(--bg-card); border: 1px solid var(--border)">
           <span class="material-symbols-outlined text-red-400 text-5xl mb-3">warning</span>
-          <h3 class="text-lg font-bold mb-2" style="color: var(--text-heading)">Hapus Konten?</h3>
+          <h3 class="text-lg font-bold mb-2" style="color: var(--text-heading)">Hapus Link?</h3>
           <p class="text-sm mb-6" style="color: var(--text-muted)">{{ deletingItem?.title }}</p>
           <div class="flex justify-center gap-3">
             <button @click="showDeleteConfirm = false" class="px-5 py-2.5 rounded-lg text-sm font-bold cursor-pointer" style="color: var(--text-muted); background: var(--bg-input); border: 1px solid var(--border)">Batal</button>
@@ -130,7 +126,6 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
 import api from '../../../axios'
-import { storageUrl } from '../../../utils/asset'
 import VueMultiselect from 'vue-multiselect'
 import 'vue-multiselect/dist/vue-multiselect.css'
 
@@ -143,17 +138,14 @@ const totalItems = ref(0)
 const perPage = 10
 
 const searchQuery = ref('')
-const categoryOptions = [{ name: 'Semua', value: 'all' }, { name: 'Artikel', value: 'Artikel' }, { name: 'Video', value: 'Video' }, { name: 'Gambar', value: 'Gambar' }]
 const statusOptions = [{ name: 'All Status', value: 'all' }, { name: 'Published', value: 'Published' }, { name: 'Draft', value: 'Draft' }]
-const filterCategory = ref(categoryOptions[0])
 const filterStatus = ref(statusOptions[0])
 
 // ── Stats ──
 const statsCards = ref([
-  { label: 'Total Konten', value: 0, icon: 'article', iconBg: 'bg-accent/10', iconColor: 'text-accent' },
-  { label: 'Artikel', value: 0, icon: 'description', iconBg: 'bg-blue-500/10', iconColor: 'text-blue-400' },
-  { label: 'Video', value: 0, icon: 'videocam', iconBg: 'bg-red-500/10', iconColor: 'text-red-400' },
-  { label: 'Gambar', value: 0, icon: 'image', iconBg: 'bg-green-500/10', iconColor: 'text-green-400' },
+  { label: 'Total Link', value: 0, icon: 'apps', iconBg: 'bg-accent/10', iconColor: 'text-accent' },
+  { label: 'Published', value: 0, icon: 'check_circle', iconBg: 'bg-green-500/10', iconColor: 'text-green-400' },
+  { label: 'Draft', value: 0, icon: 'edit_note', iconBg: 'bg-yellow-500/10', iconColor: 'text-yellow-400' },
 ])
 
 // ── Delete ──
@@ -179,10 +171,9 @@ async function fetchData() {
   try {
     const params = { page: currentPage.value, per_page: perPage }
     if (searchQuery.value) params.search = searchQuery.value
-    if (filterCategory.value?.value !== 'all') params.category = filterCategory.value.value
     if (filterStatus.value?.value !== 'all') params.status = filterStatus.value.value
 
-    const { data } = await api.get('/news', { params })
+    const { data } = await api.get('/app-links', { params })
     items.value = data.data
     totalPages.value = data.last_page
     totalItems.value = data.total
@@ -193,17 +184,14 @@ async function fetchData() {
 
 async function fetchStats() {
   try {
-    // Count by fetching all with category filters
-    const [all, artikel, video, gambar] = await Promise.all([
-      api.get('/news', { params: { per_page: 1 } }),
-      api.get('/news', { params: { per_page: 1, category: 'Artikel' } }),
-      api.get('/news', { params: { per_page: 1, category: 'Video' } }),
-      api.get('/news', { params: { per_page: 1, category: 'Gambar' } }),
+    const [all, published, draft] = await Promise.all([
+      api.get('/app-links', { params: { per_page: 1 } }),
+      api.get('/app-links', { params: { per_page: 1, status: 'Published' } }),
+      api.get('/app-links', { params: { per_page: 1, status: 'Draft' } }),
     ])
     statsCards.value[0].value = all.data.total
-    statsCards.value[1].value = artikel.data.total
-    statsCards.value[2].value = video.data.total
-    statsCards.value[3].value = gambar.data.total
+    statsCards.value[1].value = published.data.total
+    statsCards.value[2].value = draft.data.total
   } catch { /* silent */ }
 }
 
@@ -214,8 +202,8 @@ function confirmDelete(item) { deletingItem.value = item; showDeleteConfirm.valu
 async function deleteItem() {
   deleting.value = true
   try {
-    await api.delete(`/news/${deletingItem.value.id}`)
-    showToast('Konten berhasil dihapus')
+    await api.delete(`/app-links/${deletingItem.value.id}`)
+    showToast('Link berhasil dihapus')
     showDeleteConfirm.value = false
     fetchData(); fetchStats()
   } catch (e) { showToast(e.response?.data?.message || 'Gagal menghapus', 'error') }
@@ -223,22 +211,16 @@ async function deleteItem() {
 }
 
 // ── Helpers ──
-function timeAgo(dateStr) {
-  if (!dateStr) return '—'
-  const d = new Date(dateStr); const now = new Date(); const diff = Math.floor((now - d) / 1000)
-  if (diff < 60) return 'Baru saja'
-  if (diff < 3600) return `${Math.floor(diff / 60)} menit lalu`
-  if (diff < 86400) return `${Math.floor(diff / 3600)} jam lalu`
-  if (diff < 172800) return '1 hari lalu'
-  return `${Math.floor(diff / 86400)} hari lalu`
+const colorMap = {
+  amber:   { bg: 'bg-amber-500/15',   text: 'text-amber-400' },
+  blue:    { bg: 'bg-blue-500/15',     text: 'text-blue-400' },
+  emerald: { bg: 'bg-emerald-500/15',  text: 'text-emerald-400' },
+  violet:  { bg: 'bg-violet-500/15',   text: 'text-violet-400' },
+  rose:    { bg: 'bg-rose-500/15',     text: 'text-rose-400' },
+  cyan:    { bg: 'bg-cyan-500/15',     text: 'text-cyan-400' },
 }
-
-function categoryBadge(c) {
-  if (c === 'Artikel') return 'badge badge-artikel'
-  if (c === 'Video') return 'badge badge-video'
-  if (c === 'Gambar') return 'badge badge-gambar'
-  return 'badge badge-default'
-}
+function colorIconBg(c) { return colorMap[c]?.bg || 'bg-accent/15' }
+function colorIconText(c) { return colorMap[c]?.text || 'text-accent' }
 
 function statusBadge(s) {
   if (s === 'Published') return 'badge badge-published'

@@ -401,9 +401,8 @@ function roleBadge(role) {
 }
 
 function statusBadge(status) {
-  const base = 'inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-bold'
-  if (status === 'Active') return `${base} text-green-400 border border-green-500/30 bg-green-900/20 shadow-[0_0_10px_rgba(74,222,128,0.3)]`
-  return `${base} text-slate-400 border border-slate-500/30 bg-slate-800/50 shadow-[0_0_10px_rgba(148,163,184,0.2)]`
+  if (status === 'Active') return 'badge badge-aktif'
+  return 'badge badge-default'
 }
 </script>
 

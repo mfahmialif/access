@@ -192,17 +192,15 @@ async function confirmDelete(item) {
 }
 
 function categoryBadge(category) {
-  const base = 'inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-bold'
-  if (category === 'Artikel') return `${base} cat-badge-artikel`
-  if (category === 'Video') return `${base} cat-badge-video`
-  if (category === 'Gambar') return `${base} cat-badge-gambar`
-  return `${base} cat-badge-default`
+  if (category === 'Artikel') return 'badge badge-artikel'
+  if (category === 'Video') return 'badge badge-video'
+  if (category === 'Gambar') return 'badge badge-gambar'
+  return 'badge badge-default'
 }
 
 function statusBadge(status) {
-  const base = 'inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-bold'
-  if (status === 'Aktif') return `${base} status-badge-aktif`
-  return `${base} status-badge-nonaktif`
+  if (status === 'Aktif') return 'badge badge-aktif'
+  return 'badge badge-default'
 }
 </script>
 

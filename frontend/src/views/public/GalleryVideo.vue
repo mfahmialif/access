@@ -41,7 +41,7 @@
         <div class="flex flex-col xl:flex-row xl:items-end justify-between px-1 md:px-2 gap-4">
           <div class="space-y-0.5 md:space-y-1 shrink-0">
             <h2 class="text-2xl md:text-4xl font-black text-accent tracking-tight drop-shadow-sm">Galeri & Video</h2>
-            <p class="text-slate-300 font-medium text-sm md:text-lg">Dokumentasi foto & video kegiatan pesantren</p>
+            <p class="text-slate-300 font-medium text-sm md:text-lg">Dokumentasi foto & video kegiatan</p>
           </div>
           <!-- ═══ FILTER TOOLBAR ═══ -->
           <div class="grid w-full grid-cols-1 gap-2 sm:grid-cols-2 xl:flex xl:w-auto xl:items-center xl:flex-wrap">

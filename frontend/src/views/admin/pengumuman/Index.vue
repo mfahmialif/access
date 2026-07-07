@@ -214,10 +214,7 @@ function priorityBadge(p) {
 }
 
 function statusBadge(s) {
-  const b = 'inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-bold'
-  return s === 'Aktif'
-    ? `${b} text-green-400 border border-green-500/30 bg-green-900/20`
-    : `${b} text-slate-400 border border-slate-500/30 bg-slate-800/50`
+  return s === 'Aktif' ? 'badge badge-aktif' : 'badge badge-default'
 }
 
 onMounted(() => fetchData())

@@ -16,7 +16,7 @@
         </div>
         <div class="flex flex-col">
           <h1 class="text-base md:text-xl font-bold tracking-tight text-white uppercase leading-none">Access</h1>
-          <span class="text-[10px] md:text-xs text-accent/80 font-medium tracking-widest uppercase">Sistem Informasi Pesantren</span>
+          <span class="text-[10px] md:text-xs text-accent/80 font-medium tracking-widest uppercase">Sistem Informasi</span>
         </div>
       </div>
       <div class="hidden md:flex items-center gap-6">

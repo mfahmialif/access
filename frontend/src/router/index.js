@@ -169,6 +169,24 @@ const routes = [
         meta: { title: 'Access — Manajemen TV', pageTitle: 'Manajemen TV', requiresAuth: true }
       },
       {
+        path: 'apps',
+        name: 'AdminApps',
+        component: () => import('../views/admin/apps/Index.vue'),
+        meta: { title: 'Access — Apps Portal', pageTitle: 'Apps Portal', requiresAuth: true }
+      },
+      {
+        path: 'apps/create',
+        name: 'AdminAppsCreate',
+        component: () => import('../views/admin/apps/Form.vue'),
+        meta: { title: 'Access — Tambah Link', pageTitle: 'Tambah Link', requiresAuth: true }
+      },
+      {
+        path: 'apps/:id/edit',
+        name: 'AdminAppsEdit',
+        component: () => import('../views/admin/apps/Form.vue'),
+        meta: { title: 'Access — Edit Link', pageTitle: 'Edit Link', requiresAuth: true }
+      },
+      {
         path: 'info-terkini',
         name: 'AdminInfoTerkini',
         component: () => import('../views/admin/info/Index.vue'),

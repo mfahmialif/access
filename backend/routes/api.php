@@ -11,11 +11,17 @@ use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\TvDeviceController;
+use App\Http\Controllers\AppLinkController;
 use App\Http\Controllers\TvCommandController;
+use App\Http\Controllers\ProxyController;
 use Illuminate\Support\Facades\Route;
 
 // ── Public routes ──
 Route::post('/login', [AuthController::class, 'login']);
+
+// Proxy (public — for iframe embed of external sites)
+Route::get('/proxy/check', [ProxyController::class, 'check']);
+Route::get('/proxy', [ProxyController::class, 'fetch']);
 
 // Agenda (public read — for TV display)
 Route::get('/agendas', [AgendaController::class, 'index']);
@@ -42,6 +48,10 @@ Route::get('/news/{news}', [NewsController::class, 'show']);
 Route::get('/announcements', [AnnouncementController::class, 'index']);
 Route::get('/announcements/stats', [AnnouncementController::class, 'stats']);
 Route::get('/announcements/{announcement}', [AnnouncementController::class, 'show']);
+
+// App Links / Portal (public read)
+Route::get('/app-links', [AppLinkController::class, 'index']);
+Route::get('/app-links/{appLink}', [AppLinkController::class, 'show']);
 
 // TV Device (public — connect + heartbeat + disconnect)
 Route::post('/tv/connect', [TvDeviceController::class, 'connect']);
@@ -96,6 +106,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/announcements', [AnnouncementController::class, 'store']);
     Route::put('/announcements/{announcement}', [AnnouncementController::class, 'update']);
     Route::delete('/announcements/{announcement}', [AnnouncementController::class, 'destroy']);
+
+    // App Links / Portal (protected CRUD)
+    Route::post('/app-links', [AppLinkController::class, 'store']);
+    Route::put('/app-links/{appLink}', [AppLinkController::class, 'update']);
+    Route::delete('/app-links/{appLink}', [AppLinkController::class, 'destroy']);
 
     // TV Devices (protected CRUD)
     Route::get('/tv-devices', [TvDeviceController::class, 'index']);

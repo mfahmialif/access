@@ -29,7 +29,7 @@
           <div class="setting-control">
             <div class="flex items-center gap-4">
               <div class="w-16 h-16 rounded-xl flex items-center justify-center border-2 border-dashed border-accent/40" style="background: var(--bg-input)">
-                <span class="material-symbols-outlined text-accent text-3xl">mosque</span>
+                <img src="/img/logo.png" alt="Access Logo" class="w-8 h-8 object-contain" />
               </div>
               <div class="flex flex-col gap-2">
                 <button class="upload-btn flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold cursor-pointer transition-all">

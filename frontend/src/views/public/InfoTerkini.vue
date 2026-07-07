@@ -1,11 +1,11 @@
 <template>
-  <div class="relative w-screen h-screen overflow-hidden font-display text-slate-100 selection:bg-accent selection:text-[#0a192f]">
+  <div class="relative min-h-screen w-full font-display text-slate-100 selection:bg-accent selection:text-[#0a192f] bg-[#020617]">
     <!-- ═══════ PATTERN OVERLAY ═══════ -->
-    <div class="absolute inset-0 pointer-events-none z-0"
+    <div class="fixed inset-0 pointer-events-none z-0"
          :style="{ backgroundImage: patternBg, backgroundSize: '30px 30px' }"></div>
 
     <!-- ═══════ MAIN WRAPPER ═══════ -->
-    <div class="relative z-10 flex flex-col h-screen w-full px-4 py-3 md:px-8 md:py-5 lg:px-10 lg:py-6 max-w-[1920px] mx-auto">
+    <div class="relative z-10 flex flex-col min-h-screen w-full px-4 py-4 md:px-8 md:py-6 lg:px-10 lg:py-8 max-w-[1920px] mx-auto">
 
       <!-- ═══════ HEADER ═══════ -->
       <header class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 md:mb-6 pb-3 md:pb-4 border-b border-accent/20 gap-3">
@@ -36,15 +36,15 @@
       </header>
 
       <!-- ═══════ CONTENT ═══════ -->
-      <main class="flex-1 flex flex-col gap-5 overflow-hidden">
+      <main class="flex-1 flex flex-col gap-6 md:gap-8">
         <!-- Title + Controls -->
-        <div class="flex items-end flex-col sm:flex-row justify-between px-1 md:px-2 gap-3">
-          <div class="space-y-0.5 md:space-y-1">
-            <h2 class="text-2xl md:text-4xl font-black text-accent tracking-tight drop-shadow-sm">Info Hari Ini / Berita</h2>
-            <p class="text-slate-300 font-medium text-sm md:text-lg">Berita terkini seputar kegiatan pondok pesantren</p>
+        <div class="flex items-start md:items-end flex-col md:flex-row justify-between px-1 md:px-2 gap-4">
+          <div class="space-y-1 md:space-y-2">
+            <h2 class="text-3xl md:text-4xl lg:text-5xl font-black text-accent tracking-tight drop-shadow-sm">Info Hari Ini / Berita</h2>
+            <p class="text-slate-300 font-medium text-base md:text-lg">Berita terkini seputar kegiatan</p>
           </div>
           <!-- ═══ FILTER TOOLBAR ═══ -->
-          <div class="flex items-center gap-2 flex-wrap">
+          <div class="flex items-center gap-2 flex-wrap md:flex-nowrap w-full md:w-auto">
             <!-- Search -->
             <div class="relative">
               <span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-500 text-sm!">search</span>
@@ -90,14 +90,14 @@
         </div>
 
         <!-- ═══════ NEWS GRID ═══════ -->
-        <div v-if="loading" class="flex items-center justify-center flex-1">
+        <div v-if="loading" class="flex items-center justify-center py-20 flex-1">
           <span class="material-symbols-outlined text-5xl text-accent animate-spin">progress_activity</span>
         </div>
-        <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 portrait:lg:grid-cols-2 gap-4 md:gap-6 flex-1 pb-4 overflow-y-auto">
+        <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 portrait:lg:grid-cols-2 gap-5 md:gap-6 flex-1 pb-4">
           <!-- Featured Article (Card 1) -->
           <article v-if="newsItems.length > 0"
                    @click="router.push({ name: 'DetailNews', params: { id: newsItems[0].id } })"
-                   class="group relative flex flex-col justify-end overflow-hidden rounded-xl bg-[#050e1f] border border-white/10 hover:border-accent transition-all duration-300 hover:scale-[1.01] hover:shadow-[0_0_20px_rgba(251,191,36,0.2)] cursor-pointer min-h-[200px] md:min-h-0">
+                   class="group relative flex flex-col justify-end overflow-hidden rounded-xl bg-[#050e1f] border border-white/10 hover:border-accent transition-all duration-300 hover:scale-[1.01] hover:shadow-[0_0_20px_rgba(251,191,36,0.2)] cursor-pointer min-h-[240px] md:min-h-[300px]">
             <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
                  :style="{ backgroundImage: `url('${getImageUrl(newsItems[0])}')` }"></div>
             <div class="absolute inset-0 bg-linear-to-t from-[#050e1f] via-[#050e1f]/70 to-transparent opacity-95"></div>
@@ -119,7 +119,7 @@
           <!-- Regular Articles -->
           <article v-for="item in newsItems.slice(1)" :key="item.id"
                    @click="router.push({ name: 'DetailNews', params: { id: item.id } })"
-                   class="group relative flex flex-col justify-end overflow-hidden rounded-xl bg-[#050e1f] border border-white/10 hover:border-accent transition-all duration-300 hover:scale-[1.01] hover:shadow-[0_0_20px_rgba(251,191,36,0.2)] cursor-pointer">
+                   class="group relative flex flex-col justify-end overflow-hidden rounded-xl bg-[#050e1f] border border-white/10 hover:border-accent transition-all duration-300 hover:scale-[1.01] hover:shadow-[0_0_20px_rgba(251,191,36,0.2)] cursor-pointer min-h-[240px] md:min-h-[280px]">
             <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
                  :style="{ backgroundImage: `url('${getImageUrl(item)}')` }"></div>
             <div class="absolute inset-0 bg-linear-to-t from-[#050e1f] via-[#050e1f]/60 to-transparent opacity-90 group-hover:opacity-95 transition-opacity"></div>
@@ -147,13 +147,13 @@
       </main>
 
       <!-- ═══════ PAGINATION FOOTER ═══════ -->
-      <footer v-if="totalPages > 1" class="flex items-center justify-center py-4">
-        <div class="flex items-center gap-2 bg-[#050e1f]/50 backdrop-blur-sm px-6 py-2 rounded-full border border-accent/20 shadow-[0_0_15px_rgba(0,0,0,0.3)]">
+      <footer v-if="totalPages > 1" class="flex items-center justify-center py-6 mt-4">
+        <div class="flex items-center gap-1 sm:gap-2 bg-[#050e1f]/50 backdrop-blur-sm px-4 sm:px-6 py-2 rounded-full border border-accent/20 shadow-[0_0_15px_rgba(0,0,0,0.3)] flex-wrap justify-center">
           <button @click="goToPage(currentPage - 1)" :disabled="currentPage <= 1"
                   class="size-8 flex items-center justify-center rounded-full text-accent hover:text-white hover:bg-white/10 transition-colors disabled:opacity-30 cursor-pointer">
             <span class="material-symbols-outlined">chevron_left</span>
           </button>
-          <div class="flex items-center gap-2 px-2">
+          <div class="flex items-center gap-1 sm:gap-2 px-1 sm:px-2 flex-wrap">
             <button v-for="p in pageNumbers" :key="p"
                     @click="typeof p === 'number' && goToPage(p)"
                     :class="[
@@ -167,7 +167,7 @@
                   class="size-8 flex items-center justify-center rounded-full text-accent hover:text-white hover:bg-white/10 transition-colors disabled:opacity-30 cursor-pointer">
             <span class="material-symbols-outlined">chevron_right</span>
           </button>
-          <span class="text-xs text-slate-500 ml-2">{{ currentPage }}/{{ totalPages }}</span>
+          <span class="text-xs text-slate-500 ml-2 hidden sm:inline">{{ currentPage }}/{{ totalPages }}</span>
         </div>
       </footer>
     </div>

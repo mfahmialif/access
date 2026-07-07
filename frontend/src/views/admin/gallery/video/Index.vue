@@ -194,8 +194,7 @@ function typeBadge(type) {
   return type === 'Gambar' ? `${b} bg-blue-900/30 text-blue-400 border border-blue-800/40` : `${b} bg-red-900/30 text-red-400 border border-red-800/40`
 }
 function statusBadge(s) {
-  const b = 'inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-bold'
-  return s === 'Published' ? `${b} text-green-400 border border-green-500/30 bg-green-900/20` : `${b} text-yellow-400 border border-yellow-500/30 bg-yellow-900/20`
+  return s === 'Published' ? 'badge badge-published' : 'badge badge-draft'
 }
 </script>
 
