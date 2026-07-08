@@ -140,6 +140,7 @@ import { useRouter, useRoute } from 'vue-router'
 import VueMultiselect from 'vue-multiselect'
 import 'vue-multiselect/dist/vue-multiselect.css'
 import api from '../../../axios'
+import { storageUrl } from '../../../utils/asset'
 
 const router = useRouter()
 const route = useRoute()
@@ -250,7 +251,7 @@ onMounted(async () => {
       }
       existingImages.value = (data.images || []).map(img => ({
         id: img.id,
-        url: img.image_path ? `/storage/${img.image_path}` : '',
+        url: img.image_path ? storageUrl(img.image_path) : '',
         sort_order: img.sort_order,
       }))
     } catch { formError.value = 'Gagal memuat data.' }
