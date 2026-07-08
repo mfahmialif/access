@@ -20,7 +20,7 @@ return [
     'allowed_methods' => ['*'],
 
     'allowed_origins' => [
-        'https://vision.uiidalwa.web.id',
+        'https://access.uiidalwa.web.id',
     ],
 
     'allowed_origins_patterns' => [],
