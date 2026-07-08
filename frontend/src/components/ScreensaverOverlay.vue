@@ -235,7 +235,7 @@ watch(() => route.fullPath, async () => {
 .screensaver-overlay {
   position: fixed;
   inset: 0;
-  z-index: 9999;
+  z-index: 99999;
   background: #000;
   outline: none;
   cursor: pointer;

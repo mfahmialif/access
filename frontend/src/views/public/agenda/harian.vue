@@ -148,25 +148,34 @@
         <!-- ═══════ RIGHT: DETAIL PANEL ═══════ -->
         <div id="detail-panel" class="hidden md:flex portrait:hidden w-2/3 flex-col gap-6 md:h-[calc(100vh-10rem)]">
           <!-- Main Detail Card -->
-          <div class="flex-1 min-h-0 glass-panel rounded-2xl p-1 overflow-hidden shadow-2xl flex flex-col relative group border-t border-t-yellow-500/20">
-            <div class="absolute inset-0 z-0">
-              <img alt="Background" class="w-full h-full object-cover opacity-50 group-hover:scale-105 transition-transform duration-[20s] ease-linear grayscale-20 sepia-20 hue-rotate-180 brightness-75 contrast-125"
+          <!-- Main Detail Card (Unified Banner Layout) -->
+          <div class="flex-1 min-h-0 rounded-2xl overflow-hidden shadow-2xl flex flex-col relative group transition-colors"
+               :class="!isDark ? 'bg-slate-50 border border-slate-200' : 'bg-[#0a1128] border border-yellow-500/20'">
+            <!-- Top Banner Area -->
+            <div class="relative w-full h-48 md:h-56 shrink-0 overflow-hidden">
+              <img alt="Banner" class="w-full h-full object-cover group-hover:scale-105 transition-all duration-[20s] ease-linear"
+                   :class="!isDark ? '' : 'opacity-70 grayscale-20 sepia-20 hue-rotate-180 brightness-75 contrast-125'"
                    :src="selectedGroup.items?.[activeItemIdx]?.image || '/img/default-agenda.png'" />
-              <div class="absolute inset-0 bg-linear-to-t from-bg-deepest via-bg-deepest/80 to-blue-900/20 mix-blend-multiply"></div>
-              <div class="absolute inset-0 bg-linear-to-t from-blue-950 via-transparent to-transparent opacity-80"></div>
+              <div class="absolute inset-0 transition-colors"
+                   :class="!isDark ? 'bg-linear-to-t from-slate-50 via-slate-50/20 to-black/30' : 'bg-linear-to-t from-[#0a1128] via-[#0a1128]/40 to-black/50'"></div>
             </div>
-            <div class="relative z-10 flex flex-col h-full p-4 md:p-8 pb-4 md:pb-6 justify-end overflow-y-auto custom-scrollbar">
+            
+            <!-- Content Area -->
+            <div class="relative z-10 flex flex-col flex-1 px-4 md:px-8 pb-4 md:pb-6 -mt-16 overflow-y-auto custom-scrollbar">
               <!-- Top Info -->
               <div class="flex items-start gap-6 mb-auto">
-                <div class="bg-blue-900/40 backdrop-blur-md border border-yellow-500/30 p-4 rounded-2xl text-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.4)]">
+                <div class="p-4 rounded-2xl shadow-xl shrink-0 transition-colors"
+                     :class="!isDark ? 'bg-white border border-slate-200 text-amber-500 shadow-slate-200/50' : 'bg-[#050e1f] border border-yellow-500/30 text-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.2)]'">
                   <span class="material-symbols-outlined text-5xl">{{ selectedGroup.items?.[activeItemIdx]?.icon || 'event' }}</span>
                 </div>
-                <div>
-                  <div class="flex items-center gap-3 mb-2">
-                    <span class="px-3 py-1 bg-yellow-500 text-blue-950 text-sm font-bold rounded-md uppercase tracking-wider shadow-lg shadow-yellow-500/30 border border-yellow-400/20">
+                <div class="pt-2">
+                  <div class="flex items-center gap-3 mb-3">
+                    <span class="px-3 py-1 text-sm font-bold rounded-md uppercase tracking-wider shadow-md transition-colors"
+                          :class="!isDark ? 'bg-amber-500 text-white border border-amber-400' : 'bg-yellow-500 text-slate-900 border border-yellow-400/20 shadow-yellow-500/20'">
                       {{ selectedGroup.isActive ? 'Sedang Berlangsung' : 'Detail Kegiatan' }}
                     </span>
-                    <span class="px-3 py-1 bg-blue-500/20 text-blue-300 text-sm font-bold rounded-md uppercase tracking-wider border border-blue-400/20 flex items-center gap-1">
+                    <span class="px-3 py-1 text-sm font-bold rounded-md uppercase tracking-wider border flex items-center gap-1 transition-colors"
+                          :class="!isDark ? 'bg-blue-50 text-blue-700 border-blue-200' : 'bg-blue-500/20 text-blue-300 border-blue-400/20'">
                       <span class="material-symbols-outlined text-[16px]">schedule</span>
                       {{ selectedGroup.time }}
                     </span>
@@ -176,49 +185,66 @@
                       <button v-for="(item, tIdx) in selectedGroup.items" :key="item.id"
                               @click="activeItemIdx = tIdx"
                               :class="[
-                                'px-3 py-1 text-xs font-bold rounded-md transition-all cursor-pointer',
+                                'px-3 py-1 text-xs font-bold rounded-md transition-all cursor-pointer border',
                                 tIdx === activeItemIdx
-                                  ? 'bg-accent text-blue-950 shadow-lg'
-                                  : 'bg-white/10 text-white/70 hover:bg-white/20'
+                                  ? (!isDark ? 'bg-amber-500 text-white border-amber-400 shadow-md' : 'bg-accent text-slate-900 border-accent shadow-lg')
+                                  : (!isDark ? 'bg-white/60 text-slate-500 border-slate-200 hover:bg-slate-100' : 'bg-white/10 text-white/70 border-transparent hover:bg-white/20')
                               ]">
                         {{ tIdx + 1 }}
                       </button>
                     </div>
                   </div>
-                  <h2 class="text-2xl md:text-5xl font-bold text-white tracking-tight leading-tight mb-2 drop-shadow-lg">{{ selectedGroup.items?.[activeItemIdx]?.title }}</h2>
+                  <h2 class="text-2xl md:text-5xl font-bold tracking-tight leading-tight mb-2 drop-shadow-sm transition-colors"
+                      :class="!isDark ? 'text-slate-800' : 'text-white'">
+                    {{ selectedGroup.items?.[activeItemIdx]?.title }}
+                  </h2>
                 </div>
               </div>
 
               <!-- Bottom Info -->
-              <div class="grid grid-cols-1 gap-3 mt-6">
-                <div class="flex gap-3">
-                  <div class="flex-1 bg-blue-950/70 backdrop-blur-md p-4 rounded-xl border border-yellow-500/20 flex items-center gap-4 hover:border-yellow-400/50 transition-colors">
-                    <div class="bg-yellow-500/20 p-3 rounded-full text-yellow-400 ring-1 ring-yellow-500/30">
+              <div class="grid grid-cols-1 gap-4 mt-6">
+                <div class="flex gap-4">
+                  <div class="flex-1 p-4 rounded-xl border shadow-lg flex items-center gap-4 transition-colors group/card"
+                       :class="!isDark ? 'bg-white border-slate-200 hover:border-amber-300' : 'bg-[#050e1f] border-yellow-500/20 hover:border-yellow-400/50'">
+                    <div class="p-3 rounded-full ring-1 transition-colors"
+                         :class="!isDark ? 'bg-amber-50 text-amber-500 ring-amber-200' : 'bg-yellow-500/20 text-yellow-400 ring-yellow-500/30'">
                       <span class="material-symbols-outlined text-3xl">location_on</span>
                     </div>
                     <div>
-                      <p class="text-sm text-slate-400 uppercase tracking-wide">Lokasi</p>
-                      <p class="text-xl font-bold text-white">{{ selectedGroup.items?.[activeItemIdx]?.location }}</p>
+                      <p class="text-xs uppercase tracking-wider font-semibold mb-0.5 transition-colors"
+                         :class="!isDark ? 'text-slate-500' : 'text-slate-400'">Lokasi</p>
+                      <p class="text-xl font-bold transition-colors"
+                         :class="!isDark ? 'text-slate-800' : 'text-white'">{{ selectedGroup.items?.[activeItemIdx]?.location }}</p>
                     </div>
                   </div>
-                  <div class="flex-1 bg-blue-950/70 backdrop-blur-md p-4 rounded-xl border border-yellow-500/20 flex items-center gap-4 hover:border-yellow-400/50 transition-colors">
-                    <div class="bg-yellow-500/20 p-3 rounded-full text-yellow-400 ring-1 ring-yellow-500/30">
+                  <div class="flex-1 p-4 rounded-xl border shadow-lg flex items-center gap-4 transition-colors group/card"
+                       :class="!isDark ? 'bg-white border-slate-200 hover:border-amber-300' : 'bg-[#050e1f] border-yellow-500/20 hover:border-yellow-400/50'">
+                    <div class="p-3 rounded-full ring-1 transition-colors"
+                         :class="!isDark ? 'bg-amber-50 text-amber-500 ring-amber-200' : 'bg-yellow-500/20 text-yellow-400 ring-yellow-500/30'">
                       <span class="material-symbols-outlined text-3xl">group</span>
                     </div>
                     <div>
-                      <p class="text-sm text-slate-400 uppercase tracking-wide">Pengajar Utama</p>
-                      <p class="text-xl font-bold text-white">{{ selectedGroup.items?.[activeItemIdx]?.teacher }}</p>
+                      <p class="text-xs uppercase tracking-wider font-semibold mb-0.5 transition-colors"
+                         :class="!isDark ? 'text-slate-500' : 'text-slate-400'">Pengajar Utama</p>
+                      <p class="text-xl font-bold transition-colors"
+                         :class="!isDark ? 'text-slate-800' : 'text-white'">{{ selectedGroup.items?.[activeItemIdx]?.teacher }}</p>
                     </div>
                   </div>
                 </div>
                 <!-- Lihat Selengkapnya Button -->
                 <button @click="router.push({ name: 'DetailAgenda', params: { id: selectedGroup.items?.[activeItemIdx]?.id } })"
-                        class="w-full bg-accent/10 backdrop-blur-md px-6 py-3 rounded-xl border border-accent/40 flex items-center justify-center gap-3 hover:bg-accent/20 hover:border-accent transition-all cursor-pointer active:scale-[0.99] group/btn">
-                  <span class="material-symbols-outlined text-accent text-xl group-hover/btn:text-yellow-300 transition-colors">open_in_full</span>
-                  <span class="text-lg font-bold text-accent group-hover/btn:text-yellow-300 transition-colors">
+                        class="w-full border px-6 py-4 rounded-xl flex items-center justify-center gap-3 transition-all cursor-pointer active:scale-[0.99] group/btn shadow-xl"
+                        :class="!isDark 
+                          ? 'bg-amber-500 hover:bg-amber-600 border-amber-600 text-white shadow-amber-500/20' 
+                          : 'bg-accent/10 border-accent/40 text-accent hover:bg-accent/20 hover:border-accent'">
+                  <span class="material-symbols-outlined text-xl transition-colors"
+                        :class="!isDark ? 'text-white' : 'group-hover/btn:text-yellow-300'">open_in_full</span>
+                  <span class="text-lg font-bold transition-colors"
+                        :class="!isDark ? 'text-white' : 'group-hover/btn:text-yellow-300'">
                     Lihat Selengkapnya {{ selectedGroup.items?.length > 1 ? `(${selectedGroup.items.length} konten)` : '' }}
                   </span>
-                  <span class="material-symbols-outlined text-accent/50 text-base">arrow_forward</span>
+                  <span class="material-symbols-outlined text-base transition-colors"
+                        :class="!isDark ? 'text-white/70 group-hover/btn:text-white group-hover/btn:translate-x-1' : 'text-accent/50 group-hover/btn:text-yellow-300 group-hover/btn:translate-x-1'">arrow_forward</span>
                 </button>
               </div>
             </div>
@@ -229,29 +255,40 @@
       <!-- ═══════ MOBILE DETAIL MODAL ═══════ -->
       <Transition name="detail">
         <div v-if="showMobileModal" @click.self="showMobileModal = false" class="fixed inset-0 z-[100] flex items-center justify-center p-4 md:hidden portrait:flex bg-[#020617]/90 backdrop-blur-sm">
-          <div class="relative w-full max-w-lg h-auto max-h-[90vh] glass-panel rounded-2xl p-1 overflow-hidden shadow-2xl flex flex-col group border-t border-t-yellow-500/20">
+          <!-- Main Detail Card (Unified Banner Layout for Mobile) -->
+          <div class="relative w-full max-w-lg h-auto max-h-[90vh] rounded-2xl overflow-hidden shadow-2xl flex flex-col group transition-colors"
+               :class="!isDark ? 'bg-slate-50 border border-slate-200' : 'bg-[#0a1128] border border-yellow-500/20'">
             <!-- Close Button -->
-            <button @click="showMobileModal = false" class="absolute top-4 right-4 z-50 size-10 rounded-full bg-red-500 text-white flex items-center justify-center shadow-lg hover:bg-red-600 transition-colors cursor-pointer border border-white/20">
+            <button @click="showMobileModal = false" class="absolute top-4 right-4 z-50 size-10 rounded-full text-white flex items-center justify-center shadow-lg transition-colors cursor-pointer border"
+                    :class="!isDark ? 'bg-red-500 hover:bg-red-600 border-white/20' : 'bg-red-500/80 hover:bg-red-600 border-red-400/20'">
               <span class="material-symbols-outlined text-xl">close</span>
             </button>
-            <div class="absolute inset-0 z-0">
-              <img alt="Background" class="w-full h-full object-cover opacity-50 grayscale-20 sepia-20 hue-rotate-180 brightness-75 contrast-125"
+            
+            <!-- Top Banner Area -->
+            <div class="relative w-full h-40 shrink-0 overflow-hidden">
+              <img alt="Banner" class="w-full h-full object-cover transition-all duration-[20s] ease-linear"
+                   :class="!isDark ? '' : 'opacity-70 grayscale-20 sepia-20 hue-rotate-180 brightness-75 contrast-125'"
                    :src="selectedGroup.items?.[activeItemIdx]?.image || '/img/default-agenda.png'" />
-              <div class="absolute inset-0 bg-linear-to-t from-bg-deepest via-bg-deepest/80 to-blue-900/20 mix-blend-multiply"></div>
-              <div class="absolute inset-0 bg-linear-to-t from-blue-950 via-transparent to-transparent opacity-80"></div>
+              <div class="absolute inset-0 transition-colors"
+                   :class="!isDark ? 'bg-linear-to-t from-slate-50 via-slate-50/20 to-black/30' : 'bg-linear-to-t from-[#0a1128] via-[#0a1128]/40 to-black/50'"></div>
             </div>
-            <div class="relative z-10 flex flex-col h-full p-4 pb-4 justify-end overflow-y-auto no-scrollbar">
+            
+            <!-- Content Area -->
+            <div class="relative z-10 flex flex-col flex-1 px-4 pb-4 -mt-12 overflow-y-auto no-scrollbar">
               <!-- Top Info -->
-              <div class="flex items-start gap-4 mb-4 mt-12">
-                <div class="bg-blue-900/40 backdrop-blur-md border border-yellow-500/30 p-3 rounded-xl text-yellow-400 shrink-0">
+              <div class="flex items-start gap-4 mb-4">
+                <div class="p-3 rounded-xl shadow-xl shrink-0 transition-colors"
+                     :class="!isDark ? 'bg-white border border-slate-200 text-amber-500 shadow-slate-200/50' : 'bg-[#050e1f] border border-yellow-500/30 text-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.2)]'">
                   <span class="material-symbols-outlined text-4xl">{{ selectedGroup.items?.[activeItemIdx]?.icon || 'event' }}</span>
                 </div>
-                <div>
+                <div class="pt-2">
                   <div class="flex items-center gap-2 mb-2 flex-wrap">
-                    <span class="px-2 py-1 bg-yellow-500 text-blue-950 text-[10px] font-bold rounded uppercase tracking-wider">
+                    <span class="px-2 py-1 text-[10px] font-bold rounded uppercase tracking-wider shadow-md transition-colors"
+                          :class="!isDark ? 'bg-amber-500 text-white border border-amber-400' : 'bg-yellow-500 text-slate-900 border border-yellow-400/20 shadow-yellow-500/20'">
                       {{ selectedGroup.isActive ? 'Sedang Berlangsung' : 'Detail Kegiatan' }}
                     </span>
-                    <span class="px-2 py-1 bg-blue-500/20 text-blue-300 text-[10px] font-bold rounded uppercase tracking-wider flex items-center gap-1 border border-blue-400/20">
+                    <span class="px-2 py-1 text-[10px] font-bold rounded uppercase tracking-wider flex items-center gap-1 border transition-colors"
+                          :class="!isDark ? 'bg-blue-50 text-blue-700 border-blue-200' : 'bg-blue-500/20 text-blue-300 border-blue-400/20'">
                       <span class="material-symbols-outlined text-[12px]">schedule</span>
                       {{ selectedGroup.time }}
                     </span>
@@ -261,46 +298,62 @@
                       <button v-for="(item, tIdx) in selectedGroup.items" :key="item.id"
                               @click="activeItemIdx = tIdx"
                               :class="[
-                                'px-3 py-1 text-xs font-bold rounded-md transition-all cursor-pointer',
+                                'px-3 py-1 text-xs font-bold rounded-md transition-all cursor-pointer border',
                                 tIdx === activeItemIdx
-                                  ? 'bg-accent text-blue-950 shadow-lg'
-                                  : 'bg-white/10 text-white/70 hover:bg-white/20'
+                                  ? (!isDark ? 'bg-amber-500 text-white border-amber-400 shadow-md' : 'bg-accent text-slate-900 border-accent shadow-lg')
+                                  : (!isDark ? 'bg-white/60 text-slate-500 border-slate-200 hover:bg-slate-100' : 'bg-white/10 text-white/70 border-transparent hover:bg-white/20')
                               ]">
                         {{ tIdx + 1 }}
                       </button>
                     </div>
                   </div>
-                  <h2 class="text-2xl font-bold text-white tracking-tight leading-tight mb-2 drop-shadow-lg">{{ selectedGroup.items?.[activeItemIdx]?.title }}</h2>
+                  <h2 class="text-2xl font-bold tracking-tight leading-tight mb-2 drop-shadow-sm transition-colors"
+                      :class="!isDark ? 'text-slate-800' : 'text-white'">
+                    {{ selectedGroup.items?.[activeItemIdx]?.title }}
+                  </h2>
                 </div>
               </div>
               
               <!-- Bottom Info -->
               <div class="grid grid-cols-1 gap-3 mt-4">
                 <div class="flex gap-2 flex-col sm:flex-row">
-                  <div class="flex-1 bg-blue-950/70 backdrop-blur-md p-3 rounded-xl border border-yellow-500/20 flex items-center gap-3">
-                    <div class="bg-yellow-500/20 p-2 rounded-full text-yellow-400 ring-1 ring-yellow-500/30 shrink-0">
+                  <div class="flex-1 p-3 rounded-xl border shadow-lg flex items-center gap-3 transition-colors group/card"
+                       :class="!isDark ? 'bg-white border-slate-200 hover:border-amber-300' : 'bg-[#050e1f] border-yellow-500/20 hover:border-yellow-400/50'">
+                    <div class="p-2 rounded-full ring-1 shrink-0 transition-colors"
+                         :class="!isDark ? 'bg-amber-50 text-amber-500 ring-amber-200' : 'bg-yellow-500/20 text-yellow-400 ring-yellow-500/30'">
                       <span class="material-symbols-outlined text-2xl">location_on</span>
                     </div>
                     <div>
-                      <p class="text-xs text-slate-400 uppercase tracking-wide">Lokasi</p>
-                      <p class="text-base font-bold text-white">{{ selectedGroup.items?.[activeItemIdx]?.location }}</p>
+                      <p class="text-xs uppercase tracking-wider font-semibold mb-0.5 transition-colors"
+                         :class="!isDark ? 'text-slate-500' : 'text-slate-400'">Lokasi</p>
+                      <p class="text-base font-bold transition-colors"
+                         :class="!isDark ? 'text-slate-800' : 'text-white'">{{ selectedGroup.items?.[activeItemIdx]?.location }}</p>
                     </div>
                   </div>
-                  <div class="flex-1 bg-blue-950/70 backdrop-blur-md p-3 rounded-xl border border-yellow-500/20 flex items-center gap-3">
-                    <div class="bg-yellow-500/20 p-2 rounded-full text-yellow-400 ring-1 ring-yellow-500/30 shrink-0">
+                  <div class="flex-1 p-3 rounded-xl border shadow-lg flex items-center gap-3 transition-colors group/card"
+                       :class="!isDark ? 'bg-white border-slate-200 hover:border-amber-300' : 'bg-[#050e1f] border-yellow-500/20 hover:border-yellow-400/50'">
+                    <div class="p-2 rounded-full ring-1 shrink-0 transition-colors"
+                         :class="!isDark ? 'bg-amber-50 text-amber-500 ring-amber-200' : 'bg-yellow-500/20 text-yellow-400 ring-yellow-500/30'">
                       <span class="material-symbols-outlined text-2xl">group</span>
                     </div>
                     <div>
-                      <p class="text-xs text-slate-400 uppercase tracking-wide">Pengajar</p>
-                      <p class="text-base font-bold text-white">{{ selectedGroup.items?.[activeItemIdx]?.teacher }}</p>
+                      <p class="text-xs uppercase tracking-wider font-semibold mb-0.5 transition-colors"
+                         :class="!isDark ? 'text-slate-500' : 'text-slate-400'">Pengajar</p>
+                      <p class="text-base font-bold transition-colors"
+                         :class="!isDark ? 'text-slate-800' : 'text-white'">{{ selectedGroup.items?.[activeItemIdx]?.teacher }}</p>
                     </div>
                   </div>
                 </div>
                 <!-- Lihat Selengkapnya Button -->
                 <button @click="router.push({ name: 'DetailAgenda', params: { id: selectedGroup.items?.[activeItemIdx]?.id } })"
-                        class="w-full bg-accent/10 backdrop-blur-md px-4 py-3 rounded-xl border border-accent/40 flex items-center justify-center gap-2 hover:bg-accent/20 hover:border-accent transition-all cursor-pointer">
-                  <span class="material-symbols-outlined text-accent text-lg">open_in_full</span>
-                  <span class="text-base font-bold text-accent">
+                        class="w-full border px-4 py-3 rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer group/btn shadow-xl"
+                        :class="!isDark 
+                          ? 'bg-amber-500 hover:bg-amber-600 border-amber-600 text-white shadow-amber-500/20' 
+                          : 'bg-accent/10 border-accent/40 text-accent hover:bg-accent/20 hover:border-accent'">
+                  <span class="material-symbols-outlined text-lg transition-colors"
+                        :class="!isDark ? 'text-white' : 'text-accent'">open_in_full</span>
+                  <span class="text-base font-bold transition-colors"
+                        :class="!isDark ? 'text-white' : 'text-accent'">
                     Selengkapnya {{ selectedGroup.items?.length > 1 ? `(${selectedGroup.items.length} konten)` : '' }}
                   </span>
                 </button>
@@ -320,8 +373,10 @@ import SimpleBar from 'simplebar-vue'
 import 'simplebar-vue/dist/simplebar.min.css'
 import api from '../../../axios'
 import { storageUrl } from '../../../utils/asset'
+import { usePublicTheme } from '../../../composables/usePublicTheme'
 
 const router = useRouter()
+const { isDark } = usePublicTheme()
 
 // ── Time & Date ──
 const currentTime = ref('')

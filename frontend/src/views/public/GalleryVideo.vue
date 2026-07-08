@@ -50,14 +50,14 @@
             <div class="relative sm:col-span-2 xl:col-span-1 xl:w-56">
               <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-base!">search</span>
               <input v-model="searchQuery" @input="onSearch" type="text" placeholder="Cari media..."
-                     class="w-full pl-9 pr-3 py-2.5 xl:py-1.5 rounded-full bg-[#050e1f]/60 border border-white/10 text-sm xl:text-xs text-white placeholder-slate-500 outline-none focus:border-accent/50 focus:shadow-[0_0_10px_rgba(251,191,36,0.15)] transition-all" />
+                     class="w-full pl-9 pr-3 h-10 xl:h-9 rounded-full bg-[#050e1f]/60 border border-white/10 text-sm xl:text-xs text-white placeholder-slate-500 outline-none focus:border-accent/50 focus:shadow-[0_0_10px_rgba(251,191,36,0.15)] transition-all" />
             </div>
             <!-- Category Filter -->
-            <div class="flex items-center gap-1 bg-[#050e1f]/60 border border-white/10 rounded-full p-1 overflow-x-auto sm:col-span-2 xl:col-span-1">
+            <div class="flex items-center gap-1 bg-[#050e1f]/60 border border-white/10 rounded-full p-1 overflow-x-auto sm:col-span-2 xl:col-span-1 h-10 xl:h-9">
               <button v-for="tab in filterTabs" :key="tab.value"
                       @click="setCategory(tab.value)"
                       :class="[
-                        'flex-1 xl:flex-none px-3 md:px-4 py-2 xl:py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 cursor-pointer whitespace-nowrap',
+                        'flex-1 xl:flex-none px-3 md:px-4 h-full flex items-center justify-center rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 cursor-pointer whitespace-nowrap',
                         activeCategory === tab.value
                           ? 'bg-accent text-[#0a192f] shadow-[0_0_15px_rgba(251,191,36,0.4)]'
                           : 'text-slate-400 hover:text-white hover:bg-white/5'
@@ -69,11 +69,11 @@
               </button>
             </div>
             <!-- Sort -->
-            <div class="flex items-center gap-1 bg-[#050e1f]/60 border border-white/10 rounded-full p-1 overflow-x-auto">
+            <div class="flex items-center gap-1 bg-[#050e1f]/60 border border-white/10 rounded-full p-1 overflow-x-auto h-10 xl:h-9">
               <button v-for="sort in sortOptions" :key="sort.value"
                       @click="setSort(sort.value)"
                       :class="[
-                        'flex-1 xl:flex-none px-3 md:px-4 py-2 xl:py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 cursor-pointer whitespace-nowrap',
+                        'flex-1 xl:flex-none px-3 md:px-4 h-full flex items-center justify-center rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 cursor-pointer whitespace-nowrap',
                         activeSortBy === sort.value
                           ? 'bg-white/10 text-white border border-white/20'
                           : 'text-slate-500 hover:text-white'
@@ -84,11 +84,11 @@
               </button>
             </div>
             <!-- Limit -->
-            <div class="flex items-center gap-1.5 bg-[#050e1f]/60 border border-white/10 rounded-full px-3 md:px-4 py-2 xl:py-1.5">
-              <span class="text-xs text-slate-500 font-bold whitespace-nowrap">Tampil:</span>
-              <select v-model.number="perPage" @change="currentPage = 1; loadGalleries()" class="bg-transparent text-white text-xs md:text-sm font-bold outline-none cursor-pointer appearance-none px-1">
+            <div class="relative flex items-center bg-[#050e1f]/60 border border-white/10 rounded-full h-10 xl:h-9 px-2">
+              <select v-model.number="perPage" @change="currentPage = 1; loadGalleries()" class="bg-transparent text-white text-xs md:text-sm font-bold outline-none cursor-pointer appearance-none pl-2 pr-5 w-full h-full z-10">
                 <option v-for="n in [6, 9, 12, 18]" :key="n" :value="n" class="bg-[#0a192f]">{{ n }}</option>
               </select>
+              <span class="material-symbols-outlined absolute right-2 text-base text-slate-400 pointer-events-none z-0">expand_more</span>
             </div>
           </div>
         </div>
@@ -98,38 +98,10 @@
           <span class="material-symbols-outlined text-5xl text-accent animate-spin">progress_activity</span>
         </div>
         <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4 lg:gap-6 flex-1 pb-4">
-          <!-- Featured Item -->
-          <article v-if="galleryItems.length > 0"
-                   @click="router.push({ name: 'DetailGallery', params: { id: galleryItems[0].id } })"
-                   class="group relative flex flex-col justify-end overflow-hidden rounded-xl bg-[#050e1f] border-2 md:border-4 border-accent shadow-[0_0_30px_rgba(251,191,36,0.4)] md:shadow-[0_0_40px_rgba(251,191,36,0.5)] transition-transform duration-300 cursor-pointer min-h-[280px] sm:min-h-[320px] md:min-h-[350px]">
-            <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
-                 :style="{ backgroundImage: `url('${getImageUrl(galleryItems[0])}')` }"></div>
-            <div class="absolute inset-0 bg-linear-to-t from-[#050e1f] via-[#050e1f]/70 to-transparent opacity-95"></div>
-            <div v-if="galleryItems[0].category === 'Video'" class="absolute inset-0 flex items-center justify-center z-10">
-              <div class="size-12 md:size-16 rounded-full bg-accent/90 flex items-center justify-center shadow-[0_0_30px_rgba(251,191,36,0.5)] group-hover:scale-110 transition-transform">
-                <span class="material-symbols-outlined text-[#0a192f] text-2xl md:text-3xl ml-0.5 md:ml-1">play_arrow</span>
-              </div>
-            </div>
-            <div class="relative z-10 p-4 md:p-6 flex flex-col gap-2 md:gap-3">
-              <div class="flex items-center gap-2">
-                <span :class="categoryBadgeClass(galleryItems[0].category)">
-                  <span class="material-symbols-outlined text-xs mr-0.5">{{ galleryItems[0].category === 'Video' ? 'videocam' : 'photo_camera' }}</span>
-                  {{ galleryItems[0].category }}
-                </span>
-                <span v-if="galleryItems[0].duration" class="text-slate-400 text-xs">{{ formatDuration(galleryItems[0].duration) }}</span>
-              </div>
-              <h3 class="text-lg md:text-2xl font-bold text-white leading-tight line-clamp-2">{{ galleryItems[0].title }}</h3>
-              <div class="flex items-center gap-2 text-slate-300 text-xs md:text-sm mt-1">
-                <span class="material-symbols-outlined text-[18px] text-accent">schedule</span>
-                <span>{{ formatDate(galleryItems[0].created_at) }}</span>
-              </div>
-            </div>
-          </article>
-
-          <!-- Regular Items -->
-          <article v-for="item in galleryItems.slice(1)" :key="item.id"
+          <!-- All Items -->
+          <article v-for="item in galleryItems" :key="item.id"
                    @click="router.push({ name: 'DetailGallery', params: { id: item.id } })"
-                   class="group relative flex flex-col justify-end overflow-hidden rounded-xl bg-[#050e1f] border border-white/10 hover:border-accent transition-all duration-300 hover:scale-[1.01] hover:shadow-[0_0_20px_rgba(251,191,36,0.2)] cursor-pointer min-h-[240px] sm:min-h-[280px]">
+                   class="group relative flex flex-col justify-end overflow-hidden rounded-xl bg-[#050e1f] border border-white/10 hover:border-accent transition-all duration-300 hover:scale-[1.01] hover:shadow-[0_0_20px_rgba(251,191,36,0.2)] cursor-pointer aspect-video">
             <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
                  :style="{ backgroundImage: `url('${getImageUrl(item)}')` }"></div>
             <div class="absolute inset-0 bg-linear-to-t from-[#050e1f] via-[#050e1f]/60 to-transparent opacity-90 group-hover:opacity-95 transition-opacity"></div>

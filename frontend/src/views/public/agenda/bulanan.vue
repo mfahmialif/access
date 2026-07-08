@@ -1,29 +1,32 @@
 <template>
-  <div class="relative w-screen h-screen flex flex-col overflow-hidden text-white font-display antialiased bg-[#0a192f]">
+  <div class="relative w-screen h-screen flex flex-col overflow-hidden font-display antialiased"
+       :class="!isDark ? 'text-slate-800 bg-slate-50' : 'text-white bg-[#0a192f]'">
     <!-- ═══════ AMBIENT ═══════ -->
     <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-accent/5 rounded-full blur-[120px] pointer-events-none"></div>
     <div class="absolute bottom-[-10%] right-[-10%] w-[30%] h-[30%] bg-blue-500/5 rounded-full blur-[100px] pointer-events-none"></div>
 
     <!-- ═══════ HEADER ═══════ -->
-    <header class="flex-none h-14 md:h-18 px-4 md:px-8 flex items-center justify-between border-b border-white/10 bg-[#0b1711]/50 backdrop-blur-md z-50">
+    <header class="flex-none h-14 md:h-18 px-4 md:px-8 flex items-center justify-between border-b backdrop-blur-md z-50"
+            :class="!isDark ? 'border-slate-200 bg-white/50' : 'border-white/10 bg-[#0b1711]/50'">
       <div class="flex items-center gap-3 md:gap-4">
         <button @click="goBack"
-                class="size-9 md:size-11 rounded-lg bg-[#0f172a]/80 border border-accent/30 flex items-center justify-center text-accent hover:bg-accent hover:text-[#0a192f] transition-all duration-300 cursor-pointer">
+                class="size-9 md:size-11 rounded-lg border flex items-center justify-center transition-all duration-300 cursor-pointer"
+                :class="!isDark ? 'bg-white border-slate-300 text-amber-500 hover:bg-amber-50' : 'bg-[#0f172a]/80 border-accent/30 text-accent hover:bg-accent hover:text-[#0a192f]'">
           <span class="material-symbols-outlined text-lg md:text-xl">arrow_back</span>
         </button>
-        <div class="size-8 md:size-10 text-accent flex items-center justify-center">
+        <div class="size-8 md:size-10 flex items-center justify-center" :class="!isDark ? 'text-amber-500' : 'text-accent'">
           <span class="material-symbols-outlined text-2xl md:text-3xl">live_tv</span>
         </div>
         <div class="flex flex-col">
-          <h1 class="text-base md:text-xl font-bold tracking-tight text-white uppercase leading-none">Access</h1>
-          <span class="text-[10px] md:text-xs text-accent/80 font-medium tracking-widest uppercase">Sistem Informasi</span>
+          <h1 class="text-base md:text-xl font-bold tracking-tight uppercase leading-none" :class="!isDark ? 'text-slate-800' : 'text-white'">Access</h1>
+          <span class="text-[10px] md:text-xs font-medium tracking-widest uppercase" :class="!isDark ? 'text-amber-600' : 'text-accent/80'">Sistem Informasi</span>
         </div>
       </div>
       <div class="hidden md:flex items-center gap-6">
         <div class="flex flex-col items-end text-right">
-          <span class="text-xl font-bold text-white leading-none tabular-nums">{{ currentTime }} <span class="text-sm text-blue-200/50">WIB</span></span>
-          <span class="text-sm text-accent font-medium">{{ hijriDate }}</span>
-          <span class="text-xs text-slate-400">{{ currentDate }}</span>
+          <span class="text-xl font-bold leading-none tabular-nums" :class="!isDark ? 'text-slate-800' : 'text-white'">{{ currentTime }} <span class="text-sm" :class="!isDark ? 'text-slate-400' : 'text-blue-200/50'">WIB</span></span>
+          <span class="text-sm font-medium" :class="!isDark ? 'text-amber-600' : 'text-accent'">{{ hijriDate }}</span>
+          <span class="text-xs" :class="!isDark ? 'text-slate-500' : 'text-slate-400'">{{ currentDate }}</span>
         </div>
       </div>
     </header>
@@ -34,27 +37,31 @@
       <!-- ═══ LEFT: CALENDAR GRID (70%) ═══ -->
       <section class="flex-1 md:flex-[0.7] flex flex-col gap-4 h-full">
         <!-- Calendar Header -->
-        <div class="glass-panel rounded-2xl p-3 md:p-5 flex items-center justify-between">
+        <div class="rounded-2xl p-3 md:p-5 flex items-center justify-between"
+             :class="!isDark ? 'bg-white border border-slate-200 shadow-sm' : 'glass-panel'">
           <div>
-            <h2 class="text-xl md:text-3xl font-bold text-white tracking-tight">{{ monthYearDisplay }}</h2>
-            <p class="text-accent text-sm md:text-base font-medium mt-1">{{ hijriMonthDisplay }}</p>
+            <h2 class="text-xl md:text-3xl font-bold tracking-tight" :class="!isDark ? 'text-slate-800' : 'text-white'">{{ monthYearDisplay }}</h2>
+            <p class="text-sm md:text-base font-medium mt-1" :class="!isDark ? 'text-amber-600' : 'text-accent'">{{ hijriMonthDisplay }}</p>
           </div>
           <div class="flex gap-2">
-            <button @click="prevMonth" class="size-8 md:size-10 rounded-xl bg-white/5 hover:bg-white/10 flex items-center justify-center text-white transition-colors border border-white/5">
+            <button @click="prevMonth" class="size-8 md:size-10 rounded-xl flex items-center justify-center transition-colors border"
+                    :class="!isDark ? 'bg-slate-50 hover:bg-slate-100 text-slate-600 border-slate-200' : 'bg-white/5 hover:bg-white/10 text-white border-white/5'">
               <span class="material-symbols-outlined">chevron_left</span>
             </button>
-            <button @click="nextMonth" class="size-8 md:size-10 rounded-xl bg-white/5 hover:bg-white/10 flex items-center justify-center text-white transition-colors border border-white/5">
+            <button @click="nextMonth" class="size-8 md:size-10 rounded-xl flex items-center justify-center transition-colors border"
+                    :class="!isDark ? 'bg-slate-50 hover:bg-slate-100 text-slate-600 border-slate-200' : 'bg-white/5 hover:bg-white/10 text-white border-white/5'">
               <span class="material-symbols-outlined">chevron_right</span>
             </button>
           </div>
         </div>
 
         <!-- Calendar Grid -->
-        <div class="glass-panel rounded-2xl flex-1 p-2 md:p-5 flex flex-col">
+        <div class="rounded-2xl flex-1 p-2 md:p-5 flex flex-col"
+             :class="!isDark ? 'bg-white border border-slate-200 shadow-sm' : 'glass-panel'">
           <!-- Days Header -->
-          <div class="grid grid-cols-7 mb-3 border-b border-white/10 pb-3">
+          <div class="grid grid-cols-7 mb-3 border-b pb-3" :class="!isDark ? 'border-slate-200' : 'border-white/10'">
             <div v-for="d in dayHeaders" :key="d.name"
-                 :class="['text-center font-bold text-[10px] md:text-sm tracking-wider uppercase', d.isJumat ? 'text-accent' : 'text-slate-400']">
+                 :class="['text-center font-bold text-[10px] md:text-sm tracking-wider uppercase', d.isJumat ? (!isDark ? 'text-amber-600' : 'text-accent') : (!isDark ? 'text-slate-500' : 'text-slate-400')]">
               {{ d.name }}
             </div>
           </div>
@@ -64,22 +71,22 @@
                  @click="cell.day && cell.isCurrentMonth ? selectDate(cell.day) : null"
                  :class="[
                    'relative p-1 md:p-2 rounded-lg md:rounded-xl flex flex-col items-start justify-start transition-all duration-300',
-                   !cell.isCurrentMonth ? 'text-slate-600' : '',
-                   cell.isCurrentMonth && !cell.isSelected ? 'bg-[#0b1711]/40 hover:bg-[#0b1711]/60 text-white border border-white/5 cursor-pointer' : '',
-                   cell.isSelected ? 'calendar-cell-active text-white cursor-pointer' : ''
+                   !cell.isCurrentMonth ? (!isDark ? 'text-slate-400' : 'text-slate-600') : '',
+                   cell.isCurrentMonth && !cell.isSelected ? (!isDark ? 'bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 cursor-pointer' : 'bg-[#0b1711]/40 hover:bg-[#0b1711]/60 text-white border border-white/5 cursor-pointer') : '',
+                   cell.isSelected ? (!isDark ? 'bg-amber-50 text-slate-800 border-2 border-amber-400 shadow-sm cursor-pointer' : 'calendar-cell-active text-white cursor-pointer') : ''
                  ]">
-              <span :class="['font-bold', cell.isSelected ? 'text-sm md:text-xl text-accent' : 'text-xs md:text-base']">{{ cell.day || '' }}</span>
+              <span :class="['font-bold', cell.isSelected ? (!isDark ? 'text-sm md:text-xl text-amber-600' : 'text-sm md:text-xl text-accent') : 'text-xs md:text-base']">{{ cell.day || '' }}</span>
               <!-- Event dots -->
               <div v-if="cell.events && cell.events.length" class="flex gap-1 mt-1">
                 <div v-for="(ev, ei) in cell.events.slice(0, 3)" :key="ei"
                      :class="['h-1.5 w-1.5 rounded-full', categoryDotColor(ev.category)]"></div>
-                <div v-if="cell.events.length > 3" class="text-[8px] text-slate-400 ml-0.5">+{{ cell.events.length - 3 }}</div>
+                <div v-if="cell.events.length > 3" class="text-[8px] ml-0.5" :class="!isDark ? 'text-slate-500' : 'text-slate-400'">+{{ cell.events.length - 3 }}</div>
               </div>
               <span v-if="cell.events && cell.events.length && cell.isCurrentMonth"
-                    :class="['material-symbols-outlined absolute bottom-1 right-1 text-lg', cell.isSelected ? 'text-accent animate-pulse' : 'text-white/20']">
+                    :class="['material-symbols-outlined absolute bottom-1 right-1 text-lg', cell.isSelected ? (!isDark ? 'text-amber-500 animate-pulse' : 'text-accent animate-pulse') : (!isDark ? 'text-slate-300' : 'text-white/20')]">
                 {{ cell.events[0].icon || 'event' }}
               </span>
-              <span v-if="cell.isToday && cell.isSelected" class="text-[8px] uppercase font-bold text-accent tracking-wider mt-0.5">Hari Ini</span>
+              <span v-if="cell.isToday && cell.isSelected" class="text-[8px] uppercase font-bold tracking-wider mt-0.5" :class="!isDark ? 'text-amber-600' : 'text-accent'">Hari Ini</span>
             </div>
           </div>
         </div>
@@ -87,19 +94,20 @@
 
       <!-- ═══ RIGHT: EVENTS PANEL (30%) ═══ -->
       <aside class="hidden md:flex portrait:hidden flex-[0.3] min-h-[200px] md:min-h-0 flex-col h-full gap-4">
-        <div class="events-panel h-full rounded-2xl flex flex-col overflow-hidden">
+        <div class="h-full rounded-2xl flex flex-col overflow-hidden" :class="!isDark ? 'bg-white border border-slate-200 shadow-sm' : 'events-panel'">
 
           <!-- ─── Selected Date Events ─── -->
           <template v-if="selectedDateEvents.length > 0 && !showAllMonth">
-            <div class="p-5 border-b border-white/10 bg-[#0b1711]/50 flex flex-col gap-2">
+            <div class="p-5 border-b flex flex-col gap-2" :class="!isDark ? 'border-slate-200 bg-slate-50' : 'border-white/10 bg-[#0b1711]/50'">
               <div class="flex items-center justify-between">
-                <h3 class="text-lg font-bold text-white flex items-center gap-2">
-                  <span class="material-symbols-outlined text-accent">event_note</span>
+                <h3 class="text-lg font-bold flex items-center gap-2" :class="!isDark ? 'text-slate-800' : 'text-white'">
+                  <span class="material-symbols-outlined" :class="!isDark ? 'text-amber-500' : 'text-accent'">event_note</span>
                   {{ selectedDay }} {{ months[currentMonth] }}
                 </h3>
-                <span class="text-sm text-accent font-medium">{{ selectedDateEvents.length }} event</span>
+                <span class="text-sm font-medium" :class="!isDark ? 'text-amber-600' : 'text-accent'">{{ selectedDateEvents.length }} event</span>
               </div>
-              <button @click="showAllMonth = true" class="flex items-center justify-center gap-1.5 w-full py-1.5 rounded-lg bg-accent/10 border border-accent/30 text-accent text-xs font-bold hover:bg-accent/20 transition-all cursor-pointer">
+              <button @click="showAllMonth = true" class="flex items-center justify-center gap-1.5 w-full py-1.5 rounded-lg border text-xs font-bold transition-all cursor-pointer"
+                      :class="!isDark ? 'bg-amber-50 border-amber-200 text-amber-600 hover:bg-amber-100' : 'bg-accent/10 border-accent/30 text-accent hover:bg-accent/20'">
                 <span class="material-symbols-outlined text-[14px]">calendar_month</span>
                 Event Bulan Ini
               </button>
@@ -108,37 +116,38 @@
               <!-- Grouped by time -->
               <div v-for="group in selectedDateGroups" :key="group.time">
                 <div class="flex items-center gap-2 mb-2">
-                  <span class="text-accent font-bold text-lg font-mono">{{ group.time }}</span>
-                  <div class="h-px bg-white/10 flex-1"></div>
-                  <span v-if="group.items.length > 1" class="text-[10px] text-yellow-300 font-bold">{{ group.items.length }} kegiatan</span>
+                  <span class="font-bold text-lg font-mono" :class="!isDark ? 'text-amber-600' : 'text-accent'">{{ group.time }}</span>
+                  <div class="h-px flex-1" :class="!isDark ? 'bg-slate-200' : 'bg-white/10'"></div>
+                  <span v-if="group.items.length > 1" class="text-[10px] font-bold" :class="!isDark ? 'text-amber-500' : 'text-yellow-300'">{{ group.items.length }} kegiatan</span>
                 </div>
                 <div v-for="(item, iIdx) in group.items" :key="item.id"
                      @click="router.push({ name: 'DetailMonthly', params: { id: item.id } })"
                      :class="[
                        'rounded-xl p-4 cursor-pointer transition-all duration-300 hover:scale-[1.02]',
-                       'bg-linear-to-br from-blue-900/40 to-[#0b1711] border border-blue-500/20 hover:border-accent/50',
+                       !isDark ? 'bg-white border border-slate-200 hover:border-amber-400 shadow-sm' : 'bg-linear-to-br from-blue-900/40 to-[#0b1711] border border-blue-500/20 hover:border-accent/50',
                        iIdx > 0 ? 'mt-2' : ''
                      ]">
                   <div class="flex gap-3">
-                    <div class="w-10 h-10 rounded-lg flex items-center justify-center shrink-0 bg-accent/10 border border-accent/30">
-                      <span class="material-symbols-outlined text-accent text-xl">{{ item.icon || 'event' }}</span>
+                    <div class="w-10 h-10 rounded-lg flex items-center justify-center shrink-0 border"
+                         :class="!isDark ? 'bg-amber-50 border-amber-200' : 'bg-accent/10 border-accent/30'">
+                      <span class="material-symbols-outlined text-xl" :class="!isDark ? 'text-amber-500' : 'text-accent'">{{ item.icon || 'event' }}</span>
                     </div>
                     <div class="flex flex-col flex-1 min-w-0">
-                      <h4 class="text-base font-bold text-white leading-tight truncate">{{ item.title }}</h4>
+                      <h4 class="text-base font-bold leading-tight truncate" :class="!isDark ? 'text-slate-800' : 'text-white'">{{ item.title }}</h4>
                       <div class="flex items-center gap-2 mt-1">
                         <span :class="categoryBadgeClass(item.category)">{{ item.category }}</span>
-                        <span class="text-slate-400 text-xs flex items-center gap-1">
+                        <span class="text-xs flex items-center gap-1" :class="!isDark ? 'text-slate-500' : 'text-slate-400'">
                           <span class="material-symbols-outlined text-[12px]">location_on</span>
                           {{ item.location || '-' }}
                         </span>
                       </div>
-                      <span v-if="item.teacher" class="text-xs text-blue-200/60 mt-0.5 flex items-center gap-1">
+                      <span v-if="item.teacher" class="text-xs mt-0.5 flex items-center gap-1" :class="!isDark ? 'text-slate-500' : 'text-blue-200/60'">
                         <span class="material-symbols-outlined text-[12px]">person</span>
                         {{ item.teacher }}
                       </span>
                     </div>
                     <div class="flex items-center">
-                      <span class="material-symbols-outlined text-white/30 text-lg">chevron_right</span>
+                      <span class="material-symbols-outlined text-lg" :class="!isDark ? 'text-slate-300' : 'text-white/30'">chevron_right</span>
                     </div>
                   </div>
                 </div>
@@ -148,19 +157,20 @@
 
           <!-- ─── All month events (fallback or toggled) ─── -->
           <template v-else>
-            <div class="p-5 border-b border-white/10 bg-[#0b1711]/50 flex flex-col gap-2">
+            <div class="p-5 border-b flex flex-col gap-2" :class="!isDark ? 'border-slate-200 bg-slate-50' : 'border-white/10 bg-[#0b1711]/50'">
               <div class="flex items-center justify-between">
-                <h3 class="text-lg font-bold text-white flex items-center gap-2">
-                  <span class="material-symbols-outlined text-accent">event_upcoming</span>
+                <h3 class="text-lg font-bold flex items-center gap-2" :class="!isDark ? 'text-slate-800' : 'text-white'">
+                  <span class="material-symbols-outlined" :class="!isDark ? 'text-amber-500' : 'text-accent'">event_upcoming</span>
                   Event Bulan Ini
                 </h3>
-                <span class="text-sm text-accent font-medium">{{ monthEventGroups.reduce((a, g) => a + g.items.length, 0) }} event</span>
+                <span class="text-sm font-medium" :class="!isDark ? 'text-amber-600' : 'text-accent'">{{ monthEventGroups.reduce((a, g) => a + g.items.length, 0) }} event</span>
               </div>
-              <button v-if="showAllMonth && selectedDateEvents.length > 0" @click="showAllMonth = false" class="flex items-center justify-center gap-1.5 w-full py-1.5 rounded-lg bg-white/5 border border-white/10 text-white/70 text-xs font-bold hover:bg-white/10 transition-all cursor-pointer">
+              <button v-if="showAllMonth && selectedDateEvents.length > 0" @click="showAllMonth = false" class="flex items-center justify-center gap-1.5 w-full py-1.5 rounded-lg border text-xs font-bold transition-all cursor-pointer"
+                      :class="!isDark ? 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50' : 'bg-white/5 border-white/10 text-white/70 hover:bg-white/10'">
                 <span class="material-symbols-outlined text-[14px]">arrow_back</span>
                 Kembali ke {{ selectedDay }} {{ months[currentMonth] }}
               </button>
-              <p v-if="!showAllMonth && selectedDateEvents.length === 0" class="text-xs text-slate-400">Tidak ada event pada tanggal {{ selectedDay }}.</p>
+              <p v-if="!showAllMonth && selectedDateEvents.length === 0" class="text-xs" :class="!isDark ? 'text-slate-500' : 'text-slate-400'">Tidak ada event pada tanggal {{ selectedDay }}.</p>
             </div>
             <div class="flex-1 overflow-y-auto p-4 space-y-3 no-scrollbar" style="will-change: transform; transform: translateZ(0)">
               <div v-for="group in monthEventGroups" :key="group.key"
@@ -168,27 +178,28 @@
                    :class="[
                      'rounded-xl p-4 cursor-pointer',
                      group.isToday
-                       ? 'bg-linear-to-br from-blue-900/60 to-[#0b1711] border border-accent/40 relative overflow-hidden'
-                       : 'bg-[#0b1711]/40 border border-white/5 hover:bg-[#0b1711]/60',
+                       ? (!isDark ? 'bg-amber-50 border border-amber-300 relative overflow-hidden' : 'bg-linear-to-br from-blue-900/60 to-[#0b1711] border border-accent/40 relative overflow-hidden')
+                       : (!isDark ? 'bg-white border border-slate-200 hover:bg-slate-50 shadow-sm' : 'bg-[#0b1711]/40 border border-white/5 hover:bg-[#0b1711]/60'),
                      group.isPast ? 'opacity-50' : ''
                    ]">
                 <div v-if="group.isToday" class="absolute top-0 right-0 p-2 opacity-10">
-                  <span class="material-symbols-outlined text-7xl text-accent">{{ group.items[0].icon || 'event' }}</span>
+                  <span class="material-symbols-outlined text-7xl" :class="!isDark ? 'text-amber-500' : 'text-accent'">{{ group.items[0].icon || 'event' }}</span>
                 </div>
                 <div class="flex gap-3 relative z-10">
-                  <div class="flex flex-col items-center justify-center bg-white/5 rounded-lg w-14 h-14 shrink-0 border border-white/5">
-                    <span class="text-[10px] text-slate-400 font-bold uppercase">{{ monthShort }}</span>
-                    <span class="text-xl font-bold text-white leading-tight">{{ group.dateNum }}</span>
+                  <div class="flex flex-col items-center justify-center rounded-lg w-14 h-14 shrink-0 border"
+                       :class="!isDark ? 'bg-slate-50 border-slate-200' : 'bg-white/5 border-white/5'">
+                    <span class="text-[10px] font-bold uppercase" :class="!isDark ? 'text-slate-500' : 'text-slate-400'">{{ monthShort }}</span>
+                    <span class="text-xl font-bold leading-tight" :class="!isDark ? 'text-slate-800' : 'text-white'">{{ group.dateNum }}</span>
                   </div>
                   <div class="flex flex-col justify-center flex-1 min-w-0">
-                    <h4 class="text-base font-bold text-white leading-tight truncate">
+                    <h4 class="text-base font-bold leading-tight truncate" :class="!isDark ? 'text-slate-800' : 'text-white'">
                       {{ group.items[0].title }}
-                      <span v-if="group.items.length > 1" class="text-xs text-yellow-300 ml-1">+{{ group.items.length - 1 }}</span>
+                      <span v-if="group.items.length > 1" class="text-xs ml-1" :class="!isDark ? 'text-amber-500' : 'text-yellow-300'">+{{ group.items.length - 1 }}</span>
                     </h4>
                     <div class="flex items-center gap-2 mt-0.5">
                       <span :class="categoryBadgeClass(group.items[0].category)">{{ group.items[0].category }}</span>
                     </div>
-                    <div class="flex items-center gap-1 text-slate-400 text-xs mt-0.5">
+                    <div class="flex items-center gap-1 text-xs mt-0.5" :class="!isDark ? 'text-slate-500' : 'text-slate-400'">
                       <span class="material-symbols-outlined text-sm">schedule</span>
                       <span>{{ group.time }} — {{ group.items[0].location || '-' }}</span>
                     </div>
@@ -196,37 +207,40 @@
                 </div>
               </div>
               <div v-if="monthEventGroups.length === 0" class="flex flex-col items-center justify-center py-12 gap-3">
-                <span class="material-symbols-outlined text-4xl text-white/20">event_busy</span>
-                <p class="text-slate-400 text-sm">Tidak ada event bulan ini</p>
+                <span class="material-symbols-outlined text-4xl" :class="!isDark ? 'text-slate-300' : 'text-white/20'">event_busy</span>
+                <p class="text-sm" :class="!isDark ? 'text-slate-500' : 'text-slate-400'">Tidak ada event bulan ini</p>
               </div>
             </div>
           </template>
 
-          <div class="h-6 bg-linear-to-t from-[#0b1711] to-transparent w-full shrink-0"></div>
+          <div class="h-6 w-full shrink-0" :class="!isDark ? 'bg-linear-to-t from-white to-transparent' : 'bg-linear-to-t from-[#0b1711] to-transparent'"></div>
         </div>
       </aside>
 
       <!-- ═══════ MOBILE DETAIL MODAL ═══════ -->
       <Transition name="detail">
         <div v-if="showMobileModal" @click.self="showMobileModal = false" class="fixed inset-0 z-[100] flex items-center justify-center p-4 md:hidden portrait:flex bg-[#0a192f]/90 backdrop-blur-sm">
-          <div class="relative w-full max-w-lg h-[80vh] max-h-[90vh] events-panel rounded-2xl flex flex-col overflow-hidden shadow-2xl border border-white/10">
+          <div class="relative w-full max-w-lg h-[80vh] max-h-[90vh] rounded-2xl flex flex-col overflow-hidden shadow-2xl border"
+               :class="!isDark ? 'bg-white border-slate-200' : 'events-panel border-white/10'">
             <!-- Close Button -->
-            <button @click="showMobileModal = false" class="absolute top-4 right-4 z-50 size-8 rounded-full bg-red-500/80 text-white flex items-center justify-center shadow-lg hover:bg-red-600 transition-colors cursor-pointer border border-white/20">
+            <button @click="showMobileModal = false" class="absolute top-4 right-4 z-50 size-8 rounded-full text-white flex items-center justify-center shadow-lg transition-colors cursor-pointer border"
+                    :class="!isDark ? 'bg-red-500 hover:bg-red-600 border-red-400' : 'bg-red-500/80 hover:bg-red-600 border-white/20'">
               <span class="material-symbols-outlined text-base">close</span>
             </button>
             
             <div class="flex flex-col h-full">
               <!-- ─── Selected Date Events ─── -->
               <template v-if="selectedDateEvents.length > 0 && !showAllMonth">
-                <div class="p-5 border-b border-white/10 bg-[#0b1711]/50 flex flex-col gap-2 shrink-0 pr-14">
+                <div class="p-5 border-b flex flex-col gap-2 shrink-0 pr-14" :class="!isDark ? 'border-slate-200 bg-slate-50' : 'border-white/10 bg-[#0b1711]/50'">
                   <div class="flex items-center gap-3 flex-wrap">
-                    <h3 class="text-lg font-bold text-white flex items-center gap-2">
-                      <span class="material-symbols-outlined text-accent">event_note</span>
+                    <h3 class="text-lg font-bold flex items-center gap-2" :class="!isDark ? 'text-slate-800' : 'text-white'">
+                      <span class="material-symbols-outlined" :class="!isDark ? 'text-amber-500' : 'text-accent'">event_note</span>
                       {{ selectedDay }} {{ months[currentMonth] }}
                     </h3>
-                    <span class="text-xs font-bold text-[#0a192f] bg-accent px-2 py-0.5 rounded-full shadow-sm">{{ selectedDateEvents.length }} event</span>
+                    <span class="text-xs font-bold px-2 py-0.5 rounded-full shadow-sm" :class="!isDark ? 'bg-amber-100 text-amber-600 border border-amber-200' : 'text-[#0a192f] bg-accent'">{{ selectedDateEvents.length }} event</span>
                   </div>
-                  <button @click="showAllMonth = true" class="flex items-center justify-center gap-1.5 w-full py-1.5 rounded-lg bg-accent/10 border border-accent/30 text-accent text-xs font-bold hover:bg-accent/20 transition-all cursor-pointer mt-2">
+                  <button @click="showAllMonth = true" class="flex items-center justify-center gap-1.5 w-full py-1.5 rounded-lg border text-xs font-bold transition-all cursor-pointer mt-2"
+                          :class="!isDark ? 'bg-amber-50 border-amber-200 text-amber-600 hover:bg-amber-100' : 'bg-accent/10 border-accent/30 text-accent hover:bg-accent/20'">
                     <span class="material-symbols-outlined text-[14px]">calendar_month</span>
                     Event Bulan Ini
                   </button>
@@ -235,37 +249,38 @@
                   <!-- Grouped by time -->
                   <div v-for="group in selectedDateGroups" :key="group.time">
                     <div class="flex items-center gap-2 mb-2">
-                      <span class="text-accent font-bold text-lg font-mono">{{ group.time }}</span>
-                      <div class="h-px bg-white/10 flex-1"></div>
-                      <span v-if="group.items.length > 1" class="text-[10px] text-yellow-300 font-bold">{{ group.items.length }} kegiatan</span>
+                      <span class="font-bold text-lg font-mono" :class="!isDark ? 'text-amber-600' : 'text-accent'">{{ group.time }}</span>
+                      <div class="h-px flex-1" :class="!isDark ? 'bg-slate-200' : 'bg-white/10'"></div>
+                      <span v-if="group.items.length > 1" class="text-[10px] font-bold" :class="!isDark ? 'text-amber-500' : 'text-yellow-300'">{{ group.items.length }} kegiatan</span>
                     </div>
                     <div v-for="(item, iIdx) in group.items" :key="item.id"
                          @click="router.push({ name: 'DetailMonthly', params: { id: item.id } })"
                          :class="[
                            'rounded-xl p-4 cursor-pointer transition-all duration-300 hover:scale-[1.02]',
-                           'bg-linear-to-br from-blue-900/40 to-[#0b1711] border border-blue-500/20 hover:border-accent/50',
+                           !isDark ? 'bg-white border border-slate-200 hover:border-amber-400 shadow-sm' : 'bg-linear-to-br from-blue-900/40 to-[#0b1711] border border-blue-500/20 hover:border-accent/50',
                            iIdx > 0 ? 'mt-2' : ''
                          ]">
                       <div class="flex gap-3">
-                        <div class="w-10 h-10 rounded-lg flex items-center justify-center shrink-0 bg-accent/10 border border-accent/30">
-                          <span class="material-symbols-outlined text-accent text-xl">{{ item.icon || 'event' }}</span>
+                        <div class="w-10 h-10 rounded-lg flex items-center justify-center shrink-0 border"
+                             :class="!isDark ? 'bg-amber-50 border-amber-200' : 'bg-accent/10 border-accent/30'">
+                          <span class="material-symbols-outlined text-xl" :class="!isDark ? 'text-amber-500' : 'text-accent'">{{ item.icon || 'event' }}</span>
                         </div>
                         <div class="flex flex-col flex-1 min-w-0">
-                          <h4 class="text-base font-bold text-white leading-tight truncate">{{ item.title }}</h4>
+                          <h4 class="text-base font-bold leading-tight truncate" :class="!isDark ? 'text-slate-800' : 'text-white'">{{ item.title }}</h4>
                           <div class="flex items-center gap-2 mt-1">
                             <span :class="categoryBadgeClass(item.category)">{{ item.category }}</span>
-                            <span class="text-slate-400 text-xs flex items-center gap-1">
+                            <span class="text-xs flex items-center gap-1" :class="!isDark ? 'text-slate-500' : 'text-slate-400'">
                               <span class="material-symbols-outlined text-[12px]">location_on</span>
                               {{ item.location || '-' }}
                             </span>
                           </div>
-                          <span v-if="item.teacher" class="text-xs text-blue-200/60 mt-0.5 flex items-center gap-1">
+                          <span v-if="item.teacher" class="text-xs mt-0.5 flex items-center gap-1" :class="!isDark ? 'text-slate-500' : 'text-blue-200/60'">
                             <span class="material-symbols-outlined text-[12px]">person</span>
                             {{ item.teacher }}
                           </span>
                         </div>
                         <div class="flex items-center">
-                          <span class="material-symbols-outlined text-white/30 text-lg">chevron_right</span>
+                          <span class="material-symbols-outlined text-lg" :class="!isDark ? 'text-slate-300' : 'text-white/30'">chevron_right</span>
                         </div>
                       </div>
                     </div>
@@ -275,19 +290,20 @@
 
               <!-- ─── All month events (fallback or toggled) ─── -->
               <template v-else>
-                <div class="p-5 border-b border-white/10 bg-[#0b1711]/50 flex flex-col gap-2 shrink-0 pr-14">
+                <div class="p-5 border-b flex flex-col gap-2 shrink-0 pr-14" :class="!isDark ? 'border-slate-200 bg-slate-50' : 'border-white/10 bg-[#0b1711]/50'">
                   <div class="flex items-center gap-3 flex-wrap">
-                    <h3 class="text-lg font-bold text-white flex items-center gap-2">
-                      <span class="material-symbols-outlined text-accent">event_upcoming</span>
+                    <h3 class="text-lg font-bold flex items-center gap-2" :class="!isDark ? 'text-slate-800' : 'text-white'">
+                      <span class="material-symbols-outlined" :class="!isDark ? 'text-amber-500' : 'text-accent'">event_upcoming</span>
                       Event Bulan Ini
                     </h3>
-                    <span class="text-xs font-bold text-[#0a192f] bg-accent px-2 py-0.5 rounded-full shadow-sm">{{ monthEventGroups.reduce((a, g) => a + g.items.length, 0) }} event</span>
+                    <span class="text-xs font-bold px-2 py-0.5 rounded-full shadow-sm" :class="!isDark ? 'bg-amber-100 text-amber-600 border border-amber-200' : 'text-[#0a192f] bg-accent'">{{ monthEventGroups.reduce((a, g) => a + g.items.length, 0) }} event</span>
                   </div>
-                  <button v-if="showAllMonth && selectedDateEvents.length > 0" @click="showAllMonth = false" class="flex items-center justify-center gap-1.5 w-full py-1.5 rounded-lg bg-white/5 border border-white/10 text-white/70 text-xs font-bold hover:bg-white/10 transition-all cursor-pointer mt-2">
+                  <button v-if="showAllMonth && selectedDateEvents.length > 0" @click="showAllMonth = false" class="flex items-center justify-center gap-1.5 w-full py-1.5 rounded-lg border text-xs font-bold transition-all cursor-pointer mt-2"
+                          :class="!isDark ? 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50' : 'bg-white/5 border-white/10 text-white/70 hover:bg-white/10'">
                     <span class="material-symbols-outlined text-[14px]">arrow_back</span>
                     Kembali ke {{ selectedDay }} {{ months[currentMonth] }}
                   </button>
-                  <p v-if="!showAllMonth && selectedDateEvents.length === 0" class="text-xs text-slate-400 mt-2">Tidak ada event pada tanggal {{ selectedDay }}.</p>
+                  <p v-if="!showAllMonth && selectedDateEvents.length === 0" class="text-xs mt-2" :class="!isDark ? 'text-slate-500' : 'text-slate-400'">Tidak ada event pada tanggal {{ selectedDay }}.</p>
                 </div>
                 <div class="flex-1 overflow-y-auto p-4 space-y-3 no-scrollbar" style="will-change: transform; transform: translateZ(0)">
                   <div v-for="group in monthEventGroups" :key="group.key"
@@ -295,27 +311,28 @@
                        :class="[
                          'rounded-xl p-4 cursor-pointer',
                          group.isToday
-                           ? 'bg-linear-to-br from-blue-900/60 to-[#0b1711] border border-accent/40 relative overflow-hidden'
-                           : 'bg-[#0b1711]/40 border border-white/5 hover:bg-[#0b1711]/60',
+                           ? (!isDark ? 'bg-amber-50 border border-amber-300 relative overflow-hidden' : 'bg-linear-to-br from-blue-900/60 to-[#0b1711] border border-accent/40 relative overflow-hidden')
+                           : (!isDark ? 'bg-white border border-slate-200 hover:bg-slate-50 shadow-sm' : 'bg-[#0b1711]/40 border border-white/5 hover:bg-[#0b1711]/60'),
                          group.isPast ? 'opacity-50' : ''
                        ]">
                     <div v-if="group.isToday" class="absolute top-0 right-0 p-2 opacity-10">
-                      <span class="material-symbols-outlined text-7xl text-accent">{{ group.items[0].icon || 'event' }}</span>
+                      <span class="material-symbols-outlined text-7xl" :class="!isDark ? 'text-amber-500' : 'text-accent'">{{ group.items[0].icon || 'event' }}</span>
                     </div>
                     <div class="flex gap-3 relative z-10">
-                      <div class="flex flex-col items-center justify-center bg-white/5 rounded-lg w-14 h-14 shrink-0 border border-white/5">
-                        <span class="text-[10px] text-slate-400 font-bold uppercase">{{ monthShort }}</span>
-                        <span class="text-xl font-bold text-white leading-tight">{{ group.dateNum }}</span>
+                      <div class="flex flex-col items-center justify-center rounded-lg w-14 h-14 shrink-0 border"
+                           :class="!isDark ? 'bg-slate-50 border-slate-200' : 'bg-white/5 border-white/5'">
+                        <span class="text-[10px] font-bold uppercase" :class="!isDark ? 'text-slate-500' : 'text-slate-400'">{{ monthShort }}</span>
+                        <span class="text-xl font-bold leading-tight" :class="!isDark ? 'text-slate-800' : 'text-white'">{{ group.dateNum }}</span>
                       </div>
                       <div class="flex flex-col justify-center flex-1 min-w-0">
-                        <h4 class="text-base font-bold text-white leading-tight truncate">
+                        <h4 class="text-base font-bold leading-tight truncate" :class="!isDark ? 'text-slate-800' : 'text-white'">
                           {{ group.items[0].title }}
-                          <span v-if="group.items.length > 1" class="text-xs text-yellow-300 ml-1">+{{ group.items.length - 1 }}</span>
+                          <span v-if="group.items.length > 1" class="text-xs ml-1" :class="!isDark ? 'text-amber-500' : 'text-yellow-300'">+{{ group.items.length - 1 }}</span>
                         </h4>
                         <div class="flex items-center gap-2 mt-0.5">
                           <span :class="categoryBadgeClass(group.items[0].category)">{{ group.items[0].category }}</span>
                         </div>
-                        <div class="flex items-center gap-1 text-slate-400 text-xs mt-0.5">
+                        <div class="flex items-center gap-1 text-xs mt-0.5" :class="!isDark ? 'text-slate-500' : 'text-slate-400'">
                           <span class="material-symbols-outlined text-sm">schedule</span>
                           <span>{{ group.time }} — {{ group.items[0].location || '-' }}</span>
                         </div>
@@ -323,12 +340,12 @@
                     </div>
                   </div>
                   <div v-if="monthEventGroups.length === 0" class="flex flex-col items-center justify-center py-12 gap-3">
-                    <span class="material-symbols-outlined text-4xl text-white/20">event_busy</span>
-                    <p class="text-slate-400 text-sm">Tidak ada event bulan ini</p>
+                    <span class="material-symbols-outlined text-4xl" :class="!isDark ? 'text-slate-300' : 'text-white/20'">event_busy</span>
+                    <p class="text-sm" :class="!isDark ? 'text-slate-500' : 'text-slate-400'">Tidak ada event bulan ini</p>
                   </div>
                 </div>
               </template>
-              <div class="h-6 bg-linear-to-t from-[#0b1711] to-transparent w-full shrink-0"></div>
+              <div class="h-6 w-full shrink-0" :class="!isDark ? 'bg-linear-to-t from-white to-transparent' : 'bg-linear-to-t from-[#0b1711] to-transparent'"></div>
             </div>
           </div>
         </div>
@@ -342,8 +359,10 @@ import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import api from '../../../axios'
 import { storageUrl } from '../../../utils/asset'
+import { usePublicTheme } from '../../../composables/usePublicTheme'
 
 const router = useRouter()
+const { isDark } = usePublicTheme()
 function goBack() { router.push({ name: 'Landing' }) }
 
 // ── Time ──
@@ -503,10 +522,15 @@ function transformItem(item) {
 
 // ── Category Helpers ──
 function categoryBadgeClass(cat) {
-  const b = 'px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider'
-  return cat === 'Artikel' ? `${b} bg-accent/20 text-accent border border-accent/40`
-       : cat === 'Gambar' ? `${b} bg-blue-500/20 text-blue-400 border border-blue-500/40`
-       : `${b} bg-red-500/20 text-red-400 border border-red-500/40`
+  const b = 'px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider border'
+  if (isDark.value) {
+    return cat === 'Artikel' ? `${b} bg-accent/20 text-accent border-accent/40`
+         : cat === 'Gambar' ? `${b} bg-blue-500/20 text-blue-400 border-blue-500/40`
+         : `${b} bg-red-500/20 text-red-400 border-red-500/40`
+  }
+  return cat === 'Artikel' ? `${b} bg-amber-100 text-amber-700 border-amber-300`
+       : cat === 'Gambar' ? `${b} bg-blue-100 text-blue-700 border-blue-300`
+       : `${b} bg-red-100 text-red-700 border-red-300`
 }
 function categoryDotColor(cat) {
   return cat === 'Artikel' ? 'bg-accent' : cat === 'Gambar' ? 'bg-blue-400' : 'bg-red-400'

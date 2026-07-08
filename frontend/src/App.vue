@@ -104,6 +104,46 @@
     </div>
   </Transition>
 
+  <!-- ═══ PUBLIC CONFIG MENU & TOGGLE (only on public pages) ═══ -->
+  <Transition name="fade">
+    <div v-if="isPublicPage && showConfigMenu" class="fixed bottom-[115px] right-[16px] z-50 flex flex-col gap-1 p-1.5 rounded-full shadow-[0_10px_40px_rgba(0,0,0,0.3)] border"
+         :class="isDark ? 'bg-[#0f172a]/95 border-white/10 backdrop-blur-md' : 'bg-white/95 border-slate-200 backdrop-blur-md'">
+      
+      <!-- Theme Toggle -->
+      <button @click="toggleTheme(); showConfigMenu = false"
+              class="flex items-center justify-center size-10 rounded-full transition-all cursor-pointer"
+              :class="isDark ? 'hover:bg-white/10 text-slate-300 hover:text-white' : 'hover:bg-slate-100 text-slate-600 hover:text-slate-900'"
+              :title="isDark ? 'Mode Terang' : 'Mode Gelap'">
+        <span class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'FILL' 1;">
+          {{ isDark ? 'light_mode' : 'dark_mode' }}
+        </span>
+      </button>
+      
+      <div class="h-px w-6 mx-auto my-0.5" :class="isDark ? 'bg-white/10' : 'bg-slate-200'"></div>
+      
+      <!-- Refresh Page -->
+      <button @click="refreshPage"
+              class="flex items-center justify-center size-10 rounded-full transition-all cursor-pointer"
+              :class="isDark ? 'hover:bg-white/10 text-slate-300 hover:text-white' : 'hover:bg-slate-100 text-slate-600 hover:text-slate-900'"
+              title="Muat Ulang Halaman">
+        <span class="material-symbols-outlined text-[22px]">refresh</span>
+      </button>
+    </div>
+  </Transition>
+
+  <Transition name="fade">
+    <button v-if="isPublicPage"
+            @click="showConfigMenu = !showConfigMenu"
+            class="public-theme-toggle"
+            :class="{ 'rotate-90': showConfigMenu }"
+            title="Konfigurasi">
+      <span class="material-symbols-outlined text-[22px] transition-transform duration-300"
+            :class="{ 'rotate-90': showConfigMenu }">
+        {{ showConfigMenu ? 'close' : 'settings' }}
+      </span>
+    </button>
+  </Transition>
+
   <!-- ═══ SCREENSAVER OVERLAY (only for TV displays) ═══ -->
   <ScreensaverOverlay />
 </template>
@@ -115,9 +155,23 @@ import api from './axios'
 import echo from './echo'
 import { fixHtmlAssetUrls } from './utils/asset'
 import ScreensaverOverlay from './components/ScreensaverOverlay.vue'
+import { usePublicTheme } from './composables/usePublicTheme'
 
 const router = useRouter()
 const route = useRoute()
+
+// ── Public Theme ──
+const { isDark, toggleTheme } = usePublicTheme()
+const isPublicPage = computed(() => {
+  return !route.path.startsWith('/administrator') && route.path !== '/login'
+})
+
+// ── Public Config Menu ──
+const showConfigMenu = ref(false)
+function refreshPage() {
+  showConfigMenu.value = false
+  window.location.reload()
+}
 
 // ── Global Banner State ──
 const globalBanner = ref(null) // { title, message, type }

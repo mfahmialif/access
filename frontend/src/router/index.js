@@ -335,6 +335,12 @@ const routes = [
         name: 'AdminScreensaverEdit',
         component: () => import('../views/admin/screensaver/Form.vue'),
         meta: { title: 'Access — Edit Screensaver', pageTitle: 'Edit Screensaver', requiresAuth: true }
+      },
+      {
+        path: 'testing',
+        name: 'AdminTesting',
+        component: () => import('../views/admin/testing/Index.vue'),
+        meta: { title: 'Access — Testing', pageTitle: 'Testing', requiresAuth: true }
       }
     ]
   }

@@ -51,9 +51,9 @@
         </div>
 
         <!-- Loading Skeleton -->
-        <div v-if="loading" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 portrait:lg:grid-cols-3 gap-3 md:gap-4 lg:gap-5">
-          <div v-for="i in 6" :key="i" class="rounded-2xl glass-panel p-4 md:p-5 flex flex-col items-start min-h-[140px] md:min-h-[160px]">
-            <div class="skel w-10 h-10 md:w-12 md:h-12 rounded-xl mb-4"></div>
+        <div v-if="loading" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 portrait:lg:grid-cols-2 gap-3 md:gap-4 lg:gap-5 portrait:gap-5">
+          <div v-for="i in 6" :key="i" class="rounded-2xl glass-panel p-4 md:p-5 portrait:p-7 flex flex-col items-start min-h-[140px] md:min-h-[160px] portrait:min-h-[220px]">
+            <div class="skel w-10 h-10 md:w-12 md:h-12 portrait:w-16 portrait:h-16 rounded-xl mb-4"></div>
             <div class="mt-auto w-full">
               <div class="skel h-4 w-3/4 rounded mb-1.5"></div>
               <div class="skel h-3 w-1/2 rounded"></div>
@@ -68,22 +68,22 @@
         </div>
 
         <!-- Grid Cards -->
-        <div v-else class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 portrait:lg:grid-cols-3 gap-3 md:gap-4 lg:gap-5">
+        <div v-else class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 portrait:lg:grid-cols-2 gap-3 md:gap-4 lg:gap-5 portrait:gap-5">
           <button v-for="(app, idx) in apps" :key="app.id"
              @click="openEmbed(app)"
-             class="group relative rounded-2xl glass-panel glass-panel-hover p-4 md:p-5 flex flex-col items-start transition-all duration-500 cursor-pointer min-h-[140px] md:min-h-[160px] card-animate text-left"
+             class="group relative rounded-2xl glass-panel glass-panel-hover p-4 md:p-5 portrait:p-7 flex flex-col items-start transition-all duration-500 cursor-pointer min-h-[140px] md:min-h-[160px] portrait:min-h-[220px] card-animate text-left"
              :style="{ animationDelay: `${idx * 60}ms` }">
             <!-- Icon -->
-            <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center border transition-all duration-300"
+            <div class="w-10 h-10 md:w-12 md:h-12 portrait:w-16 portrait:h-16 rounded-xl portrait:rounded-2xl flex items-center justify-center border transition-all duration-300"
                  :class="colorClasses(app.color)">
-              <span class="material-symbols-outlined text-2xl md:text-3xl"
+              <span class="material-symbols-outlined text-2xl md:text-3xl portrait:text-4xl"
                     style="font-variation-settings: 'FILL' 1;">{{ app.icon }}</span>
             </div>
 
             <!-- Label -->
             <div class="mt-auto pt-3">
-              <h3 class="text-sm md:text-base font-bold text-white mb-0.5 leading-snug group-hover:text-accent-light transition-colors">{{ app.title }}</h3>
-              <p class="text-[11px] md:text-xs text-slate-400 line-clamp-1">{{ app.subtitle }}</p>
+              <h3 class="text-sm md:text-base portrait:text-xl font-bold text-white mb-0.5 portrait:mb-1 leading-snug group-hover:text-accent-light transition-colors">{{ app.title }}</h3>
+              <p class="text-[11px] md:text-xs portrait:text-sm text-slate-400 line-clamp-1">{{ app.subtitle }}</p>
             </div>
 
             <!-- Hover Arrow -->
@@ -130,59 +130,64 @@
           <!-- App Switcher Panel (slides up from toolbar) -->
           <transition name="slide-up">
             <div v-if="dockExpanded"
-                 class="app-switcher-panel absolute bottom-full right-0 left-0 mx-2 mb-2 z-50 flex flex-col gap-1 p-2 rounded-2xl border border-white/10 bg-[#0a1128]/95 backdrop-blur-xl shadow-2xl max-h-[50vh] overflow-y-auto no-scrollbar">
+                 class="app-switcher-panel absolute bottom-full right-0 left-0 mx-2 mb-2 z-50 flex flex-col gap-1 p-2 rounded-2xl border backdrop-blur-xl shadow-2xl max-h-[50vh] overflow-y-auto no-scrollbar"
+                 :class="isDark ? 'border-white/10 bg-[#0a1128]/95' : 'border-slate-200 bg-white/95'">
 
               <!-- App List -->
               <button v-for="app in apps" :key="'bar-' + app.id"
                       @click="switchApp(app); dockExpanded = false"
                       class="group flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 cursor-pointer w-full text-left"
                       :class="activeApp?.id === app.id
-                        ? 'bg-accent/15 border border-accent/30'
-                        : 'hover:bg-white/10 border border-transparent'">
+                        ? (isDark ? 'bg-accent/15 border border-accent/30' : 'bg-amber-50 border border-amber-300')
+                        : (isDark ? 'hover:bg-white/10 border border-transparent' : 'hover:bg-slate-50 border border-transparent')">
                 <div class="size-9 rounded-full flex items-center justify-center shrink-0 transition-all"
                      :class="activeApp?.id === app.id
-                       ? 'bg-accent text-[#0a1128] shadow-[0_0_12px_rgba(251,191,36,0.4)]'
-                       : 'bg-white/10 text-slate-300 group-hover:bg-white/15'">
+                       ? (isDark ? 'bg-accent text-[#0a1128] shadow-[0_0_12px_rgba(251,191,36,0.4)]' : 'bg-amber-500 text-white shadow-sm')
+                       : (isDark ? 'bg-white/10 text-slate-300 group-hover:bg-white/15' : 'bg-slate-100 text-slate-500 group-hover:bg-slate-200')">
                   <span class="material-symbols-outlined text-lg"
                         style="font-variation-settings: 'FILL' 1;">{{ app.icon }}</span>
                 </div>
                 <div class="text-left min-w-0">
-                  <p class="text-sm font-semibold truncate" :class="activeApp?.id === app.id ? 'text-accent' : 'text-slate-200'">{{ app.title }}</p>
-                  <p class="text-[11px] text-slate-500 truncate" v-if="app.subtitle">{{ app.subtitle }}</p>
+                  <p class="text-sm font-semibold truncate" :class="activeApp?.id === app.id ? (isDark ? 'text-accent' : 'text-amber-600') : (isDark ? 'text-slate-200' : 'text-slate-700')">{{ app.title }}</p>
+                  <p class="text-[11px] truncate" :class="isDark ? 'text-slate-500' : 'text-slate-400'" v-if="app.subtitle">{{ app.subtitle }}</p>
                 </div>
-                <span v-if="activeApp?.id === app.id" class="material-symbols-outlined text-accent text-base ml-auto shrink-0">check_circle</span>
+                <span v-if="activeApp?.id === app.id" class="material-symbols-outlined text-base ml-auto shrink-0" :class="isDark ? 'text-accent' : 'text-amber-500'">check_circle</span>
               </button>
             </div>
           </transition>
 
           <!-- Toolbar Bar -->
-          <div class="embed-toolbar flex items-center h-12 md:h-14 px-2 md:px-3 gap-1 border-t border-white/10">
+          <div class="flex items-center h-12 md:h-14 px-2 md:px-3 gap-1 border-t backdrop-blur-xl"
+               :class="isDark ? 'bg-gradient-to-t from-[#0a1128]/98 to-[#0a1128]/92 border-white/10' : 'bg-white/95 border-slate-200'">
 
             <!-- Back to Portal -->
             <button @click="closeEmbed"
-                    class="flex items-center gap-1.5 px-2.5 py-2 rounded-xl hover:bg-white/10 active:bg-white/15 transition-all text-slate-300 hover:text-accent cursor-pointer shrink-0">
+                    class="flex items-center gap-1.5 px-2.5 py-2 rounded-xl transition-all cursor-pointer shrink-0"
+                    :class="isDark ? 'hover:bg-white/10 active:bg-white/15 text-slate-300 hover:text-accent' : 'hover:bg-slate-100 active:bg-slate-200 text-slate-500 hover:text-amber-500'">
               <span class="material-symbols-outlined text-xl">arrow_back</span>
               <span class="text-xs font-semibold hidden sm:inline">Portal</span>
             </button>
 
             <!-- Refresh -->
             <button @click="refreshIframe"
-                    class="flex items-center justify-center size-10 rounded-xl hover:bg-white/10 active:bg-white/15 transition-all text-slate-300 hover:text-accent cursor-pointer shrink-0">
+                    class="flex items-center justify-center size-10 rounded-xl transition-all cursor-pointer shrink-0"
+                    :class="isDark ? 'hover:bg-white/10 active:bg-white/15 text-slate-300 hover:text-accent' : 'hover:bg-slate-100 active:bg-slate-200 text-slate-500 hover:text-amber-500'">
               <span class="material-symbols-outlined text-xl">refresh</span>
             </button>
 
             <!-- Active App Indicator (center) — tap to open switcher -->
             <button @click="dockExpanded = !dockExpanded"
-                    class="flex-1 flex items-center justify-center gap-2 min-w-0 px-2 py-1.5 rounded-xl hover:bg-white/10 active:bg-white/15 transition-all cursor-pointer group">
+                    class="flex-1 flex items-center justify-center gap-2 min-w-0 px-2 py-1.5 rounded-xl transition-all cursor-pointer group"
+                    :class="isDark ? 'hover:bg-white/10 active:bg-white/15' : 'hover:bg-slate-100 active:bg-slate-200'">
               <div class="size-7 rounded-lg flex items-center justify-center shrink-0 transition-all"
                    :class="colorClasses(activeApp.color)">
                 <span class="material-symbols-outlined text-sm"
                       style="font-variation-settings: 'FILL' 1;">{{ activeApp.icon }}</span>
               </div>
-              <p class="text-sm font-semibold text-white truncate group-hover:text-accent-light transition-colors">{{ activeApp.title }}</p>
-              <span v-if="isProxied" class="material-symbols-outlined text-amber-400/70 text-sm shrink-0" title="Dimuat melalui proxy">swap_horiz</span>
-              <span class="material-symbols-outlined text-slate-400 text-lg shrink-0 transition-transform duration-200"
-                    :class="{ 'rotate-180': dockExpanded }">expand_less</span>
+              <p class="text-sm font-semibold truncate transition-colors" :class="isDark ? 'text-white group-hover:text-accent-light' : 'text-slate-800 group-hover:text-amber-600'">{{ activeApp.title }}</p>
+              <span v-if="isProxied" class="material-symbols-outlined text-sm shrink-0" :class="isDark ? 'text-amber-400/70' : 'text-amber-500'" title="Dimuat melalui proxy">swap_horiz</span>
+              <span class="material-symbols-outlined text-lg shrink-0 transition-transform duration-200"
+                    :class="[dockExpanded ? 'rotate-180' : '', isDark ? 'text-slate-400' : 'text-slate-500']">expand_less</span>
             </button>
           </div>
         </div>
@@ -201,6 +206,9 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 import api from '../../axios'
+import { usePublicTheme } from '../../composables/usePublicTheme'
+
+const { isDark } = usePublicTheme()
 
 // ── API Data ──
 const loading = ref(true)
@@ -407,11 +415,6 @@ onUnmounted(() => {
 }
 
 /* ═══ Embed Toolbar ═══ */
-.embed-toolbar {
-  background: linear-gradient(to top, rgba(10, 17, 40, 0.98), rgba(10, 17, 40, 0.92));
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-}
 
 .app-switcher-panel {
   box-shadow:

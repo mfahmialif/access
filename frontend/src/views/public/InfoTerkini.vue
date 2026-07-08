@@ -49,14 +49,14 @@
             <div class="relative">
               <span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-500 text-sm!">search</span>
               <input v-model="searchQuery" @input="onSearch" type="text" placeholder="Cari berita..."
-                     class="w-44 pl-8 pr-3 py-1.5 rounded-full bg-[#050e1f]/60 border border-white/10 text-xs text-white placeholder-slate-500 outline-none focus:border-accent/50 focus:shadow-[0_0_10px_rgba(251,191,36,0.15)] transition-all" />
+                     class="w-44 pl-8 pr-3 h-9 rounded-full bg-[#050e1f]/60 border border-white/10 text-xs text-white placeholder-slate-500 outline-none focus:border-accent/50 focus:shadow-[0_0_10px_rgba(251,191,36,0.15)] transition-all" />
             </div>
             <!-- Category Filter -->
-            <div class="flex items-center gap-1 bg-[#050e1f]/60 border border-white/10 rounded-full p-1">
+            <div class="flex items-center gap-1 bg-[#050e1f]/60 border border-white/10 rounded-full p-1 h-9">
               <button v-for="tab in filterTabs" :key="tab.value"
                       @click="setCategory(tab.value)"
                       :class="[
-                        'px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 cursor-pointer',
+                        'px-4 h-full flex items-center justify-center rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 cursor-pointer',
                         activeCategory === tab.value
                           ? 'bg-accent text-[#0a192f] shadow-[0_0_15px_rgba(251,191,36,0.4)]'
                           : 'text-slate-400 hover:text-white hover:bg-white/5'
@@ -65,11 +65,11 @@
               </button>
             </div>
             <!-- Sort -->
-            <div class="flex items-center gap-1 bg-[#050e1f]/60 border border-white/10 rounded-full p-1">
+            <div class="flex items-center gap-1 bg-[#050e1f]/60 border border-white/10 rounded-full p-1 h-9">
               <button v-for="sort in sortOptions" :key="sort.value"
                       @click="setSort(sort.value)"
                       :class="[
-                        'px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 cursor-pointer',
+                        'px-4 h-full flex items-center justify-center rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 cursor-pointer',
                         activeSortBy === sort.value
                           ? 'bg-white/10 text-white border border-white/20'
                           : 'text-slate-500 hover:text-white'
@@ -80,11 +80,11 @@
               </button>
             </div>
             <!-- Limit -->
-            <div class="flex items-center gap-1 bg-[#050e1f]/60 border border-white/10 rounded-full px-3 py-1">
-              <span class="text-xs text-slate-500 font-bold">Tampil:</span>
-              <select v-model.number="perPage" @change="currentPage = 1; loadNews()" class="bg-transparent text-white text-xs font-bold outline-none cursor-pointer appearance-none px-1">
+            <div class="relative flex items-center bg-[#050e1f]/60 border border-white/10 rounded-full h-9 px-2">
+              <select v-model.number="perPage" @change="currentPage = 1; loadNews()" class="bg-transparent text-white text-xs md:text-sm font-bold outline-none cursor-pointer appearance-none pl-2 pr-5 w-full h-full z-10">
                 <option v-for="n in [6, 9, 12, 18]" :key="n" :value="n" class="bg-[#0a192f]">{{ n }}</option>
               </select>
+              <span class="material-symbols-outlined absolute right-2 text-base text-slate-400 pointer-events-none z-0">expand_more</span>
             </div>
           </div>
         </div>
@@ -94,32 +94,10 @@
           <span class="material-symbols-outlined text-5xl text-accent animate-spin">progress_activity</span>
         </div>
         <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 portrait:lg:grid-cols-2 gap-5 md:gap-6 flex-1 pb-4">
-          <!-- Featured Article (Card 1) -->
-          <article v-if="newsItems.length > 0"
-                   @click="router.push({ name: 'DetailNews', params: { id: newsItems[0].id } })"
-                   class="group relative flex flex-col justify-end overflow-hidden rounded-xl bg-[#050e1f] border border-white/10 hover:border-accent transition-all duration-300 hover:scale-[1.01] hover:shadow-[0_0_20px_rgba(251,191,36,0.2)] cursor-pointer min-h-[240px] md:min-h-[300px]">
-            <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
-                 :style="{ backgroundImage: `url('${getImageUrl(newsItems[0])}')` }"></div>
-            <div class="absolute inset-0 bg-linear-to-t from-[#050e1f] via-[#050e1f]/70 to-transparent opacity-95"></div>
-            <div v-if="newsItems[0].category === 'Video'" class="absolute inset-0 flex items-center justify-center z-10">
-              <div class="size-16 rounded-full bg-accent/90 flex items-center justify-center shadow-[0_0_30px_rgba(251,191,36,0.5)] group-hover:scale-110 transition-transform">
-                <span class="material-symbols-outlined text-[#0a192f] text-3xl ml-1">play_arrow</span>
-              </div>
-            </div>
-            <div class="relative z-10 p-6 flex flex-col gap-3">
-              <span :class="categoryBadgeClass(newsItems[0].category)">{{ newsItems[0].category }}</span>
-              <h3 class="text-2xl font-bold text-white leading-tight line-clamp-2">{{ newsItems[0].title }}</h3>
-              <div class="flex items-center gap-2 text-slate-300 text-sm mt-1">
-                <span class="material-symbols-outlined text-[18px] text-accent">schedule</span>
-                <span>{{ formatTime(newsItems[0].created_at) }}</span>
-              </div>
-            </div>
-          </article>
-
-          <!-- Regular Articles -->
-          <article v-for="item in newsItems.slice(1)" :key="item.id"
+          <!-- All Articles -->
+          <article v-for="item in newsItems" :key="item.id"
                    @click="router.push({ name: 'DetailNews', params: { id: item.id } })"
-                   class="group relative flex flex-col justify-end overflow-hidden rounded-xl bg-[#050e1f] border border-white/10 hover:border-accent transition-all duration-300 hover:scale-[1.01] hover:shadow-[0_0_20px_rgba(251,191,36,0.2)] cursor-pointer min-h-[240px] md:min-h-[280px]">
+                   class="group relative flex flex-col justify-end overflow-hidden rounded-xl bg-[#050e1f] border border-white/10 hover:border-accent transition-all duration-300 hover:scale-[1.01] hover:shadow-[0_0_20px_rgba(251,191,36,0.2)] cursor-pointer aspect-[4/3] md:aspect-video">
             <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
                  :style="{ backgroundImage: `url('${getImageUrl(item)}')` }"></div>
             <div class="absolute inset-0 bg-linear-to-t from-[#050e1f] via-[#050e1f]/60 to-transparent opacity-90 group-hover:opacity-95 transition-opacity"></div>

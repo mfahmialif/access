@@ -114,4 +114,310 @@ body {
 /* Text utilities */
 .text-shadow { text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); }
 
+/* ═══════════════════════════════════════════
+   PUBLIC THEME: Light Mode Overrides
+   Applied via [data-public-theme="light"] on <html>
+   ═══════════════════════════════════════════ */
+
+/* ── Theme CSS Variables ── */
+:root[data-public-theme="light"] {
+  --color-card-glass: rgba(255, 255, 255, 0.7);
+  --color-card-hover: rgba(251, 191, 36, 0.12);
+  --color-bg-deepest: #f0f4f8;
+  --color-bg-deep: #e2e8f0;
+  --pub-bg-1: #f0f4f8;
+  --pub-bg-2: #e2e8f0;
+  --pub-bg-3: #cbd5e1;
+  --pub-text-primary: #0f172a;
+  --pub-text-secondary: #334155;
+  --pub-text-muted: #64748b;
+  --pub-border: rgba(0, 0, 0, 0.08);
+}
+
+:root[data-public-theme="dark"] {
+  --pub-bg-1: #020617;
+  --pub-bg-2: #0f172a;
+  --pub-bg-3: #1e3a8a;
+  --pub-text-primary: #f0f4f8;
+  --pub-text-secondary: #cbd5e1;
+  --pub-text-muted: #94a3b8;
+  --pub-border: rgba(255, 255, 255, 0.1);
+}
+
+/* ── Body background ── */
+:root[data-public-theme="light"] body {
+  background-color: #f0f4f8;
+  color: #0f172a;
+}
+
+/* ── Glass panels ── */
+:root[data-public-theme="light"] .glass-panel {
+  background: rgba(255, 255, 255, 0.75);
+  border-color: rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+:root[data-public-theme="light"] .glass-panel-hover:hover {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(251, 191, 36, 0.5);
+  box-shadow: 0 8px 30px rgba(251, 191, 36, 0.15);
+}
+
+/* ── Background gradient layers (main page backgrounds) ── */
+:root[data-public-theme="light"] .bg-gradient-to-br[class*="from-[#020617]"] {
+  --tw-gradient-from: #f0f4f8 !important;
+  --tw-gradient-via: #e2e8f0 !important;
+  --tw-gradient-to: #cbd5e1 !important;
+}
+
+/* ── Override dark hex backgrounds ── */
+:root[data-public-theme="light"] .bg-\[\#020617\] { background-color: #f0f4f8 !important; }
+:root[data-public-theme="light"] .bg-\[\#0f172a\] { background-color: #e2e8f0 !important; }
+:root[data-public-theme="light"] .bg-\[\#0a192f\] { background-color: #dce3ec !important; }
+:root[data-public-theme="light"] .bg-\[\#050e1f\] { background-color: #f1f5f9 !important; }
+:root[data-public-theme="light"] .bg-\[\#0B1120\] { background-color: #f0f4f8 !important; } /* DetailPage overlay */
+
+/* Override inline style backgrounds */
+:root[data-public-theme="light"] [style*="background: #0a192f"],
+:root[data-public-theme="light"] [style*="background:#0a192f"] {
+  background: #dce3ec !important;
+}
+:root[data-public-theme="light"] [style*="background: #112240"],
+:root[data-public-theme="light"] [style*="background:#112240"] {
+  background: #e8ecf1 !important;
+}
+
+/* ── Card overlay gradients (inside cards like Agenda, Gallery) ── */
+/* Gradient overlays from-[#0f172a]/20 to-[#0f172a]/90 */
+:root[data-public-theme="light"] .bg-gradient-to-b[class*="from-[#0f172a]"] {
+  background: linear-gradient(to bottom, rgba(255,255,255,0.05), rgba(255,255,255,0.6)) !important;
+}
+
+/* Berita Utama card: from-[#0f172a]/95 via-[#0f172a]/40 to-transparent */
+:root[data-public-theme="light"] .bg-gradient-to-t[class*="from-[#0f172a]"],
+:root[data-public-theme="light"] .bg-linear-to-t[class*="from-[#050e1f]"] {
+  background: linear-gradient(to top, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.75) 45%, rgba(255, 255, 255, 0) 100%) !important;
+}
+
+/* DetailNews panel gradient */
+:root[data-public-theme="light"] .bg-linear-to-b[class*="from-[#0f172a]"] {
+  background: linear-gradient(to bottom, #f1f5f9, #e2e8f0) !important;
+}
+
+/* Gallery card: from-[#020617] via-[#020617]/90 to-transparent */
+:root[data-public-theme="light"] .bg-gradient-to-t[class*="from-[#020617]"] {
+  background: linear-gradient(to top, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.8) 50%, rgba(255, 255, 255, 0) 100%) !important;
+}
+
+/* ── Radial gradient overlays → transparent in light ── */
+:root[data-public-theme="light"] [class*="bg-\[radial-gradient"] {
+  background: transparent !important;
+}
+
+/* ── Pengumuman card (yellow-900/40 dark background) ── */
+:root[data-public-theme="light"] .bg-gradient-to-br[class*="from-yellow-900"] {
+  background: linear-gradient(to bottom right, rgba(254, 252, 232, 0.95), rgba(254, 252, 232, 0.8)) !important;
+  border-color: rgba(234, 179, 8, 0.4) !important;
+  box-shadow: 0 8px 30px rgba(234, 179, 8, 0.1) !important;
+}
+:root[data-public-theme="light"] .bg-gradient-to-br[class*="from-yellow-900"]:hover {
+  border-color: rgba(234, 179, 8, 0.6) !important;
+}
+:root[data-public-theme="light"] .border-\[\#020617\] { border-color: #f0f4f8 !important; }
+
+/* Darken yellow text in Pengumuman for readability (e.g., 'URGENT' badge) */
+:root[data-public-theme="light"] .text-yellow-200 { color: #d97706 !important; } /* text-amber-600 */
+:root[data-public-theme="light"] .text-yellow-300 { color: #b45309 !important; } /* text-amber-700 */
+:root[data-public-theme="light"] .text-yellow-400 { color: #92400e !important; } /* text-amber-800 */
+:root[data-public-theme="light"] .text-yellow-500 { color: #92400e !important; }
+
+/* Fix inner box background in Pengumuman */
+:root[data-public-theme="light"] .bg-yellow-500\/10 {
+  background-color: rgba(234, 179, 8, 0.15) !important;
+  border-color: rgba(234, 179, 8, 0.3) !important;
+}
+
+/* ── Badge backgrounds inside cards & InfoTerkini toolbars ── */
+:root[data-public-theme="light"] [class*="bg-[#0f172a]"],
+:root[data-public-theme="light"] [class*="bg-[#050e1f]/"],
+:root[data-public-theme="light"] [class*="bg-[#0a192f]/"],
+:root[data-public-theme="light"] [class*="bg-[#020617]/"],
+:root[data-public-theme="light"] [class*="bg-blue-900/"],
+:root[data-public-theme="light"] [class*="bg-blue-950/"] {
+  background-color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* ── Agenda Pages Specific Overrides ── */
+:root[data-public-theme="light"] .bg-blue-950 { background-color: #e2e8f0 !important; }
+:root[data-public-theme="light"] .bg-slate-800 { background-color: #cbd5e1 !important; }
+:root[data-public-theme="light"] .bg-\[\#0f2540\] { background-color: #dce3ec !important; }
+
+/* Agenda gradients (from-blue-950, from-[#0a192f]) */
+:root[data-public-theme="light"] .bg-linear-to-b[class*="from-blue-950"] {
+  background: linear-gradient(to bottom, rgba(255,255,255,0.8), #f0f4f8) !important;
+}
+:root[data-public-theme="light"] .bg-linear-to-b[class*="from-[#0a192f]"] {
+  background: linear-gradient(to bottom, rgba(255,255,255,0.95), rgba(255,255,255,0.85), rgba(255,255,255,0.95)) !important;
+}
+
+/* ── Typography (Prose) Overrides ── */
+:root[data-public-theme="light"] .prose-invert {
+  --tw-prose-body: #334155 !important;
+  --tw-prose-headings: #0f172a !important;
+  --tw-prose-lead: #475569 !important;
+  --tw-prose-links: #2563eb !important;
+  --tw-prose-bold: #0f172a !important;
+  --tw-prose-counters: #64748b !important;
+  --tw-prose-bullets: #94a3b8 !important;
+  --tw-prose-hr: #e2e8f0 !important;
+  --tw-prose-quotes: #0f172a !important;
+  --tw-prose-quote-borders: #cbd5e1 !important;
+  --tw-prose-captions: #64748b !important;
+  --tw-prose-code: #0f172a !important;
+  --tw-prose-pre-code: #e2e8f0 !important;
+  --tw-prose-pre-bg: #1e293b !important;
+  --tw-prose-th-borders: #cbd5e1 !important;
+  --tw-prose-td-borders: #e2e8f0 !important;
+  color: var(--tw-prose-body) !important;
+}
+:root[data-public-theme="light"] .prose-invert h1,
+:root[data-public-theme="light"] .prose-invert h2,
+:root[data-public-theme="light"] .prose-invert h3,
+:root[data-public-theme="light"] .prose-invert h4,
+:root[data-public-theme="light"] .prose-invert p,
+:root[data-public-theme="light"] .prose-invert strong,
+:root[data-public-theme="light"] .prose-invert a,
+:root[data-public-theme="light"] .prose-invert blockquote,
+:root[data-public-theme="light"] .prose-invert li {
+  color: inherit !important;
+}
+
+/* ── text-white/80 ── */
+:root[data-public-theme="light"] [class*="text-white/"] { color: #334155 !important; }
+
+/* ── bg-black/ image overlays ── */
+:root[data-public-theme="light"] [class*="bg-black/"] { background-color: rgba(255,255,255,0.2) !important; }
+:root[data-public-theme="light"] .bg-black { background-color: #f1f5f9 !important; }
+
+/* DetailImage/Video fullscreen gradients */
+:root[data-public-theme="light"] .bg-linear-to-b[class*="from-black"] {
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0)) !important;
+}
+:root[data-public-theme="light"] .bg-linear-to-t[class*="from-black"] {
+  background: linear-gradient(to top, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0)) !important;
+}
+
+/* ── Text colors ── */
+:root[data-public-theme="light"] .text-white { color: #0f172a !important; }
+:root[data-public-theme="light"] .text-slate-100 { color: #1e293b !important; }
+:root[data-public-theme="light"] .text-slate-200 { color: #334155 !important; }
+:root[data-public-theme="light"] .text-slate-300 { color: #475569 !important; }
+:root[data-public-theme="light"] .text-slate-400 { color: #64748b !important; }
+:root[data-public-theme="light"] .text-slate-500 { color: #94a3b8 !important; }
+:root[data-public-theme="light"] .text-slate-600 { color: #475569 !important; }
+:root[data-public-theme="light"] [class*="text-blue-200"] { color: #1e40af !important; } /* text-blue-800 */
+:root[data-public-theme="light"] [class*="text-blue-300"] { color: #1d4ed8 !important; } /* text-blue-700 */
+
+/* ── Border overrides ── */
+:root[data-public-theme="light"] .border-white\/5 { border-color: rgba(0, 0, 0, 0.06) !important; }
+:root[data-public-theme="light"] .border-white\/10 { border-color: rgba(0, 0, 0, 0.08) !important; }
+
+/* ── Background opacity layers ── */
+:root[data-public-theme="light"] .bg-white\/5 { background-color: rgba(0, 0, 0, 0.03) !important; }
+:root[data-public-theme="light"] .bg-white\/10 { background-color: rgba(0, 0, 0, 0.05) !important; }
+
+/* ── Ticker bar ── */
+:root[data-public-theme="light"] [class*="bg-\[#020617\]/"] {
+  background-color: rgba(240, 244, 248, 0.95) !important;
+}
+:root[data-public-theme="light"] .border-accent\/20 { border-color: rgba(217, 119, 6, 0.25) !important; }
+
+/* ── Ticker text should be dark in light mode ── */
+:root[data-public-theme="light"] .animate-marquee .text-slate-200 { color: #334155 !important; }
+
+/* ── Text glow → remove in light ── */
+:root[data-public-theme="light"] .text-glow {
+  text-shadow: none !important;
+  color: #0f172a !important;
+}
+
+/* ── Accent colors — slightly darker for light bg ── */
+:root[data-public-theme="light"] .text-accent { color: #d97706 !important; }
+:root[data-public-theme="light"] .text-accent-light { color: #b45309 !important; } /* Darker yellow/orange for readability */
+:root[data-public-theme="light"] .bg-accent { background-color: #f59e0b !important; }
+
+/* ── Mix-blend-overlay images → subtle in light ── */
+:root[data-public-theme="light"] .mix-blend-overlay {
+  mix-blend-mode: multiply;
+  opacity: 0.06 !important;
+}
+
+/* ── Skeleton shimmer for light ── */
+:root[data-public-theme="light"] .skel {
+  background: linear-gradient(90deg, rgba(0,0,0,0.04) 25%, rgba(0,0,0,0.08) 50%, rgba(0,0,0,0.04) 75%) !important;
+  background-size: 200% 100%;
+}
+
+/* ── Drop shadow on text → lighter ── */
+:root[data-public-theme="light"] .drop-shadow-md { filter: none !important; }
+:root[data-public-theme="light"] .text-shadow { text-shadow: none !important; }
+
+/* ── Green device badge ── */
+:root[data-public-theme="light"] .text-green-300 { color: #16a34a !important; }
+:root[data-public-theme="light"] .text-green-400 { color: #15803d !important; }
+
+/* ── Animate pulse for accent in light ── */
+:root[data-public-theme="light"] .animate-pulse.text-accent { color: #d97706 !important; }
+
+/* ── Icon badge backgrounds (colored category icons) — keep visible ── */
+:root[data-public-theme="light"] [class*="from-emerald-500/20"] { background: rgba(16, 185, 129, 0.12) !important; }
+:root[data-public-theme="light"] [class*="from-blue-500/20"] { background: rgba(59, 130, 246, 0.12) !important; }
+:root[data-public-theme="light"] [class*="from-accent/20"] { background: rgba(251, 191, 36, 0.12) !important; }
+:root[data-public-theme="light"] [class*="from-indigo-500/20"] { background: rgba(129, 140, 248, 0.12) !important; }
+:root[data-public-theme="light"] [class*="from-yellow-500/20"] { background: rgba(234, 179, 8, 0.12) !important; }
+
+/* ── Public theme toggle button ── */
+.public-theme-toggle {
+  position: fixed;
+  bottom: 60px;
+  right: 16px;
+  z-index: 40;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+:root[data-public-theme="dark"] .public-theme-toggle {
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #fbbf24;
+}
+:root[data-public-theme="dark"] .public-theme-toggle:hover {
+  background: rgba(251, 191, 36, 0.2);
+  border-color: rgba(251, 191, 36, 0.5);
+  box-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
+  transform: scale(1.1);
+}
+
+:root[data-public-theme="light"] .public-theme-toggle {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  color: #475569;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+:root[data-public-theme="light"] .public-theme-toggle:hover {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  transform: scale(1.1);
+}
+
 /* Force Vite HMR rebuild */
+

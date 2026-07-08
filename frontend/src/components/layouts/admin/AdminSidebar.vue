@@ -248,6 +248,17 @@
             <span class="material-symbols-outlined text-[24px] shrink-0">settings</span>
             <span class="sidebar-label text-sm leading-normal">Pengaturan</span>
           </router-link>
+          <router-link to="/administrator/testing"
+                       :class="[
+                         'flex items-center gap-3 px-3 py-2 rounded-lg transition-colors sidebar-link',
+                         isActiveRoute('/administrator/testing')
+                           ? 'bg-accent text-btn-text font-bold'
+                           : 'nav-item text-body font-medium cursor-pointer'
+                       ]"
+                       :title="collapsed ? 'Testing' : ''">
+            <span class="material-symbols-outlined text-[24px] shrink-0">bug_report</span>
+            <span class="sidebar-label text-sm leading-normal">Testing</span>
+          </router-link>
           <router-link to="/administrator/log-aktivitas"
                        :class="[
                          'flex items-center gap-3 px-3 py-2 rounded-lg transition-colors sidebar-link',
