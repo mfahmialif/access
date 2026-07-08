@@ -11,37 +11,8 @@
     <div class="relative z-10 flex flex-col min-h-screen w-full px-4 py-3 md:px-8 md:py-5 max-w-[1920px] mx-auto">
 
       <!-- ═══════ HEADER ═══════ -->
-      <header class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-3 md:mb-5 pb-3 md:pb-4 border-b border-accent/20 gap-3">
-        <div class="flex items-center gap-3 md:gap-4">
-          <button @click="goBack"
-                  :class="[
-                    'flex items-center justify-center size-10 md:size-12 rounded-full border transition-all duration-300 cursor-pointer',
-                    isDark 
-                      ? 'bg-[#0a192f]/50 border-accent/30 text-accent hover:bg-accent hover:text-[#0a192f] shadow-[0_0_10px_rgba(255,215,0,0.1)] hover:shadow-[0_0_20px_rgba(255,215,0,0.4)]'
-                      : 'bg-white border-slate-200 text-slate-600 hover:bg-accent hover:text-white hover:border-accent shadow-sm'
-                  ]">
-            <span class="material-symbols-outlined text-xl! md:text-2xl!">arrow_back</span>
-          </button>
-          <div class="flex items-center justify-center size-10 md:size-12 rounded-full bg-accent text-[#0a192f] shadow-[0_0_15px_rgba(251,191,36,0.4)]">
-            <span class="material-symbols-outlined text-2xl! md:text-3xl!">campaign</span>
-          </div>
-          <div>
-            <h1 :class="['text-lg md:text-2xl font-black uppercase tracking-tight leading-none', isDark ? 'text-white' : 'text-slate-800']">Access</h1>
-            <span class="text-xs md:text-sm font-bold text-accent uppercase tracking-widest">Pengumuman</span>
-          </div>
-        </div>
-        <div class="hidden md:flex items-center gap-6">
-          <div :class="['flex items-center gap-3 px-5 py-2.5 rounded-full border backdrop-blur-sm', isDark ? 'bg-[#050e1f]/50 border-accent/30' : 'bg-white/80 border-slate-200 shadow-sm']">
-            <span class="material-symbols-outlined text-accent">calendar_month</span>
-            <div class="flex flex-col items-end">
-              <span :class="['text-sm font-semibold leading-tight', isDark ? 'text-slate-200' : 'text-slate-700']">{{ hijriDate }}</span>
-              <span :class="['text-xs leading-tight', isDark ? 'text-slate-400' : 'text-slate-500']">{{ currentDate }}</span>
-            </div>
-            <div class="w-px h-8 bg-accent/40 mx-1"></div>
-            <span class="text-base font-bold text-accent tabular-nums">{{ currentTime }} WIB</span>
-          </div>
-        </div>
-      </header>
+      <!-- ═══════ HEADER ═══════ -->
+      <PublicHeader :showBack="true" />
 
       <!-- ═══════ CONTENT ═══════ -->
       <main class="flex-1 flex flex-col gap-4 overflow-visible pb-4">
@@ -138,7 +109,7 @@
                   </div>
                 </div>
                 <span :class="['text-xs md:text-base font-medium px-3 py-1.5 md:px-4 md:py-2 rounded-lg backdrop-blur-md self-start', isDark ? 'text-slate-300 bg-black/40' : 'text-slate-600 bg-white/70 shadow-sm border border-slate-200']">
-                  {{ formatDate(urgentHero.created_at) }}
+                  {{ formatDate(urgentHero.datetime) }}
                 </span>
               </div>
               <div class="max-w-4xl mt-4 md:mt-auto">
@@ -176,7 +147,7 @@
                   <span class="material-symbols-outlined text-xs!">{{ priorityIcon(item.priority) }}</span>
                   {{ item.priority }}
                 </span>
-                <span :class="['text-xs font-medium', isDark ? 'text-slate-500' : 'text-slate-400']">{{ formatDate(item.created_at) }}</span>
+                <span :class="['text-xs font-medium', isDark ? 'text-slate-500' : 'text-slate-400']">{{ formatDate(item.datetime) }}</span>
               </div>
               <div class="flex-1 z-10 flex flex-col">
                 <h3 :class="['text-lg font-bold mb-2 line-clamp-2 transition-colors', isDark ? 'text-white group-hover:text-accent/90' : 'text-slate-800 group-hover:text-accent']">{{ item.title }}</h3>
@@ -242,26 +213,12 @@ import { useRouter } from 'vue-router'
 import api from '../../axios'
 import { storageUrl } from '../../utils/asset'
 import { usePublicTheme } from '../../composables/usePublicTheme'
+import PublicHeader from '../../components/PublicHeader.vue'
 
 const router = useRouter()
-function goBack() { router.push({ name: 'Landing' }) }
-
 const { isDark } = usePublicTheme()
 
-// ── Time ──
-const currentTime = ref(''); const currentDate = ref(''); const hijriDate = ref('')
-function updateTime() {
-  const now = new Date()
-  currentTime.value = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`
-  const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
-  const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
-  currentDate.value = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`
-  try { hijriDate.value = new Intl.DateTimeFormat('id-u-ca-islamic', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(now) } catch { hijriDate.value = '' }
-}
-let ti
-onMounted(() => { updateTime(); ti = setInterval(updateTime, 1000); loadData() })
-onUnmounted(() => clearInterval(ti))
-
+onMounted(() => { loadData() })
 // ── Data ──
 const items = ref([]); const loading = ref(false)
 const currentPage = ref(1); const totalPages = ref(1); const perPage = ref(9)

@@ -1,45 +1,21 @@
 <template>
   <div class="relative w-full h-dvh">
     <!-- ═══════ BACKGROUND LAYERS ═══════ -->
-    <div class="fixed inset-0 z-0 bg-gradient-to-br from-[#020617] via-[#0f172a] to-[#1e3a8a] pointer-events-none"></div>
-    <div class="fixed inset-0 z-0 opacity-15 mix-blend-overlay pointer-events-none"
-         :style="{ backgroundImage: patternBg }"></div>
-    <div class="fixed inset-0 z-0 bg-[radial-gradient(circle_at_top_right,rgba(59,130,246,0.2),transparent_60%)] pointer-events-none"></div>
-    <div class="fixed inset-0 z-0 bg-[radial-gradient(circle_at_bottom_left,rgba(251,191,36,0.08),transparent_50%)] pointer-events-none"></div>
+    <div class="fixed inset-0 z-0 transform-gpu" style="will-change: transform; pointer-events: none;">
+      <div class="absolute inset-0 bg-gradient-to-br from-[#020617] via-[#0f172a] to-[#1e3a8a]"></div>
+      <div class="absolute inset-0 opacity-15 mix-blend-overlay"
+           :style="{ backgroundImage: patternBg }"></div>
+      <div class="absolute inset-0 opacity-30 bg-cover bg-center mix-blend-overlay blur-sm"
+           style="background-image: url('/img/hero-bg.jpg')"></div>
+      <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(59,130,246,0.2),transparent_60%)] pointer-events-none"></div>
+    </div>
 
     <!-- ═══════ MAIN CONTENT (Grid View) ═══════ -->
     <div v-show="!activeApp" class="relative z-10 flex flex-col h-dvh p-3 md:p-4 lg:p-6">
 
       <!-- ═══════ HEADER ═══════ -->
-      <header class="flex flex-wrap items-center justify-between mb-2 md:mb-3 pb-2 border-b border-white/5 gap-2 shrink-0">
-        <div class="flex items-center gap-2 md:gap-4">
-          <!-- Back Button -->
-          <button @click="$router.push('/')" 
-                  class="glass-panel flex items-center justify-center size-10 md:size-14 rounded-xl border border-white/10 hover:border-accent/50 transition-all duration-300 cursor-pointer group shrink-0">
-            <span class="material-symbols-outlined text-xl md:text-3xl text-slate-300 group-hover:text-accent transition-colors">arrow_back</span>
-          </button>
-          <div>
-            <img src="/img/logo-full.png" alt="Access" class="h-16 md:h-20 object-contain drop-shadow-lg" />
-            <div class="flex items-center gap-2 mt-1">
-              <span class="h-px w-4 md:w-6 bg-accent/60"></span>
-              <p class="text-accent/90 text-[10px] md:text-xs font-medium tracking-[0.2em] uppercase">Portal Layanan Digital</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="flex items-center gap-2 md:gap-4">
-          <div class="self-end">
-            <div class="hidden md:flex items-center gap-3 text-sm font-light text-slate-200 glass-panel px-4 py-1.5 rounded-full border border-white/10">
-              <span class="font-medium">{{ currentDate }}</span>
-              <span class="w-1.5 h-1.5 bg-accent rounded-full"></span>
-              <span class="text-accent-light font-serif italic">{{ hijriDate }}</span>
-            </div>
-          </div>
-          <div class="text-2xl md:text-5xl font-serif font-bold text-white tracking-tight leading-none text-glow">
-            {{ hours }}<span class="animate-pulse text-accent">:</span>{{ minutes }}
-          </div>
-        </div>
-      </header>
+      <!-- ═══════ HEADER ═══════ -->
+      <PublicHeader :showBack="true" />
 
       <!-- ═══════ LINK GRID ═══════ -->
       <div class="flex-1 overflow-y-auto pb-6" style="min-height: 0; -webkit-overflow-scrolling: touch;">
@@ -105,7 +81,9 @@
 
         <!-- ── Iframe Area — z-index HIGHER than toolbar ── -->
         <div class="relative flex-1 min-h-0 z-20">
-          <iframe :src="embedUrl"
+          <iframe v-if="embedUrl"
+                  ref="iframeRef"
+                  :src="embedUrl"
                   @load="onIframeLoad"
                   allow="clipboard-read; clipboard-write"
                   referrerpolicy="no-referrer"
@@ -115,9 +93,9 @@
           <!-- Loading indicator -->
           <div v-if="iframeLoading"
                class="absolute inset-0 flex flex-col items-center justify-center bg-[#020617] z-30 pointer-events-none">
-            <div class="relative">
-              <div class="w-16 h-16 rounded-full border-4 border-accent/20 border-t-accent animate-spin"></div>
-              <span class="material-symbols-outlined text-accent text-2xl absolute inset-0 flex items-center justify-center"
+            <div class="relative w-16 h-16 flex items-center justify-center">
+              <div class="absolute inset-0 rounded-full border-4 border-accent/20 border-t-accent animate-spin"></div>
+              <span class="material-symbols-outlined text-accent text-2xl relative z-10"
                     style="font-variation-settings: 'FILL' 1;">{{ activeApp.icon }}</span>
             </div>
             <p class="text-slate-400 mt-4 text-sm font-medium">Memuat {{ activeApp.title }}…</p>
@@ -134,6 +112,18 @@
                  :class="isDark ? 'border-white/10 bg-[#0a1128]/95' : 'border-slate-200 bg-white/95'">
 
               <!-- App List -->
+              <button @click="closeEmbed"
+                      class="group flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 cursor-pointer w-full text-left mb-1"
+                      :class="isDark ? 'hover:bg-white/10 border border-transparent' : 'hover:bg-slate-50 border border-transparent'">
+                <div class="size-9 rounded-full flex items-center justify-center shrink-0 transition-all"
+                     :class="isDark ? 'bg-white/10 text-slate-300 group-hover:bg-white/15' : 'bg-slate-100 text-slate-500 group-hover:bg-slate-200'">
+                  <span class="material-symbols-outlined text-lg">home</span>
+                </div>
+                <div class="text-left min-w-0">
+                  <p class="text-sm font-semibold truncate" :class="isDark ? 'text-slate-200' : 'text-slate-700'">Kembali ke Portal Apps</p>
+                </div>
+              </button>
+              
               <button v-for="app in apps" :key="'bar-' + app.id"
                       @click="switchApp(app); dockExpanded = false"
                       class="group flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 cursor-pointer w-full text-left"
@@ -160,12 +150,18 @@
           <div class="flex items-center h-12 md:h-14 px-2 md:px-3 gap-1 border-t backdrop-blur-xl"
                :class="isDark ? 'bg-gradient-to-t from-[#0a1128]/98 to-[#0a1128]/92 border-white/10' : 'bg-white/95 border-slate-200'">
 
-            <!-- Back to Portal -->
-            <button @click="closeEmbed"
-                    class="flex items-center gap-1.5 px-2.5 py-2 rounded-xl transition-all cursor-pointer shrink-0"
-                    :class="isDark ? 'hover:bg-white/10 active:bg-white/15 text-slate-300 hover:text-accent' : 'hover:bg-slate-100 active:bg-slate-200 text-slate-500 hover:text-amber-500'">
+            <!-- History Nav -->
+            <button @click="goIframeBack"
+                    class="flex items-center justify-center size-10 rounded-xl transition-all cursor-pointer shrink-0"
+                    :class="isDark ? 'hover:bg-white/10 active:bg-white/15 text-slate-300 hover:text-accent' : 'hover:bg-slate-100 active:bg-slate-200 text-slate-500 hover:text-amber-500'"
+                    title="Kembali (Back)">
               <span class="material-symbols-outlined text-xl">arrow_back</span>
-              <span class="text-xs font-semibold hidden sm:inline">Portal</span>
+            </button>
+            <button @click="goIframeForward"
+                    class="flex items-center justify-center size-10 rounded-xl transition-all cursor-pointer shrink-0"
+                    :class="isDark ? 'hover:bg-white/10 active:bg-white/15 text-slate-300 hover:text-accent' : 'hover:bg-slate-100 active:bg-slate-200 text-slate-500 hover:text-amber-500'"
+                    title="Maju (Forward)">
+              <span class="material-symbols-outlined text-xl">arrow_forward</span>
             </button>
 
             <!-- Refresh -->
@@ -200,6 +196,9 @@
         </transition>
       </div>
     </Teleport>
+
+    <!-- ═══════ TICKER BAR (Welcome Message) ═══════ -->
+    <TickerBar v-show="!activeApp" />
   </div>
 </template>
 
@@ -207,6 +206,8 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import api from '../../axios'
 import { usePublicTheme } from '../../composables/usePublicTheme'
+import PublicHeader from '../../components/PublicHeader.vue'
+import TickerBar from '../../components/TickerBar.vue'
 
 const { isDark } = usePublicTheme()
 
@@ -221,8 +222,9 @@ async function fetchApps() {
     apps.value = data.data || data || []
   } catch {
     apps.value = []
+  } finally {
+    loading.value = false
   }
-  loading.value = false
 }
 
 // ── Embed State ──
@@ -230,6 +232,23 @@ const activeApp = ref(null)
 const iframeLoading = ref(false)
 const dockExpanded = ref(false)
 const isProxied = ref(false)
+const iframeRef = ref(null)
+
+function goIframeBack() {
+  try {
+    window.history.back()
+  } catch(e) {
+    console.warn("History block:", e)
+  }
+}
+
+function goIframeForward() {
+  try {
+    window.history.forward()
+  } catch(e) {
+    console.warn("History block:", e)
+  }
+}
 
 // Cache proxy check results per URL so we don't re-check every time
 const proxyCache = new Map()
@@ -263,6 +282,11 @@ async function resolveEmbedUrl(url) {
   embedUrl.value = needsProxy
     ? `/api/proxy?url=${encodeURIComponent(url)}`
     : url
+    
+  // Hide loader early so user doesn't have to wait for the entire page to finish loading
+  setTimeout(() => {
+    iframeLoading.value = false
+  }, 1500)
 }
 
 async function openEmbed(app) {
@@ -276,6 +300,7 @@ async function openEmbed(app) {
 }
 
 function onIframeLoad(e) {
+  if (!embedUrl.value) return
   iframeLoading.value = false
   e.target.focus()
 }
@@ -286,7 +311,13 @@ function refreshIframe() {
   iframeLoading.value = true
   embedUrl.value = ''
   // Next tick — re-set the src so the iframe actually reloads
-  setTimeout(() => { embedUrl.value = url }, 50)
+  setTimeout(() => { 
+    embedUrl.value = url 
+    // Hide loader early
+    setTimeout(() => {
+      iframeLoading.value = false
+    }, 1500)
+  }, 50)
 }
 
 function closeEmbed() {
@@ -345,43 +376,12 @@ const colorMapping = {
 function colorClasses(c) { return colorMapping[c]?.classes || colorMapping.amber.classes }
 function glowColor(c) { return colorMapping[c]?.glow || colorMapping.amber.glow }
 
-// ── Time & Date ──
-const patternBg = `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23fbbf24' fill-opacity='0.15'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
-
-const hours = ref('00')
-const minutes = ref('00')
-const currentDate = ref('')
-const hijriDate = ref('')
-
-function updateTime() {
-  const now = new Date()
-  hours.value = String(now.getHours()).padStart(2, '0')
-  minutes.value = String(now.getMinutes()).padStart(2, '0')
-
-  const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
-  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des']
-  currentDate.value = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]}`
-
-  try {
-    const hijri = new Intl.DateTimeFormat('id-u-ca-islamic', {
-      day: 'numeric', month: 'long', year: 'numeric'
-    }).format(now)
-    hijriDate.value = hijri
-  } catch {
-    hijriDate.value = ''
-  }
-}
-
-let timeInterval
 onMounted(() => {
-  updateTime()
-  timeInterval = setInterval(updateTime, 1000)
   fetchApps()
   window.addEventListener('popstate', onPopState)
 })
 
 onUnmounted(() => {
-  clearInterval(timeInterval)
   window.removeEventListener('popstate', onPopState)
 })
 </script>

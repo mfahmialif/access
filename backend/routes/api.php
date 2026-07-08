@@ -15,10 +15,15 @@ use App\Http\Controllers\AppLinkController;
 use App\Http\Controllers\TvCommandController;
 use App\Http\Controllers\ProxyController;
 use App\Http\Controllers\ScreensaverController;
+use App\Http\Controllers\SettingController;
 use Illuminate\Support\Facades\Route;
 
 // ── Public routes ──
 Route::post('/login', [AuthController::class, 'login']);
+
+// Settings (public read)
+Route::get('/settings', [SettingController::class, 'index']);
+Route::get('/settings/{key}', [SettingController::class, 'show']);
 
 // Proxy (public — for iframe embed of external sites)
 Route::get('/proxy/check', [ProxyController::class, 'check']);
@@ -71,6 +76,9 @@ Route::get('/screensaver/tv', [ScreensaverController::class, 'forTv']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AuthController::class, 'user']);
     Route::post('/logout', [AuthController::class, 'logout']);
+
+    // Settings (protected update)
+    Route::post('/settings', [SettingController::class, 'update']);
 
     // Dashboard stats
     Route::get('/dashboard/stats', [DashboardController::class, 'stats']);

@@ -22,6 +22,10 @@
           <input v-model="form.title" class="filter-input rounded-xl py-2.5 px-4 text-sm focus:outline-none focus:ring-1 focus:ring-accent" placeholder="Judul media" />
         </div>
         <div class="flex flex-col gap-1.5">
+          <label class="text-sm font-medium" style="color: var(--text-body)">Waktu & Tanggal</label>
+          <input type="datetime-local" v-model="form.datetime" class="filter-input rounded-xl py-2.5 px-4 text-sm focus:outline-none focus:ring-1 focus:ring-accent" />
+        </div>
+        <div class="flex flex-col gap-1.5">
           <label class="text-sm font-medium" style="color: var(--text-body)">Tipe *</label>
           <VueMultiselect v-model="formCategoryOption" :options="categoryOptions" :close-on-select="true" :searchable="false" :allow-empty="false" :show-labels="false" label="name" track-by="value" placeholder="Pilih Tipe" />
         </div>
@@ -96,7 +100,13 @@ const router = useRouter(); const route = useRoute(); const galleryStore = useGa
 const isEdit = computed(() => !!route.params.id)
 const formLoading = ref(false); const formError = ref('')
 
-const form = ref({ title: '', category: 'Gambar', description: '', status: 'Published', duration: null })
+function getCurrentDateTimeLocal() {
+  const now = new Date()
+  now.setMinutes(now.getMinutes() - now.getTimezoneOffset())
+  return now.toISOString().slice(0, 16)
+}
+
+const form = ref({ title: '', category: 'Gambar', description: '', status: 'Published', duration: null, datetime: getCurrentDateTimeLocal() })
 const imageFile = ref(null); const imagePreview = ref(null); const imageDragOver = ref(false); const removeImageFlag = ref(false)
 const videoFile = ref(null); const videoPreview = ref(null); const videoDragOver = ref(false); const removeVideoFlag = ref(false)
 
@@ -110,7 +120,7 @@ onMounted(async () => {
   if (isEdit.value) {
     try {
       const data = await galleryStore.fetchGallery(route.params.id)
-      form.value = { title: data.title, category: data.category, description: data.description || '', status: data.status, duration: data.duration }
+      form.value = { title: data.title, category: data.category, description: data.description || '', status: data.status, duration: data.duration, datetime: data.datetime ? data.datetime.substring(0, 16) : '' }
       if (data.image_path) imagePreview.value = storageUrl(data.image_path)
       if (data.video_path) videoPreview.value = storageUrl(data.video_path)
     } catch { formError.value = 'Gagal memuat data.' }
@@ -138,6 +148,7 @@ async function handleSubmit() {
     fd.append('title', form.value.title); fd.append('category', form.value.category)
     fd.append('description', form.value.description || ''); fd.append('status', form.value.status)
     if (form.value.duration) fd.append('duration', form.value.duration)
+    if (form.value.datetime) fd.append('datetime', form.value.datetime)
     if (imageFile.value) fd.append('image', imageFile.value)
     if (videoFile.value) fd.append('video', videoFile.value)
     if (removeImageFlag.value) fd.append('remove_image', '1')

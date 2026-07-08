@@ -9,7 +9,7 @@ class News extends Model
 {
     protected $fillable = [
         'title', 'category', 'body', 'image_path', 'video_path',
-        'speaker', 'duration', 'status', 'created_by',
+        'speaker', 'duration', 'status', 'created_by', 'datetime',
     ];
 
     public function creator(): BelongsTo

@@ -29,13 +29,13 @@ class AnnouncementController extends Controller
             $query->where('status', $request->status);
         }
 
-        $sortBy = $request->input('sort_by', 'created_at');
+        $sortBy = $request->input('sort_by', 'datetime');
         $sortDir = $request->input('sort_dir', 'desc');
-        $allowed = ['created_at', 'title', 'priority'];
+        $allowed = ['id', 'datetime', 'created_at', 'title', 'priority'];
         if (in_array($sortBy, $allowed)) {
             $query->orderBy($sortBy, $sortDir === 'asc' ? 'asc' : 'desc');
         } else {
-            $query->orderByDesc('created_at');
+            $query->orderByDesc('datetime');
         }
 
         return $query->paginate($request->input('per_page', 10));
@@ -64,7 +64,7 @@ class AnnouncementController extends Controller
             'image'    => 'nullable|image|max:5120',
         ]);
 
-        $data = $request->only(['title', 'body', 'excerpt', 'priority', 'audience', 'location', 'status']);
+        $data = $request->only(['title', 'body', 'excerpt', 'priority', 'audience', 'location', 'status', 'datetime']);
         $data['created_by'] = $request->user()?->id;
 
         if ($request->hasFile('image')) {
@@ -83,7 +83,7 @@ class AnnouncementController extends Controller
             'image'    => 'nullable|image|max:5120',
         ]);
 
-        $data = $request->only(['title', 'body', 'excerpt', 'priority', 'audience', 'location', 'status']);
+        $data = $request->only(['title', 'body', 'excerpt', 'priority', 'audience', 'location', 'status', 'datetime']);
 
         if ($request->hasFile('image')) {
             if ($announcement->image_path) Storage::disk('public')->delete($announcement->image_path);

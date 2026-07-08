@@ -8,32 +8,8 @@
     <div class="relative z-10 flex flex-col min-h-screen w-full px-3 py-3 sm:px-4 md:px-6 lg:px-10 md:py-5 lg:py-6 max-w-[1920px] mx-auto">
 
       <!-- ═══════ HEADER ═══════ -->
-      <header class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-3 md:mb-6 pb-2 md:pb-4 border-b border-accent/20 gap-2 md:gap-3">
-        <div class="flex items-center gap-3 md:gap-4">
-          <button @click="goBack"
-                  class="flex items-center justify-center size-10 md:size-12 rounded-full bg-[#0a192f]/50 border border-accent/30 text-accent hover:bg-accent hover:text-[#0a192f] transition-all duration-300 shadow-[0_0_10px_rgba(255,215,0,0.1)] hover:shadow-[0_0_20px_rgba(255,215,0,0.4)] cursor-pointer">
-            <span class="material-symbols-outlined text-xl! md:text-2xl!">arrow_back</span>
-          </button>
-          <div class="flex items-center justify-center size-10 md:size-12 rounded-full bg-accent text-[#0a192f] shadow-[0_0_15px_rgba(251,191,36,0.4)]">
-            <span class="material-symbols-outlined text-2xl! md:text-3xl!">photo_library</span>
-          </div>
-          <div>
-            <h1 class="text-lg md:text-2xl font-black uppercase tracking-tight text-white leading-none">Access</h1>
-            <span class="text-xs md:text-sm font-bold text-accent uppercase tracking-widest">Gallery & Video</span>
-          </div>
-        </div>
-        <div class="hidden md:flex items-center gap-6">
-          <div class="flex items-center gap-3 px-5 py-2.5 rounded-full bg-[#050e1f]/50 border border-accent/30 backdrop-blur-sm">
-            <span class="material-symbols-outlined text-accent">calendar_month</span>
-            <div class="flex flex-col items-end">
-              <span class="text-sm font-semibold text-slate-200 leading-tight">{{ hijriDate }}</span>
-              <span class="text-xs text-slate-400 leading-tight">{{ currentDate }}</span>
-            </div>
-            <div class="w-px h-8 bg-accent/40 mx-1"></div>
-            <span class="text-base font-bold text-accent tabular-nums">{{ currentTime }} WIB</span>
-          </div>
-        </div>
-      </header>
+      <!-- ═══════ HEADER ═══════ -->
+      <PublicHeader :showBack="true" />
 
       <!-- ═══════ CONTENT ═══════ -->
       <main class="flex-1 flex flex-col gap-4 md:gap-5 overflow-visible">
@@ -121,7 +97,7 @@
               <h3 class="text-base md:text-xl font-bold text-white leading-tight line-clamp-2 opacity-95 group-hover:opacity-100">{{ item.title }}</h3>
               <div class="flex items-center gap-2 text-slate-300 text-xs md:text-sm mt-1">
                 <span class="material-symbols-outlined text-[18px]">schedule</span>
-                <span>{{ formatDate(item.created_at) }}</span>
+                <span>{{ formatDate(item.datetime) }}</span>
               </div>
             </div>
           </article>
@@ -167,25 +143,11 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import api from '../../axios'
 import { storageUrl } from '../../utils/asset'
+import PublicHeader from '../../components/PublicHeader.vue'
 
 const router = useRouter()
-function goBack() { router.push({ name: 'Landing' }) }
 
-// ── Time ──
-const currentTime = ref(''); const currentDate = ref(''); const hijriDate = ref('')
-
-function updateTime() {
-  const now = new Date()
-  currentTime.value = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`
-  const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
-  const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
-  currentDate.value = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`
-  try { hijriDate.value = new Intl.DateTimeFormat('id-u-ca-islamic', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(now) } catch { hijriDate.value = '' }
-}
-
-let ti
-onMounted(() => { updateTime(); ti = setInterval(updateTime, 1000); loadGalleries() })
-onUnmounted(() => clearInterval(ti))
+onMounted(() => { loadGalleries() })
 
 // ── Data ──
 const galleryItems = ref([]); const loading = ref(false)

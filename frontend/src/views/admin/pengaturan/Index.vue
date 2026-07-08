@@ -1,218 +1,52 @@
 <template>
   <div class="flex flex-col gap-6">
 
-    <!-- ═══ GENERAL SETTINGS ═══ -->
-    <div class="settings-card rounded-xl overflow-hidden">
+    <!-- ═══ TAMPILAN PORTAL ═══ -->
+    <div class="settings-card rounded-xl overflow-hidden mt-6">
       <div class="card-header px-6 py-4 flex items-center gap-2">
-        <span class="material-symbols-outlined text-accent text-[20px]">tune</span>
-        <h3 class="font-bold" style="color: var(--text-heading)">Pengaturan Umum</h3>
+        <span class="material-symbols-outlined text-accent text-[20px]">web</span>
+        <h3 class="font-bold" style="color: var(--text-heading)">Tampilan Portal</h3>
       </div>
       <div class="px-6 py-5 space-y-6">
-
-        <!-- Nama Sistem -->
         <div class="setting-row">
           <div class="setting-label">
-            <h4 class="text-sm font-bold" style="color: var(--text-heading)">Nama Sistem</h4>
-            <p class="text-xs mt-0.5" style="color: var(--text-muted)">Nama yang ditampilkan di header dan TV</p>
+            <h4 class="text-sm font-bold" style="color: var(--text-heading)">Ucapan Selamat Datang</h4>
+            <p class="text-xs mt-0.5" style="color: var(--text-muted)">Teks berjalan (ticker) yang tampil di bagian bawah halaman Portal Apps</p>
           </div>
           <div class="setting-control">
-            <input v-model="systemName" class="setting-input w-full rounded-lg py-2.5 px-4 text-sm focus:outline-none focus:ring-1 focus:ring-accent" />
+            <input v-model="welcomeMessage" class="setting-input w-full rounded-lg py-2.5 px-4 text-sm focus:outline-none focus:ring-1 focus:ring-accent" placeholder="Contoh: Selamat Datang di Portal Aplikasi UII Dalwa..." />
           </div>
         </div>
-
-        <!-- Logo -->
-        <div class="setting-row">
-          <div class="setting-label">
-            <h4 class="text-sm font-bold" style="color: var(--text-heading)">Logo Sistem</h4>
-            <p class="text-xs mt-0.5" style="color: var(--text-muted)">Logo utama yang ditampilkan di semua halaman</p>
-          </div>
-          <div class="setting-control">
-            <div class="flex items-center gap-4">
-              <div class="w-16 h-16 rounded-xl flex items-center justify-center border-2 border-dashed border-accent/40" style="background: var(--bg-input)">
-                <img src="/img/logo.png" alt="Access Logo" class="w-8 h-8 object-contain" />
-              </div>
-              <div class="flex flex-col gap-2">
-                <button class="upload-btn flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold cursor-pointer transition-all">
-                  <span class="material-symbols-outlined text-[16px]">cloud_upload</span>
-                  Upload Logo
-                </button>
-                <span class="text-[10px]" style="color: var(--text-muted)">PNG, SVG · Max 2MB · Min 128×128px</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
       </div>
     </div>
 
-    <!-- ═══ TV SETTINGS ═══ -->
+    <!-- ═══ WAKTU & TANGGAL ═══ -->
     <div class="settings-card rounded-xl overflow-hidden">
       <div class="card-header px-6 py-4 flex items-center gap-2">
-        <span class="material-symbols-outlined text-accent text-[20px]">tv</span>
-        <h3 class="font-bold" style="color: var(--text-heading)">Pengaturan TV</h3>
+        <span class="material-symbols-outlined text-accent text-[20px]">calendar_month</span>
+        <h3 class="font-bold" style="color: var(--text-heading)">Waktu & Tanggal</h3>
       </div>
       <div class="px-6 py-5 space-y-6">
-
-        <!-- Timeout Idle TV -->
         <div class="setting-row">
           <div class="setting-label">
-            <h4 class="text-sm font-bold" style="color: var(--text-heading)">Timeout Idle TV</h4>
-            <p class="text-xs mt-0.5" style="color: var(--text-muted)">Waktu idle sebelum TV kembali ke halaman utama</p>
+            <h4 class="text-sm font-bold" style="color: var(--text-heading)">Koreksi Tanggal Hijriah</h4>
+            <p class="text-xs mt-0.5" style="color: var(--text-muted)">Penyesuaian hari (+/-) jika terjadi perbedaan awal bulan</p>
           </div>
           <div class="setting-control">
             <div class="flex items-center gap-3">
-              <input v-model="idleTimeout" type="range" min="30" max="600" step="30" class="range-input flex-1" />
+              <input v-model="hijriAdjustment" type="range" min="-3" max="3" step="1" class="range-input flex-1" />
               <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg min-w-[80px] justify-center" style="background: var(--bg-input); border: 1px solid var(--border)">
-                <span class="text-sm font-bold font-mono" style="color: var(--text-heading)">{{ idleTimeout }}</span>
-                <span class="text-xs" style="color: var(--text-muted)">detik</span>
+                <span class="text-sm font-bold font-mono" style="color: var(--text-heading)">{{ hijriAdjustment > 0 ? '+' : '' }}{{ hijriAdjustment }}</span>
+                <span class="text-xs" style="color: var(--text-muted)">hari</span>
               </div>
             </div>
             <div class="flex justify-between mt-1">
-              <span class="text-[10px]" style="color: var(--text-muted)">30 detik</span>
-              <span class="text-[10px]" style="color: var(--text-muted)">10 menit</span>
+              <span class="text-[10px]" style="color: var(--text-muted)">-3 hari</span>
+              <span class="text-[10px]" style="color: var(--text-muted)">Normal (0)</span>
+              <span class="text-[10px]" style="color: var(--text-muted)">+3 hari</span>
             </div>
           </div>
         </div>
-
-        <!-- Durasi Default Banner -->
-        <div class="setting-row">
-          <div class="setting-label">
-            <h4 class="text-sm font-bold" style="color: var(--text-heading)">Durasi Default Banner</h4>
-            <p class="text-xs mt-0.5" style="color: var(--text-muted)">Lama banner ditampilkan sebelum otomatis hilang</p>
-          </div>
-          <div class="setting-control">
-            <div class="flex items-center gap-3">
-              <input v-model="bannerDuration" type="range" min="5" max="120" step="5" class="range-input flex-1" />
-              <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg min-w-[80px] justify-center" style="background: var(--bg-input); border: 1px solid var(--border)">
-                <span class="text-sm font-bold font-mono" style="color: var(--text-heading)">{{ bannerDuration }}</span>
-                <span class="text-xs" style="color: var(--text-muted)">detik</span>
-              </div>
-            </div>
-            <div class="flex justify-between mt-1">
-              <span class="text-[10px]" style="color: var(--text-muted)">5 detik</span>
-              <span class="text-[10px]" style="color: var(--text-muted)">2 menit</span>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- ═══ THEME SETTINGS ═══ -->
-    <div class="settings-card rounded-xl overflow-hidden">
-      <div class="card-header px-6 py-4 flex items-center gap-2">
-        <span class="material-symbols-outlined text-accent text-[20px]">palette</span>
-        <h3 class="font-bold" style="color: var(--text-heading)">Warna Tema</h3>
-      </div>
-      <div class="px-6 py-5 space-y-6">
-
-        <!-- Accent Color -->
-        <div class="setting-row">
-          <div class="setting-label">
-            <h4 class="text-sm font-bold" style="color: var(--text-heading)">Warna Aksen</h4>
-            <p class="text-xs mt-0.5" style="color: var(--text-muted)">Warna utama untuk tombol, badge, dan highlight</p>
-          </div>
-          <div class="setting-control">
-            <div class="flex items-center gap-3 flex-wrap">
-              <button v-for="color in accentColors" :key="color.value"
-                      @click="selectedAccent = color.value"
-                      :class="['w-10 h-10 rounded-xl cursor-pointer transition-all border-2', selectedAccent === color.value ? 'border-white scale-110 shadow-lg' : 'border-transparent hover:scale-105']"
-                      :style="{ background: color.value }"
-                      :title="color.name">
-              </button>
-              <div class="flex items-center gap-2 ml-2">
-                <input v-model="customAccent" type="color" class="w-10 h-10 rounded-xl cursor-pointer border-0 bg-transparent" />
-                <span class="text-xs font-mono" style="color: var(--text-muted)">{{ customAccent }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Theme Mode -->
-        <div class="setting-row">
-          <div class="setting-label">
-            <h4 class="text-sm font-bold" style="color: var(--text-heading)">Mode Tema</h4>
-            <p class="text-xs mt-0.5" style="color: var(--text-muted)">Mode tampilan untuk panel admin</p>
-          </div>
-          <div class="setting-control">
-            <div class="flex items-center gap-3">
-              <button v-for="mode in themeModes" :key="mode.value"
-                      @click="selectedMode = mode.value"
-                      :class="['theme-mode-btn flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-bold cursor-pointer transition-all', selectedMode === mode.value ? 'active' : '']">
-                <span class="material-symbols-outlined text-[18px]">{{ mode.icon }}</span>
-                {{ mode.name }}
-              </button>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- ═══ REALTIME CONFIG ═══ -->
-    <div class="settings-card rounded-xl overflow-hidden">
-      <div class="card-header px-6 py-4 flex items-center gap-2">
-        <span class="material-symbols-outlined text-accent text-[20px]">sync</span>
-        <h3 class="font-bold" style="color: var(--text-heading)">Konfigurasi Realtime</h3>
-      </div>
-      <div class="px-6 py-5 space-y-6">
-
-        <!-- WebSocket -->
-        <div class="setting-row">
-          <div class="setting-label">
-            <h4 class="text-sm font-bold" style="color: var(--text-heading)">WebSocket Server</h4>
-            <p class="text-xs mt-0.5" style="color: var(--text-muted)">URL server WebSocket untuk komunikasi realtime</p>
-          </div>
-          <div class="setting-control">
-            <input v-model="wsUrl" class="setting-input w-full rounded-lg py-2.5 px-4 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-accent" />
-          </div>
-        </div>
-
-        <!-- Auto Reconnect -->
-        <div class="setting-row">
-          <div class="setting-label">
-            <h4 class="text-sm font-bold" style="color: var(--text-heading)">Auto Reconnect</h4>
-            <p class="text-xs mt-0.5" style="color: var(--text-muted)">Otomatis reconnect saat koneksi terputus</p>
-          </div>
-          <div class="setting-control flex items-center gap-3">
-            <label class="toggle-switch">
-              <input type="checkbox" v-model="autoReconnect" />
-              <span class="toggle-slider"></span>
-            </label>
-            <span class="text-sm font-medium" :class="autoReconnect ? 'text-green-400' : ''" :style="!autoReconnect ? 'color: var(--text-muted)' : ''">
-              {{ autoReconnect ? 'Aktif' : 'Nonaktif' }}
-            </span>
-          </div>
-        </div>
-
-        <!-- Heartbeat Interval -->
-        <div class="setting-row">
-          <div class="setting-label">
-            <h4 class="text-sm font-bold" style="color: var(--text-heading)">Heartbeat Interval</h4>
-            <p class="text-xs mt-0.5" style="color: var(--text-muted)">Interval pengecekan koneksi TV (ping/pong)</p>
-          </div>
-          <div class="setting-control">
-            <div class="flex items-center gap-3">
-              <input v-model="heartbeat" type="range" min="5" max="60" step="5" class="range-input flex-1" />
-              <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg min-w-[80px] justify-center" style="background: var(--bg-input); border: 1px solid var(--border)">
-                <span class="text-sm font-bold font-mono" style="color: var(--text-heading)">{{ heartbeat }}</span>
-                <span class="text-xs" style="color: var(--text-muted)">detik</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Broadcast Channel -->
-        <div class="setting-row">
-          <div class="setting-label">
-            <h4 class="text-sm font-bold" style="color: var(--text-heading)">Broadcast Channel</h4>
-            <p class="text-xs mt-0.5" style="color: var(--text-muted)">Nama channel untuk broadcast ke semua TV</p>
-          </div>
-          <div class="setting-control">
-            <input v-model="broadcastChannel" class="setting-input w-full rounded-lg py-2.5 px-4 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-accent" />
-          </div>
-        </div>
-
       </div>
     </div>
 
@@ -227,7 +61,7 @@
           <span class="material-symbols-outlined text-[16px]">restart_alt</span>
           Reset
         </button>
-        <button class="save-btn flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-bold cursor-pointer transition-all active:scale-[0.98]">
+        <button @click="saveSettings" class="save-btn flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-bold cursor-pointer transition-all active:scale-[0.98]">
           <span class="material-symbols-outlined text-[16px]">save</span>
           Simpan Pengaturan
         </button>
@@ -238,34 +72,34 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import api from '../../../axios'
 
-const systemName = ref('Access')
-const idleTimeout = ref(120)
-const bannerDuration = ref(30)
+const welcomeMessage = ref('Selamat Datang di Portal Aplikasi UII Dalwa. Silakan pilih menu aplikasi di layar.')
+const hijriAdjustment = ref(0)
 
-const accentColors = [
-  { name: 'Gold', value: '#fbbf24' },
-  { name: 'Blue', value: '#3b82f6' },
-  { name: 'Green', value: '#22c55e' },
-  { name: 'Purple', value: '#a855f7' },
-  { name: 'Rose', value: '#f43f5e' },
-  { name: 'Cyan', value: '#06b6d4' }
-]
-const selectedAccent = ref('#fbbf24')
-const customAccent = ref('#fbbf24')
+function loadSettings() {
+  api.get('/settings').then(res => {
+    const data = res.data
+    if (data.welcome_message) welcomeMessage.value = data.welcome_message
+    if (data.hijri_adjustment !== undefined) hijriAdjustment.value = parseInt(data.hijri_adjustment)
+  }).catch(() => {})
+}
 
-const themeModes = [
-  { name: 'Dark', value: 'dark', icon: 'dark_mode' },
-  { name: 'Light', value: 'light', icon: 'light_mode' },
-  { name: 'Auto', value: 'auto', icon: 'brightness_auto' }
-]
-const selectedMode = ref('dark')
+function saveSettings() {
+  api.post('/settings', {
+    welcome_message: welcomeMessage.value,
+    hijri_adjustment: hijriAdjustment.value
+  }).then(() => {
+    alert('Pengaturan berhasil disimpan!')
+  }).catch(() => {
+    alert('Gagal menyimpan pengaturan.')
+  })
+}
 
-const wsUrl = ref('wss://access.id/ws')
-const autoReconnect = ref(true)
-const heartbeat = ref(15)
-const broadcastChannel = ref('access-broadcast')
+onMounted(() => {
+  loadSettings()
+})
 </script>
 
 <style scoped>

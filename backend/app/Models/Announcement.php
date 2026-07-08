@@ -9,7 +9,7 @@ class Announcement extends Model
 {
     protected $fillable = [
         'title', 'body', 'excerpt', 'priority', 'audience',
-        'location', 'image_path', 'status', 'created_by',
+        'location', 'image_path', 'status', 'created_by', 'datetime'
     ];
 
     public function creator(): BelongsTo

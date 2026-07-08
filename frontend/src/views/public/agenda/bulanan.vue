@@ -6,30 +6,7 @@
     <div class="absolute bottom-[-10%] right-[-10%] w-[30%] h-[30%] bg-blue-500/5 rounded-full blur-[100px] pointer-events-none"></div>
 
     <!-- ═══════ HEADER ═══════ -->
-    <header class="flex-none h-14 md:h-18 px-4 md:px-8 flex items-center justify-between border-b backdrop-blur-md z-50"
-            :class="!isDark ? 'border-slate-200 bg-white/50' : 'border-white/10 bg-[#0b1711]/50'">
-      <div class="flex items-center gap-3 md:gap-4">
-        <button @click="goBack"
-                class="size-9 md:size-11 rounded-lg border flex items-center justify-center transition-all duration-300 cursor-pointer"
-                :class="!isDark ? 'bg-white border-slate-300 text-amber-500 hover:bg-amber-50' : 'bg-[#0f172a]/80 border-accent/30 text-accent hover:bg-accent hover:text-[#0a192f]'">
-          <span class="material-symbols-outlined text-lg md:text-xl">arrow_back</span>
-        </button>
-        <div class="size-8 md:size-10 flex items-center justify-center" :class="!isDark ? 'text-amber-500' : 'text-accent'">
-          <span class="material-symbols-outlined text-2xl md:text-3xl">live_tv</span>
-        </div>
-        <div class="flex flex-col">
-          <h1 class="text-base md:text-xl font-bold tracking-tight uppercase leading-none" :class="!isDark ? 'text-slate-800' : 'text-white'">Access</h1>
-          <span class="text-[10px] md:text-xs font-medium tracking-widest uppercase" :class="!isDark ? 'text-amber-600' : 'text-accent/80'">Sistem Informasi</span>
-        </div>
-      </div>
-      <div class="hidden md:flex items-center gap-6">
-        <div class="flex flex-col items-end text-right">
-          <span class="text-xl font-bold leading-none tabular-nums" :class="!isDark ? 'text-slate-800' : 'text-white'">{{ currentTime }} <span class="text-sm" :class="!isDark ? 'text-slate-400' : 'text-blue-200/50'">WIB</span></span>
-          <span class="text-sm font-medium" :class="!isDark ? 'text-amber-600' : 'text-accent'">{{ hijriDate }}</span>
-          <span class="text-xs" :class="!isDark ? 'text-slate-500' : 'text-slate-400'">{{ currentDate }}</span>
-        </div>
-      </div>
-    </header>
+    <PublicHeader :showBack="true" />
 
     <!-- ═══════ MAIN CONTENT ═══════ -->
     <main class="flex-1 flex flex-col md:flex-row portrait:flex-col overflow-hidden p-2 md:p-6 gap-3 md:gap-6 relative">
@@ -360,31 +337,11 @@ import { useRouter } from 'vue-router'
 import api from '../../../axios'
 import { storageUrl } from '../../../utils/asset'
 import { usePublicTheme } from '../../../composables/usePublicTheme'
+import PublicHeader from '../../../components/PublicHeader.vue'
 
 const router = useRouter()
 const { isDark } = usePublicTheme()
-function goBack() { router.push({ name: 'Landing' }) }
-
-// ── Time ──
-const currentTime = ref('')
-const currentDate = ref('')
-const hijriDate = ref('')
-
-function updateTime() {
-  const now = new Date()
-  currentTime.value = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`
-  const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
-  const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
-  currentDate.value = `${days[now.getDay()]}, ${now.getDate()} ${monthNames[now.getMonth()]} ${now.getFullYear()}`
-  try {
-    hijriDate.value = new Intl.DateTimeFormat('id-u-ca-islamic', {
-      weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
-    }).format(now)
-  } catch { hijriDate.value = '' }
-}
-let ti
-onMounted(() => { updateTime(); ti = setInterval(updateTime, 1000); loadMonthlies() })
-onUnmounted(() => clearInterval(ti))
+onMounted(() => { loadMonthlies() })
 
 // ── Calendar State ──
 const today = new Date()

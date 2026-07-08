@@ -11,32 +11,8 @@
     <div class="relative z-10 flex flex-col h-full p-4 md:p-8 gap-4 md:gap-5 max-w-[1920px] mx-auto">
 
       <!-- ═══════ HEADER ═══════ -->
-      <header class="flex flex-col sm:flex-row items-start sm:items-center justify-between w-full pb-3 md:pb-4 border-b gap-3" :class="!isDark ? 'border-slate-200' : 'border-white/10'">
-        <div class="flex items-center gap-3 md:gap-4">
-          <button @click="goBack"
-                  class="size-10 md:size-12 rounded-lg border flex items-center justify-center transition-all duration-300 cursor-pointer"
-                  :class="!isDark ? 'bg-white border-slate-300 text-amber-500 hover:bg-amber-50' : 'bg-[#0f172a]/80 border-accent/30 text-accent hover:bg-accent hover:text-[#0a192f]'">
-            <span class="material-symbols-outlined text-xl md:text-2xl">arrow_back</span>
-          </button>
-          <div class="flex items-center justify-center size-10 md:size-12 rounded-lg border"
-               :class="!isDark ? 'bg-amber-50 border-amber-200 text-amber-600' : 'bg-blue-900/50 text-accent border-blue-500/30'">
-            <span class="material-symbols-outlined text-2xl md:text-3xl" :class="!isDark ? 'text-amber-500' : 'text-accent'">live_tv</span>
-          </div>
-          <div>
-            <h1 class="text-lg md:text-2xl font-bold tracking-tight leading-none" :class="!isDark ? 'text-slate-800' : 'text-white'">ACCESS</h1>
-            <p class="text-xs md:text-sm font-medium tracking-wide mt-1" :class="!isDark ? 'text-slate-500' : 'text-blue-200/60'">BROADCAST SYSTEM</p>
-          </div>
-        </div>
-        <h2 class="text-base md:text-3xl font-bold tracking-[0.2em] uppercase"
-            :class="!isDark ? 'text-amber-500 drop-shadow-sm' : 'text-accent drop-shadow-[0_0_10px_rgba(251,191,36,0.5)]'">Agenda Mingguan</h2>
-        <div class="hidden md:flex items-center gap-6">
-          <div class="text-right">
-            <div class="text-3xl font-bold tabular-nums leading-none" :class="!isDark ? 'text-slate-800' : 'text-white'">{{ currentTime }} <span class="text-base font-medium align-top" :class="!isDark ? 'text-slate-400' : 'text-blue-200/50'">WIB</span></div>
-            <div class="text-sm font-medium mt-1" :class="!isDark ? 'text-amber-600' : 'text-accent'">{{ hijriDate }}</div>
-            <div class="text-xs" :class="!isDark ? 'text-slate-500' : 'text-slate-400'">{{ currentDate }}</div>
-          </div>
-        </div>
-      </header>
+      <!-- ═══════ HEADER ═══════ -->
+      <PublicHeader :showBack="true" />
 
       <!-- ═══════ WEEKLY CARDS — DESKTOP / LANDSCAPE ═══════ -->
       <main class="hidden md:flex flex-1 items-center justify-center w-full overflow-hidden py-2">
@@ -205,21 +181,7 @@
         </div>
       </main>
 
-      <!-- ═══════ INFO BAR ═══════ -->
-      <footer class="h-10 md:h-12 backdrop-blur-md border-t rounded-lg flex items-center px-3 md:px-4 overflow-hidden w-full"
-              :class="!isDark ? 'bg-white/80 border-slate-200 shadow-md' : 'bg-[#0a192f]/80 border-blue-500/20'">
-        <div class="flex items-center gap-2 px-2 md:px-3 py-1 rounded font-bold text-xs md:text-sm mr-3 md:mr-4 shrink-0"
-             :class="!isDark ? 'bg-amber-500 text-white shadow-lg shadow-amber-500/20' : 'bg-accent text-[#0a192f] shadow-[0_0_10px_rgba(251,191,36,0.4)]'">
-          <span class="material-symbols-outlined text-lg" :class="!isDark ? 'text-white' : 'text-[#0a192f]'">campaign</span>
-          INFO
-        </div>
-        <div class="whitespace-nowrap overflow-hidden w-full relative">
-          <p class="text-base font-medium tracking-wide animate-marquee"
-             :class="!isDark ? 'text-slate-700' : 'text-blue-100'">
-            Selamat datang di Access TV. Jadwal ini berlaku untuk setiap minggu. • Perubahan jadwal akan diumumkan melalui pengumuman resmi.
-          </p>
-        </div>
-      </footer>
+
     </div>
   </div>
 </template>
@@ -232,33 +194,12 @@ import 'simplebar-vue/dist/simplebar.min.css'
 import api from '../../../axios'
 import { storageUrl } from '../../../utils/asset'
 import { usePublicTheme } from '../../../composables/usePublicTheme'
+import PublicHeader from '../../../components/PublicHeader.vue'
 
 const router = useRouter()
 const { isDark } = usePublicTheme()
 
-// ── Time ──
-const currentTime = ref('')
-const currentDate = ref('')
-const hijriDate = ref('')
-
-function updateTime() {
-  const now = new Date()
-  currentTime.value = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`
-  const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
-  const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
-  currentDate.value = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`
-  try {
-    hijriDate.value = new Intl.DateTimeFormat('id-u-ca-islamic', {
-      weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
-    }).format(now)
-  } catch { hijriDate.value = '' }
-}
-
-let timeInterval
-onMounted(() => { updateTime(); timeInterval = setInterval(updateTime, 1000); loadWeeklies() })
-onUnmounted(() => clearInterval(timeInterval))
-
-function goBack() { router.push({ name: 'Landing' }) }
+onMounted(() => { loadWeeklies() })
 
 // ── Category Badges ──
 function categoryBadgeClass(cat) {

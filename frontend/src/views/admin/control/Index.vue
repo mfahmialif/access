@@ -36,64 +36,80 @@
       </div>
     </Transition>
 
-    <!-- ═══ ACTION CARDS GRID ═══ -->
-    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-5">
-
-      <!-- Push Konten ke TV Tertentu -->
-      <div class="action-card rounded-xl p-6 flex flex-col gap-4">
+    <!-- ═══ PUSH KONTEN (Full-width) ═══ -->
+    <div class="action-card rounded-xl p-6 flex flex-col gap-4">
+      <div class="flex items-center justify-between">
         <div class="flex items-center gap-3">
           <div class="w-12 h-12 rounded-xl bg-accent/15 flex items-center justify-center border border-accent/30">
             <span class="material-symbols-outlined text-accent text-[28px]">send_to_mobile</span>
           </div>
           <div>
             <h3 class="font-bold text-sm" style="color: var(--text-heading)">Push Konten ke TV</h3>
-            <p class="text-xs" style="color: var(--text-muted)">Kirim konten ke TV tertentu</p>
+            <p class="text-xs" style="color: var(--text-muted)">Kirim konten ke TV tertentu atau semua</p>
           </div>
         </div>
-        <div class="flex flex-col gap-3">
-          <div>
-            <label class="text-xs font-medium mb-1.5 block" style="color: var(--text-muted)">Pilih TV</label>
-            <VueMultiselect v-model="selectedTV" :options="tvDevices" :close-on-select="true" :searchable="true" :allow-empty="false" :show-labels="false" label="name" track-by="id" placeholder="Pilih device..." />
-          </div>
-          <div>
-            <label class="text-xs font-medium mb-1.5 block" style="color: var(--text-muted)">Pilih Halaman</label>
-            <VueMultiselect v-model="selectedContent" :options="contentOptions" :close-on-select="true" :searchable="true" :internal-search="false" :allow-empty="false" :show-labels="false" :loading="contentSearching" label="name" track-by="path" placeholder="Ketik untuk cari konten..." @search-change="searchContent" @open="onDropdownOpen" />
-          </div>
-        </div>
-        <button @click="pushContent" :disabled="sending.push" class="action-btn-primary w-full flex items-center justify-center gap-2 rounded-lg h-10 font-bold text-sm cursor-pointer active:scale-[0.98] transition-all disabled:opacity-50">
-          <span v-if="sending.push" class="material-symbols-outlined text-[18px] animate-spin">progress_activity</span>
-          <span v-else class="material-symbols-outlined text-[18px]">send</span>
-          Push Konten
-        </button>
       </div>
+      <!-- Target Toggle -->
+      <div>
+        <label class="text-xs font-medium mb-1.5 block" style="color: var(--text-muted)">Target</label>
+        <div class="flex rounded-lg overflow-hidden border" style="border-color: var(--border)">
+          <button @click="pushTarget = 'all'" class="flex-1 px-4 py-2 text-xs font-bold cursor-pointer transition-all flex items-center justify-center gap-1.5"
+                  :class="pushTarget === 'all' ? 'bg-accent text-black' : ''"
+                  :style="pushTarget !== 'all' ? 'background: var(--bg-input); color: var(--text-muted)' : ''">
+            <span class="material-symbols-outlined text-[14px]">cast_connected</span>Semua TV
+          </button>
+          <button @click="pushTarget = 'specific'" class="flex-1 px-4 py-2 text-xs font-bold cursor-pointer transition-all flex items-center justify-center gap-1.5"
+                  :class="pushTarget === 'specific' ? 'bg-accent text-black' : ''"
+                  :style="pushTarget !== 'specific' ? 'background: var(--bg-input); color: var(--text-muted)' : ''">
+            <span class="material-symbols-outlined text-[14px]">tv</span>TV Tertentu
+          </button>
+        </div>
+      </div>
+      <div class="flex flex-col gap-3">
+        <!-- TV Picker (only when specific) -->
+        <div v-if="pushTarget === 'specific'">
+          <label class="text-xs font-medium mb-1.5 block" style="color: var(--text-muted)">Pilih TV</label>
+          <VueMultiselect v-model="selectedTV" :options="tvDevices" :close-on-select="true" :searchable="true" :allow-empty="false" :show-labels="false" label="name" track-by="id" placeholder="Pilih device..." />
+        </div>
+        <!-- Info panel when broadcasting to all -->
+        <div v-else class="rounded-xl overflow-hidden border" style="border-color: var(--border)">
+          <div class="px-3 py-2.5 flex items-center justify-between" style="background: var(--bg-input)">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-blue-400 text-[16px]">cell_tower</span>
+              <span class="text-xs font-bold" style="color: var(--text-heading)">Akan dikirim ke <strong class="text-green-400">{{ onlineTvDevices.length }} TV</strong> yang online</span>
+            </div>
+            <button @click="showOnlineTvList = !showOnlineTvList" class="text-[10px] font-medium px-2 py-0.5 rounded cursor-pointer transition-colors" style="color: var(--text-muted); background: var(--bg-card)">
+              {{ showOnlineTvList ? 'Sembunyikan' : 'Lihat Detail' }}
+              <span class="material-symbols-outlined text-[12px] align-middle">{{ showOnlineTvList ? 'expand_less' : 'expand_more' }}</span>
+            </button>
+          </div>
+          <Transition name="slide">
+            <div v-if="showOnlineTvList" class="max-h-[160px] overflow-y-auto tv-checklist-scroll">
+              <div v-if="onlineTvDevices.length === 0" class="px-3 py-4 text-center text-xs" style="color: var(--text-muted)">Tidak ada TV yang online</div>
+              <div v-for="tv in onlineTvDevices" :key="tv.id" class="flex items-center gap-2.5 px-3 py-2 border-t" style="border-color: var(--border)">
+                <span class="w-2 h-2 rounded-full bg-green-400 shrink-0 animate-pulse"></span>
+                <div class="flex-1 min-w-0">
+                  <p class="text-xs font-medium truncate" style="color: var(--text-heading)">{{ tv.name }}</p>
+                </div>
+                <span class="text-[10px] truncate max-w-[120px]" style="color: var(--text-muted)">{{ tv.location || '—' }}</span>
+              </div>
+            </div>
+          </Transition>
+        </div>
+        <div>
+          <label class="text-xs font-medium mb-1.5 block" style="color: var(--text-muted)">Pilih Halaman</label>
+          <VueMultiselect v-model="selectedContent" :options="contentOptions" :close-on-select="true" :searchable="true" :internal-search="false" :allow-empty="false" :show-labels="false" :loading="contentSearching" label="name" track-by="path" placeholder="Ketik untuk cari konten..." @search-change="searchContent" @open="onDropdownOpen" />
+        </div>
+      </div>
+      <button @click="pushContent" :disabled="sending.push" class="action-btn-primary w-full flex items-center justify-center gap-2 rounded-lg h-10 font-bold text-sm cursor-pointer active:scale-[0.98] transition-all disabled:opacity-50">
+        <span v-if="sending.push" class="material-symbols-outlined text-[18px] animate-spin">progress_activity</span>
+        <span v-else class="material-symbols-outlined text-[18px]">send</span>
+        {{ pushTarget === 'all' ? 'Broadcast ke Semua' : 'Push Konten' }}
+      </button>
+    </div>
 
-      <!-- Push ke Semua TV -->
-      <div class="action-card rounded-xl p-6 flex flex-col gap-4">
-        <div class="flex items-center gap-3">
-          <div class="w-12 h-12 rounded-xl bg-blue-500/15 flex items-center justify-center border border-blue-500/30">
-            <span class="material-symbols-outlined text-blue-400 text-[28px]">cast_connected</span>
-          </div>
-          <div>
-            <h3 class="font-bold text-sm" style="color: var(--text-heading)">Push ke Semua TV</h3>
-            <p class="text-xs" style="color: var(--text-muted)">Broadcast ke seluruh device</p>
-          </div>
-        </div>
-        <div class="flex flex-col gap-3">
-          <div>
-            <label class="text-xs font-medium mb-1.5 block" style="color: var(--text-muted)">Pilih Halaman</label>
-            <VueMultiselect v-model="broadcastContent" :options="contentOptions" :close-on-select="true" :searchable="true" :internal-search="false" :allow-empty="false" :show-labels="false" :loading="contentSearching" label="name" track-by="path" placeholder="Ketik untuk cari konten..." @search-change="searchContent" @open="onDropdownOpen" />
-          </div>
-          <div class="info-box rounded-lg px-3 py-2 flex items-center gap-2">
-            <span class="material-symbols-outlined text-blue-400 text-[16px]">info</span>
-            <span class="text-xs" style="color: var(--text-muted)">Akan dikirim ke <strong class="text-blue-400">{{ stats.online }} TV</strong> yang online</span>
-          </div>
-        </div>
-        <button @click="broadcastToAll" :disabled="sending.broadcast" class="action-btn-blue w-full flex items-center justify-center gap-2 rounded-lg h-10 font-bold text-sm cursor-pointer active:scale-[0.98] transition-all disabled:opacity-50">
-          <span v-if="sending.broadcast" class="material-symbols-outlined text-[18px] animate-spin">progress_activity</span>
-          <span v-else class="material-symbols-outlined text-[18px]">cast</span>
-          Broadcast ke Semua
-        </button>
-      </div>
+    <!-- ═══ ACTION CARDS GRID ═══ -->
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-5">
 
       <!-- Force Reload -->
       <div class="action-card rounded-xl p-6 flex flex-col gap-4">
@@ -439,6 +455,7 @@ const bannerQuillToolbar = [
 // ── Static index pages (always shown) ──
 const staticPages = [
   { name: '🏠 Landing Page', path: '/' },
+  { name: '📱 Apps Portal', path: '/apps' },
   { name: '📰 Info Terkini', path: '/info-terkini' },
   { name: '📅 Agenda Harian', path: '/agenda-harian' },
   { name: '📆 Agenda Mingguan', path: '/agenda-mingguan' },
@@ -499,7 +516,11 @@ const bannerTypes = [
 // ── Form state ──
 const selectedTV = ref(null)
 const selectedContent = ref(null)
-const broadcastContent = ref(null)
+const pushTarget = ref('all') // 'all' or 'specific'
+const showOnlineTvList = ref(false)
+
+const onlineTvDevices = computed(() => tvDevices.value.filter(d => d.status === 'online'))
+
 const reloadTarget = ref(null)
 const homeTarget = ref(null)
 const bannerTitle = ref('')
@@ -690,36 +711,31 @@ async function fetchLogs() {
 
 // ── Command actions ──
 async function pushContent() {
-  if (!selectedTV.value || !selectedContent.value) return showToast('Pilih TV dan halaman terlebih dahulu', 'error')
+  if (!selectedContent.value) return showToast('Pilih halaman terlebih dahulu', 'error')
+  if (pushTarget.value === 'specific' && !selectedTV.value) return showToast('Pilih TV terlebih dahulu', 'error')
   sending.push = true
   try {
-    const { data } = await api.post('/tv-commands/push', {
-      device_id: selectedTV.value.id,
-      path: selectedContent.value.path,
-      label: selectedContent.value.name,
-    })
+    let data
+    if (pushTarget.value === 'all') {
+      // Broadcast to all
+      ({ data } = await api.post('/tv-commands/broadcast', {
+        path: selectedContent.value.path,
+        label: selectedContent.value.name,
+      }))
+    } else {
+      // Push to specific TV
+      ({ data } = await api.post('/tv-commands/push', {
+        device_id: selectedTV.value.id,
+        path: selectedContent.value.path,
+        label: selectedContent.value.name,
+      }))
+    }
     showToast(data.message, data.success ? 'success' : 'error')
     fetchLogs()
   } catch (e) {
     showToast(e.response?.data?.message || 'Gagal mengirim', 'error')
   }
   sending.push = false
-}
-
-async function broadcastToAll() {
-  if (!broadcastContent.value) return showToast('Pilih halaman terlebih dahulu', 'error')
-  sending.broadcast = true
-  try {
-    const { data } = await api.post('/tv-commands/broadcast', {
-      path: broadcastContent.value.path,
-      label: broadcastContent.value.name,
-    })
-    showToast(data.message, data.success ? 'success' : 'error')
-    fetchLogs()
-  } catch (e) {
-    showToast(e.response?.data?.message || 'Gagal broadcast', 'error')
-  }
-  sending.broadcast = false
 }
 
 async function forceReload() {
@@ -873,4 +889,15 @@ onMounted(() => {
 .tv-checklist::-webkit-scrollbar-track { background: transparent; }
 .tv-checklist::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
 .tv-checklist::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* Slide transition for online TV list */
+.slide-enter-active { transition: max-height 0.3s ease-out, opacity 0.3s ease-out; }
+.slide-leave-active { transition: max-height 0.2s ease-in, opacity 0.2s ease-in; }
+.slide-enter-from, .slide-leave-to { max-height: 0; opacity: 0; overflow: hidden; }
+.slide-enter-to, .slide-leave-from { max-height: 200px; opacity: 1; }
+
+.tv-checklist-scroll::-webkit-scrollbar { width: 4px; }
+.tv-checklist-scroll::-webkit-scrollbar-track { background: transparent; }
+.tv-checklist-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+.tv-checklist-scroll::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 </style>

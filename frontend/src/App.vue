@@ -106,7 +106,7 @@
 
   <!-- ═══ PUBLIC CONFIG MENU & TOGGLE (only on public pages) ═══ -->
   <Transition name="fade">
-    <div v-if="isPublicPage && showConfigMenu" class="fixed bottom-[115px] right-[16px] z-50 flex flex-col gap-1 p-1.5 rounded-full shadow-[0_10px_40px_rgba(0,0,0,0.3)] border"
+    <div v-if="isPublicPage && showConfigMenu" class="fixed bottom-[170px] right-[16px] z-50 flex flex-col gap-1 p-1.5 rounded-full shadow-[0_10px_40px_rgba(0,0,0,0.3)] border"
          :class="isDark ? 'bg-[#0f172a]/95 border-white/10 backdrop-blur-md' : 'bg-white/95 border-slate-200 backdrop-blur-md'">
       
       <!-- Theme Toggle -->
@@ -129,6 +129,18 @@
         <span class="material-symbols-outlined text-[22px]">refresh</span>
       </button>
     </div>
+  </Transition>
+
+  <!-- ═══ PUBLIC BACK BUTTON (only on public pages, not on Landing) ═══ -->
+  <Transition name="fade">
+    <button v-if="isPublicPage && route.name !== 'Landing'"
+            @click="router.push({ name: 'Landing' })"
+            class="fixed right-[16px] z-40 flex items-center justify-center size-[44px] rounded-full shadow-[0_4px_15px_rgba(0,0,0,0.3)] transition-all cursor-pointer"
+            style="bottom: 115px;"
+            :class="isDark ? 'bg-[#0f172a]/80 border border-white/15 text-accent hover:bg-accent/20 hover:border-accent hover:shadow-[0_0_20px_rgba(251,191,36,0.3)]' : 'bg-white/90 border border-black/10 text-slate-600 hover:bg-white hover:border-black/20 hover:shadow-[0_4px_20px_rgba(0,0,0,0.15)]'"
+            title="Kembali ke Beranda">
+      <span class="material-symbols-outlined text-[22px]">home</span>
+    </button>
   </Transition>
 
   <Transition name="fade">

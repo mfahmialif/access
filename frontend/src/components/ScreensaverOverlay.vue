@@ -124,24 +124,38 @@ function resetIdleTimer() {
   if (visible.value) return // don't reset while screensaver is showing
 
   clearTimeout(idleTimer)
+  
+  let currentTimeout = idleTimeout.value * 1000
+  // Jika sedang membuka iframe (Apps), perpanjang timeout menjadi minimal 10 menit (600.000 ms)
+  // karena event scroll/mouse dalam cross-origin iframe tidak bisa dideteksi oleh parent.
+  if (document.querySelector('iframe')) {
+    currentTimeout = Math.max(currentTimeout, 600000)
+  }
+
   idleTimer = setTimeout(() => {
     if (isTvDisplay() && configLoaded.value) {
       showScreensaver()
     }
-  }, idleTimeout.value * 1000)
+  }, currentTimeout)
 }
 
 function startIdleDetection() {
   userEvents.forEach(ev => {
-    document.addEventListener(ev, resetIdleTimer, { passive: true })
+    document.addEventListener(ev, resetIdleTimer, { capture: true, passive: true })
   })
+  window.addEventListener('blur', resetIdleTimer)
+  window.addEventListener('focus', resetIdleTimer)
+  window.addEventListener('message', resetIdleTimer)
   resetIdleTimer()
 }
 
 function stopIdleDetection() {
   userEvents.forEach(ev => {
-    document.removeEventListener(ev, resetIdleTimer)
+    document.removeEventListener(ev, resetIdleTimer, { capture: true })
   })
+  window.removeEventListener('blur', resetIdleTimer)
+  window.removeEventListener('focus', resetIdleTimer)
+  window.removeEventListener('message', resetIdleTimer)
   clearTimeout(idleTimer)
 }
 

@@ -42,13 +42,13 @@ class NewsController extends Controller
         }
 
         // Sorting
-        $sortBy = $request->input('sort_by', 'created_at');
+        $sortBy = $request->input('sort_by', 'datetime');
         $sortDir = $request->input('sort_dir', 'desc');
-        $allowedSort = ['created_at', 'title', 'category'];
+        $allowedSort = ['id', 'datetime', 'created_at', 'title', 'category'];
         if (in_array($sortBy, $allowedSort)) {
             $query->orderBy($sortBy, $sortDir === 'asc' ? 'asc' : 'desc');
         } else {
-            $query->orderByDesc('created_at');
+            $query->orderByDesc('datetime');
         }
 
         $perPage = $request->input('per_page', 6);
@@ -71,7 +71,7 @@ class NewsController extends Controller
             'video'    => 'nullable|mimes:mp4,webm,ogg|max:51200',
         ]);
 
-        $data = $request->only(['title', 'category', 'body', 'speaker', 'duration', 'status']);
+        $data = $request->only(['title', 'category', 'body', 'speaker', 'duration', 'status', 'datetime']);
         $data['created_by'] = $request->user()?->id;
 
         if ($request->hasFile('image')) {
@@ -94,7 +94,7 @@ class NewsController extends Controller
             'video'    => 'nullable|mimes:mp4,webm,ogg|max:51200',
         ]);
 
-        $data = $request->only(['title', 'category', 'body', 'speaker', 'duration', 'status']);
+        $data = $request->only(['title', 'category', 'body', 'speaker', 'duration', 'status', 'datetime']);
 
         if ($request->hasFile('image')) {
             if ($news->image_path) Storage::disk('public')->delete($news->image_path);

@@ -14,49 +14,7 @@
     <div class="relative z-10 flex flex-col h-dvh p-3 md:p-4 lg:p-6">
 
       <!-- ═══════ HEADER ═══════ -->
-      <header class="flex flex-wrap items-center justify-between mb-2 md:mb-3 pb-2 border-b border-white/5 gap-2">
-        <div class="flex items-center gap-2 md:gap-4">
-          <div class="flex flex-col justify-center">
-            <img src="/img/logo-full.png" alt="Access" class="h-14 md:h-20 object-contain drop-shadow-lg" />
-          </div>
-        </div>
-
-        <!-- Device Name Badge -->
-        <div v-if="deviceName" class="relative order-3 md:order-none w-full md:w-auto flex justify-center md:block">
-          <button @click="showDeviceMenu = !showDeviceMenu"
-                  class="flex items-center gap-1.5 md:gap-2 glass-panel px-3 md:px-4 py-1 md:py-1.5 rounded-full border border-green-500/20 cursor-pointer hover:border-green-500/40 transition-all max-w-full">
-            <span class="relative flex h-2 w-2 shrink-0">
-              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-              <span class="relative inline-flex rounded-full h-2 w-2 bg-green-400"></span>
-            </span>
-            <span class="material-symbols-outlined text-green-400 text-sm md:text-base shrink-0">tv</span>
-            <span class="text-green-300 text-xs md:text-sm font-medium truncate max-w-[140px] md:max-w-[220px]">{{ deviceName }}</span>
-            <span class="material-symbols-outlined text-green-400/60 text-sm transition-transform shrink-0" :class="{ 'rotate-180': showDeviceMenu }">expand_more</span>
-          </button>
-          <!-- Dropdown -->
-          <Transition name="fade">
-            <div v-if="showDeviceMenu" class="absolute left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:right-0 top-full mt-2 z-50 w-52 rounded-xl overflow-hidden shadow-2xl border border-red-500/20" style="background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(20px)">
-              <button @click="disconnectTv" class="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-red-400 hover:bg-red-500/10 cursor-pointer transition-colors">
-                <span class="material-symbols-outlined text-[18px]">link_off</span>
-                Putuskan Sambungan
-              </button>
-            </div>
-          </Transition>
-        </div>
-
-        <div class="flex items-center gap-2 md:gap-4">
-          <div class="self-end">
-            <div class="hidden md:flex items-center gap-3 text-sm font-light text-slate-200 glass-panel px-4 py-1.5 rounded-full border border-white/10">
-              <span class="font-medium">{{ currentDate }}</span>
-              <span class="w-1.5 h-1.5 bg-accent rounded-full"></span>
-              <span class="text-accent-light font-serif italic">{{ hijriDate }}</span>
-            </div>
-          </div>
-          <div class="text-2xl md:text-5xl font-serif font-bold text-white tracking-tight leading-none text-glow">
-            {{ hours }}<span class="animate-pulse text-accent">:</span>{{ minutes }}
-          </div>
-        </div>
-      </header>
+      <PublicHeader :showBack="false" />
 
       <!-- ═══════ MAIN GRID ═══════ -->
       <simplebar class="flex-1 min-h-0 landing-scroll" :force-visible="true" :click-on-track="true">
@@ -105,7 +63,7 @@
               <div class="flex flex-wrap items-center gap-2 md:gap-3 mb-3">
                 <span class="bg-accent text-[#0f172a] text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest shadow-lg shadow-accent/20">Berita Utama</span>
                 <div class="text-white/80 text-xs flex items-center gap-1 bg-[#0f172a]/50 px-2 py-1 rounded-full border border-white/10">
-                  <span class="material-symbols-outlined text-[14px]">schedule</span> {{ latestNews ? timeAgo(latestNews.created_at) : '-' }}
+                  <span class="material-symbols-outlined text-[14px]">schedule</span> {{ latestNews ? timeAgo(latestNews.datetime) : '-' }}
                 </div>
               </div>
               <h2 class="text-lg md:text-2xl font-serif font-bold text-white mb-2 leading-tight group-hover:text-accent-light transition-colors drop-shadow-md">{{ latestNews?.title || 'Memuat...' }}</h2>
@@ -302,26 +260,7 @@
     </div>
 
     <!-- ═══════ TICKER BAR ═══════ -->
-    <div class="fixed bottom-0 left-0 w-full z-50 h-10 md:h-12 flex items-center">
-      <div class="absolute inset-0 bg-[#020617]/90 backdrop-blur-md border-t border-accent/20"></div>
-      <div class="relative bg-accent h-full px-3 md:px-8 flex items-center justify-center shrink-0 z-20 shadow-[5px_0_20px_rgba(0,0,0,0.5)]">
-        <span class="text-[#0f172a] font-bold uppercase tracking-widest text-[10px] md:text-sm flex items-center gap-1.5 md:gap-2">
-          <span class="material-symbols-outlined animate-pulse text-base md:text-2xl">info</span>
-          <span class="hidden sm:inline">Info Terkini</span>
-          <span class="sm:hidden">Info</span>
-        </span>
-        <div class="absolute right-[-10px] top-0 bottom-0 w-0 h-0 border-t-[40px] md:border-t-[56px] border-t-accent border-r-[14px] md:border-r-[20px] border-r-transparent"></div>
-      </div>
-      <div class="relative flex overflow-x-hidden flex-1 h-full items-center pl-5 md:pl-8">
-        <div class="animate-marquee whitespace-nowrap flex items-center gap-10 md:gap-24">
-          <span v-for="(item, i) in tickerItems" :key="i"
-                class="text-slate-200 text-sm md:text-lg font-light tracking-wide flex items-center gap-2 md:gap-3">
-            <span class="material-symbols-outlined text-accent text-xs md:text-sm">diamond</span>
-            {{ item }}
-          </span>
-        </div>
-      </div>
-    </div>
+    <TickerBar />
   </div>
 </template>
 
@@ -332,56 +271,12 @@ import simplebar from 'simplebar-vue'
 import 'simplebar-vue/dist/simplebar.min.css'
 import api from '../../axios'
 import { storageUrl } from '../../utils/asset'
+import PublicHeader from '../../components/PublicHeader.vue'
+import TickerBar from '../../components/TickerBar.vue'
 
 const router = useRouter()
 
-// ── Device Name ──
-const deviceName = computed(() => {
-  try {
-    const device = JSON.parse(localStorage.getItem('tv_device') || 'null')
-    return device?.name || ''
-  } catch { return '' }
-})
-
-const showDeviceMenu = ref(false)
-
-function disconnectTv() {
-  const token = localStorage.getItem('tv_token')
-  if (token) {
-    const data = new Blob([JSON.stringify({ token })], { type: 'application/json' })
-    navigator.sendBeacon('/api/tv/disconnect', data)
-  }
-  localStorage.removeItem('tv_token')
-  localStorage.removeItem('tv_device')
-  showDeviceMenu.value = false
-  router.push({ name: 'ConnectToken' })
-}
-
 const patternBg = `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23fbbf24' fill-opacity='0.15'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
-
-const hours = ref('00')
-const minutes = ref('00')
-const currentDate = ref('')
-const hijriDate = ref('')
-
-function updateTime() {
-  const now = new Date()
-  hours.value = String(now.getHours()).padStart(2, '0')
-  minutes.value = String(now.getMinutes()).padStart(2, '0')
-
-  const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
-  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des']
-  currentDate.value = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]}`
-
-  try {
-    const hijri = new Intl.DateTimeFormat('id-u-ca-islamic', {
-      day: 'numeric', month: 'long', year: 'numeric'
-    }).format(now)
-    hijriDate.value = hijri
-  } catch {
-    hijriDate.value = ''
-  }
-}
 
 // ── API Data (per-card loading) ──
 const loadingNews = ref(true)
@@ -397,7 +292,6 @@ const latestMonthly = ref([])
 const galleryThumbs = ref([])
 const galleryCount = ref(0)
 const latestAnnouncement = ref(null)
-const tickerItems = ref(['Selamat Datang di Access Interactive Dashboard...'])
 
 function timeAgo(dateStr) {
   if (!dateStr) return '-'
@@ -450,7 +344,6 @@ function fetchLandingData() {
         image: n.image_path ? storageUrl(n.image_path) : '/img/default-agenda.png',
         excerpt: n.body ? n.body.replace(/<[^>]*>/g, '').substring(0, 120) + '...' : '',
       }
-      tickerItems.value = items.map(n => n.title)
     }
   }).catch(() => {}).finally(() => { loadingNews.value = false })
 
@@ -532,16 +425,11 @@ function fetchLandingData() {
   }).catch(() => {}).finally(() => { loadingAnnouncement.value = false })
 }
 
-let timeInterval
 onMounted(() => {
-  updateTime()
-  timeInterval = setInterval(updateTime, 1000)
   fetchLandingData()
 })
 
-onUnmounted(() => {
-  clearInterval(timeInterval)
-})
+
 </script>
 
 <style scoped>

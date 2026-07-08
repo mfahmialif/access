@@ -23,23 +23,62 @@
     </div>
 
     <!-- ═══ FILTERS BAR ═══ -->
-    <div class="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
+    <div class="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4 relative z-20">
       <div class="relative w-full lg:w-[400px]">
         <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-accent text-[20px] z-10">search</span>
         <input v-model="searchQuery" class="filter-input w-full rounded-xl py-2.5 pl-10 pr-4 text-sm focus:outline-none focus:ring-1 focus:ring-accent" placeholder="Search media..." type="text" />
       </div>
       <div class="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3 lg:gap-4">
+        <!-- Tipe -->
         <div class="flex items-center gap-2">
           <span class="text-sm font-medium shrink-0" style="color: var(--text-body)">Tipe:</span>
-          <VueMultiselect v-model="filterType" :options="typeOptions" :close-on-select="true" :searchable="true" :allow-empty="false" :show-labels="false" label="name" track-by="value" class="flex-1 sm:w-[140px] sm:flex-none" />
+          <VueMultiselect
+            v-model="filterType"
+            :options="typeOptions"
+            :close-on-select="true"
+            :clear-on-select="false"
+            :searchable="true"
+            :allow-empty="false"
+            :show-labels="false"
+            label="name"
+            track-by="value"
+            placeholder="Semua"
+            class="flex-1 sm:w-[140px] sm:flex-none"
+          />
         </div>
+        <!-- Status -->
         <div class="flex items-center gap-2">
           <span class="text-sm font-medium shrink-0" style="color: var(--text-body)">Status:</span>
-          <VueMultiselect v-model="filterStatus" :options="statusOptions" :close-on-select="true" :searchable="true" :allow-empty="false" :show-labels="false" label="name" track-by="value" class="flex-1 sm:w-[150px] sm:flex-none" />
+          <VueMultiselect
+            v-model="filterStatus"
+            :options="statusOptions"
+            :close-on-select="true"
+            :clear-on-select="false"
+            :searchable="true"
+            :allow-empty="false"
+            :show-labels="false"
+            label="name"
+            track-by="value"
+            placeholder="Semua"
+            class="flex-1 sm:w-[150px] sm:flex-none"
+          />
         </div>
+        <!-- Show Entries -->
         <div class="flex items-center gap-2">
           <span class="text-sm font-medium shrink-0" style="color: var(--text-body)">Show:</span>
-          <VueMultiselect v-model="perPage" :options="perPageOptions" :close-on-select="true" :searchable="true" :allow-empty="false" :show-labels="false" label="name" track-by="value" class="w-[90px]" />
+          <VueMultiselect
+            v-model="perPage"
+            :options="perPageOptions"
+            :close-on-select="true"
+            :clear-on-select="false"
+            :searchable="true"
+            :allow-empty="false"
+            :show-labels="false"
+            label="name"
+            track-by="value"
+            placeholder="12"
+            class="w-[90px]"
+          />
           <span class="text-sm font-medium shrink-0" style="color: var(--text-body)">entries</span>
         </div>
       </div>
@@ -70,7 +109,7 @@
               <td class="px-4 py-4"><span class="text-sm font-bold line-clamp-1" style="color: var(--text-heading)">{{ item.title }}</span></td>
               <td class="px-4 py-4"><span :class="typeBadge(item.category)">{{ item.category }}</span></td>
               <td class="px-4 py-4 text-sm font-mono" style="color: var(--text-muted)">{{ formatDuration(item.duration) }}</td>
-              <td class="px-4 py-4 text-sm" style="color: var(--text-muted)">{{ formatDate(item.created_at) }}</td>
+              <td class="px-4 py-4 text-sm" style="color: var(--text-muted)">{{ formatDateTime(item.datetime) }}</td>
               <td class="px-4 py-4"><span :class="statusBadge(item.status)">{{ item.status }}</span></td>
               <td class="px-4 py-4 text-right">
                 <div class="flex items-center justify-end gap-1">
@@ -142,14 +181,21 @@ function formatDuration(seconds) {
 }
 
 function formatDate(dateStr) {
-  if (!dateStr) return '-'
+  if (!dateStr) return '—'
   const d = new Date(dateStr)
   const now = new Date()
   const diff = Math.floor((now - d) / 1000)
+  if (diff < 60) return 'Baru saja'
   if (diff < 3600) return `${Math.floor(diff / 60)} Menit lalu`
   if (diff < 86400) return `${Math.floor(diff / 3600)} Jam lalu`
   if (diff < 172800) return '1 Hari lalu'
   return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
+}
+
+function formatDateTime(dateStr) {
+  if (!dateStr) return '—'
+  const d = new Date(dateStr)
+  return d.toLocaleString('id-ID', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
 }
 
 function loadGalleries() {
@@ -159,6 +205,8 @@ function loadGalleries() {
     status: filterStatus.value.value !== 'all' ? filterStatus.value.value : undefined,
     per_page: perPage.value.value,
     page: currentPage.value,
+    sort_by: 'id',
+    sort_dir: 'desc',
   })
 }
 

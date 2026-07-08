@@ -8,28 +8,7 @@
     <div class="relative z-10 flex flex-col min-h-screen w-full p-4 md:p-8 gap-4 md:gap-6 max-w-[1920px] mx-auto">
 
       <!-- ═══════ HEADER ═══════ -->
-      <header class="flex flex-col sm:flex-row items-start sm:items-center justify-between w-full shrink-0 gap-3">
-        <div class="flex items-center gap-3 md:gap-4">
-          <button @click="$router.push('/')" 
-                  class="size-10 md:size-12 rounded-xl bg-[#0f172a]/80 border border-accent/30 flex items-center justify-center text-accent hover:bg-accent hover:text-[#0a192f] transition-all duration-300 shadow-[0_0_10px_rgba(251,191,36,0.1)] hover:shadow-[0_0_20px_rgba(251,191,36,0.4)] cursor-pointer shrink-0">
-            <span class="material-symbols-outlined text-xl md:text-2xl">arrow_back</span>
-          </button>
-          <router-link to="/" class="group cursor-pointer flex flex-col justify-center">
-            <img src="/img/logo-full.png" alt="Access" class="h-16 md:h-24 -mt-2 md:-mt-4 object-contain drop-shadow-lg group-hover:drop-shadow-xl transition-all" />
-          </router-link>
-        </div>
-        <div class="hidden md:flex items-center gap-4 glass-panel rounded-xl px-4 py-2 border border-yellow-500/20">
-          <div class="text-right border-r border-yellow-500/20 pr-4">
-            <div class="text-2xl font-bold font-mono text-yellow-400 tabular-nums tracking-widest drop-shadow-sm">
-              {{ currentTime }}<span class="text-base text-yellow-400/60 ml-1">WIB</span>
-            </div>
-          </div>
-          <div class="flex flex-col justify-center">
-            <span class="text-white text-base font-medium leading-tight">{{ hijriDate }}</span>
-            <span class="text-slate-400 text-xs mt-0.5">{{ currentDate }}</span>
-          </div>
-        </div>
-      </header>
+      <PublicHeader :showBack="true" />
 
       <!-- ═══════ MAIN CONTENT ═══════ -->
       <main class="flex flex-col md:flex-row portrait:flex-col flex-1 gap-4 md:gap-8 pb-8">
@@ -374,43 +353,14 @@ import 'simplebar-vue/dist/simplebar.min.css'
 import api from '../../../axios'
 import { storageUrl } from '../../../utils/asset'
 import { usePublicTheme } from '../../../composables/usePublicTheme'
+import PublicHeader from '../../../components/PublicHeader.vue'
 
 const router = useRouter()
 const { isDark } = usePublicTheme()
 
-// ── Time & Date ──
-const currentTime = ref('')
-const currentDate = ref('')
-const hijriDate = ref('')
-
-function updateTime() {
-  const now = new Date()
-  currentTime.value = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`
-
-  const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
-  currentDate.value = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`
-
-  try {
-    hijriDate.value = new Intl.DateTimeFormat('id-u-ca-islamic', {
-      weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
-    }).format(now)
-  } catch {
-    hijriDate.value = 'Senin, 24 Rajab 1445 H'
-  }
-}
-
-let timeInterval
 onMounted(() => {
-  updateTime()
-  timeInterval = setInterval(updateTime, 1000)
   loadAgendas()
 })
-onUnmounted(() => clearInterval(timeInterval))
-
-// ── Navigation ──
-function goBack() {
-  router.push({ name: 'Landing' })
-}
 
 // ── Category Badge Styling ──
 function categoryBadgeClass(category) {

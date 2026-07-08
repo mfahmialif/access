@@ -56,13 +56,13 @@
   --color-card-glass: rgba(15, 23, 42, 0.5);
   --color-card-hover: rgba(30, 58, 138, 0.4);
 
-  --animate-marquee: marquee 35s linear infinite;
+  --animate-marquee: marquee 70s linear infinite;
   --animate-pulse-slow: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 
   --radius-2xl: 1.5rem;
 
   @keyframes marquee {
-    0% { transform: translateX(100%); }
+    0% { transform: translateX(100vw); }
     100% { transform: translateX(-100%); }
   }
 

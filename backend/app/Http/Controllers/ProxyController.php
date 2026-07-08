@@ -197,6 +197,20 @@ class ProxyController extends Controller
         }
     } catch(e) {}
 
+    // Send activity events to parent window to prevent screensaver
+    var notifyParent = function() {
+        try { window.parent.postMessage('iframe_activity', '*'); } catch(e) {}
+    };
+    var t;
+    var throttleNotify = function() {
+        if (t) return;
+        notifyParent();
+        t = setTimeout(function(){ t = null; }, 1500);
+    };
+    ['mousedown', 'mousemove', 'keydown', 'touchstart', 'scroll', 'wheel', 'click'].forEach(function(ev) {
+        window.addEventListener(ev, throttleNotify, { passive: true, capture: true });
+    });
+
     // Wrap history.pushState & replaceState to prevent cross-origin SecurityError
     var origPush = history.pushState;
     var origReplace = history.replaceState;

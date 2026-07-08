@@ -20,10 +20,16 @@
     <!-- ═══ FORM CARD ═══ -->
     <div v-else class="form-card rounded-2xl p-6 flex flex-col gap-6">
 
-      <!-- ── Row 1: Judul ── -->
-      <div class="flex flex-col gap-1.5">
-        <label class="text-sm font-medium" style="color: var(--text-body)">Judul Pengumuman *</label>
-        <input v-model="form.title" class="filter-input rounded-xl py-2.5 px-4 text-sm focus:outline-none focus:ring-1 focus:ring-accent" placeholder="Judul pengumuman" />
+      <!-- ── Row 1: Judul & Waktu ── -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="flex flex-col gap-1.5">
+          <label class="text-sm font-medium" style="color: var(--text-body)">Judul Pengumuman *</label>
+          <input v-model="form.title" class="filter-input rounded-xl py-2.5 px-4 text-sm focus:outline-none focus:ring-1 focus:ring-accent" placeholder="Judul pengumuman" />
+        </div>
+        <div class="flex flex-col gap-1.5">
+          <label class="text-sm font-medium" style="color: var(--text-body)">Waktu & Tanggal</label>
+          <input type="datetime-local" v-model="form.datetime" class="filter-input rounded-xl py-2.5 px-4 text-sm focus:outline-none focus:ring-1 focus:ring-accent" />
+        </div>
       </div>
 
       <!-- ── Row 2: Target + Lokasi ── -->
@@ -115,9 +121,15 @@ const pageLoading = ref(false)
 const formLoading = ref(false)
 const formError = ref('')
 
+function getCurrentDateTimeLocal() {
+  const now = new Date()
+  now.setMinutes(now.getMinutes() - now.getTimezoneOffset())
+  return now.toISOString().slice(0, 16)
+}
+
 const form = ref({
   title: '', body: '', excerpt: '', priority: 'Normal',
-  audience: '', location: '', status: 'Aktif',
+  audience: '', location: '', status: 'Aktif', datetime: getCurrentDateTimeLocal()
 })
 
 const imageFile = ref(null)
@@ -210,6 +222,7 @@ onMounted(async () => {
         audience: data.audience || '',
         location: data.location || '',
         status: data.status || 'Aktif',
+        datetime: data.datetime ? data.datetime.substring(0, 16) : ''
       }
       if (data.image_path) imagePreview.value = storageUrl(data.image_path)
     } catch { formError.value = 'Gagal memuat data.' }
@@ -231,6 +244,7 @@ async function handleSubmit() {
     if (form.value.excerpt) fd.append('excerpt', form.value.excerpt)
     if (form.value.audience) fd.append('audience', form.value.audience)
     if (form.value.location) fd.append('location', form.value.location)
+    if (form.value.datetime) fd.append('datetime', form.value.datetime)
     if (imageFile.value) fd.append('image', imageFile.value)
     if (removeImageFlag.value) fd.append('remove_image', '1')
 

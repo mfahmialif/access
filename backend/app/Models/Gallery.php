@@ -9,7 +9,7 @@ class Gallery extends Model
 {
     protected $fillable = [
         'title', 'category', 'description', 'image_path', 'video_path',
-        'duration', 'status', 'created_by',
+        'duration', 'status', 'created_by', 'datetime'
     ];
 
     public function creator(): BelongsTo

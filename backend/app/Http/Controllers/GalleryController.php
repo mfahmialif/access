@@ -29,13 +29,13 @@ class GalleryController extends Controller
         }
 
         // Sorting
-        $sortBy = $request->input('sort_by', 'created_at');
+        $sortBy = $request->input('sort_by', 'datetime');
         $sortDir = $request->input('sort_dir', 'desc');
-        $allowedSort = ['created_at', 'title', 'category'];
+        $allowedSort = ['id', 'datetime', 'created_at', 'title', 'category'];
         if (in_array($sortBy, $allowedSort)) {
             $query->orderBy($sortBy, $sortDir === 'asc' ? 'asc' : 'desc');
         } else {
-            $query->orderByDesc('created_at');
+            $query->orderByDesc('datetime');
         }
 
         $perPage = $request->input('per_page', 12);
@@ -69,7 +69,7 @@ class GalleryController extends Controller
             'duration'    => 'nullable|integer',
         ]);
 
-        $data = $request->only(['title', 'category', 'description', 'status', 'duration']);
+        $data = $request->only(['title', 'category', 'description', 'status', 'duration', 'datetime']);
         $data['created_by'] = $request->user()?->id;
 
         if ($request->hasFile('image')) {
@@ -97,7 +97,7 @@ class GalleryController extends Controller
             'duration'    => 'nullable|integer',
         ]);
 
-        $data = $request->only(['title', 'category', 'description', 'status', 'duration']);
+        $data = $request->only(['title', 'category', 'description', 'status', 'duration', 'datetime']);
 
         if ($request->hasFile('image')) {
             if ($gallery->image_path) Storage::disk('public')->delete($gallery->image_path);

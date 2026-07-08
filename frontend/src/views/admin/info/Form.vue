@@ -20,10 +20,16 @@
     <!-- ═══ FORM CARD ═══ -->
     <div v-else class="form-card rounded-2xl p-6 flex flex-col gap-6">
 
-      <!-- ── Row 1: Judul ── -->
-      <div class="flex flex-col gap-1.5">
-        <label class="text-sm font-medium" style="color: var(--text-body)">Judul Konten *</label>
-        <input v-model="form.title" class="filter-input rounded-xl py-2.5 px-4 text-sm focus:outline-none focus:ring-1 focus:ring-accent" placeholder="Judul konten" />
+      <!-- ── Row 1: Judul & Waktu ── -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="flex flex-col gap-1.5">
+          <label class="text-sm font-medium" style="color: var(--text-body)">Judul Konten *</label>
+          <input v-model="form.title" class="filter-input rounded-xl py-2.5 px-4 text-sm focus:outline-none focus:ring-1 focus:ring-accent" placeholder="Judul konten" />
+        </div>
+        <div class="flex flex-col gap-1.5">
+          <label class="text-sm font-medium" style="color: var(--text-body)">Waktu & Tanggal</label>
+          <input type="datetime-local" v-model="form.datetime" class="filter-input rounded-xl py-2.5 px-4 text-sm focus:outline-none focus:ring-1 focus:ring-accent" />
+        </div>
       </div>
 
       <!-- ── Row 2: Kategori + Status ── -->
@@ -118,9 +124,16 @@ const pageLoading = ref(false)
 const formLoading = ref(false)
 const formError = ref('')
 
+function getCurrentDateTimeLocal() {
+  const now = new Date()
+  now.setMinutes(now.getMinutes() - now.getTimezoneOffset())
+  return now.toISOString().slice(0, 16)
+}
+
 const form = ref({
   title: '', category: 'Artikel', body: '',
   speaker: '', duration: '', status: 'Published',
+  datetime: getCurrentDateTimeLocal()
 })
 
 const imageFile = ref(null); const imagePreview = ref(null); const imageDragOver = ref(false); const removeImageFlag = ref(false)
@@ -202,6 +215,7 @@ onMounted(async () => {
         title: data.title || '', category: data.category || 'Artikel',
         body: data.body || '', speaker: data.speaker || '',
         duration: data.duration || '', status: data.status || 'Published',
+        datetime: data.datetime ? data.datetime.substring(0, 16) : ''
       }
       if (data.image_path) imagePreview.value = storageUrl(data.image_path)
       if (data.video_path) videoPreview.value = storageUrl(data.video_path)
@@ -219,6 +233,7 @@ async function handleSubmit() {
     fd.append('title', form.value.title)
     fd.append('category', form.value.category)
     fd.append('status', form.value.status)
+    if (form.value.datetime) fd.append('datetime', form.value.datetime)
     if (form.value.body) fd.append('body', form.value.body)
     if (form.value.speaker) fd.append('speaker', form.value.speaker)
     if (form.value.duration) fd.append('duration', form.value.duration)

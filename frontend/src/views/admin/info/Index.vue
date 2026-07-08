@@ -23,19 +23,46 @@
     </div>
 
     <!-- ═══ FILTERS BAR ═══ -->
-    <div class="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
+    <div class="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4 relative z-20">
       <div class="relative w-full lg:w-[400px]">
         <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-accent text-[20px] z-10">search</span>
         <input v-model="searchQuery" @input="debouncedFetch" class="filter-input w-full rounded-xl py-2.5 pl-10 pr-4 text-sm focus:outline-none focus:ring-1 focus:ring-accent" placeholder="Search content..." type="text" />
       </div>
+      <!-- Filter Controls -->
       <div class="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3 lg:gap-4">
+        <!-- Kategori -->
         <div class="flex items-center gap-2">
           <span class="text-sm font-medium shrink-0" style="color: var(--text-body)">Kategori:</span>
-          <VueMultiselect v-model="filterCategory" :options="categoryOptions" :close-on-select="true" :searchable="false" :allow-empty="false" :show-labels="false" label="name" track-by="value" @select="fetchData" class="flex-1 sm:w-[160px] sm:flex-none" />
+          <VueMultiselect
+            v-model="filterCategory"
+            :options="categoryOptions"
+            :close-on-select="true"
+            :clear-on-select="false"
+            :searchable="false"
+            :allow-empty="false"
+            :show-labels="false"
+            label="name"
+            track-by="value"
+            placeholder="Semua"
+            style="min-width: 160px; width: 160px;"
+          />
         </div>
+        <!-- Status -->
         <div class="flex items-center gap-2">
           <span class="text-sm font-medium shrink-0" style="color: var(--text-body)">Status:</span>
-          <VueMultiselect v-model="filterStatus" :options="statusOptions" :close-on-select="true" :searchable="false" :allow-empty="false" :show-labels="false" label="name" track-by="value" @select="fetchData" class="flex-1 sm:w-[150px] sm:flex-none" />
+          <VueMultiselect
+            v-model="filterStatus"
+            :options="statusOptions"
+            :close-on-select="true"
+            :clear-on-select="false"
+            :searchable="false"
+            :allow-empty="false"
+            :show-labels="false"
+            label="name"
+            track-by="value"
+            placeholder="Semua"
+            style="min-width: 150px; width: 150px;"
+          />
         </div>
       </div>
     </div>
@@ -74,7 +101,7 @@
               </td>
               <td class="px-4 py-4"><span class="text-sm font-bold line-clamp-1" style="color: var(--text-heading)">{{ item.title }}</span></td>
               <td class="px-4 py-4"><span :class="categoryBadge(item.category)">{{ item.category }}</span></td>
-              <td class="px-4 py-4 text-sm" style="color: var(--text-muted)">{{ timeAgo(item.created_at) }}</td>
+              <td class="px-4 py-4 text-sm" style="color: var(--text-muted)">{{ formatDateTime(item.datetime) }}</td>
               <td class="px-4 py-4"><span :class="statusBadge(item.status)">{{ item.status }}</span></td>
               <td class="px-4 py-4 text-right">
                 <div class="flex items-center justify-end gap-1">
@@ -179,7 +206,7 @@ function debouncedFetch() { clearTimeout(debounceTimer); debounceTimer = setTime
 async function fetchData() {
   loading.value = true
   try {
-    const params = { page: currentPage.value, per_page: perPage }
+    const params = { page: currentPage.value, per_page: perPage, sort_by: 'id', sort_dir: 'desc' }
     if (searchQuery.value) params.search = searchQuery.value
     if (filterCategory.value?.value !== 'all') params.category = filterCategory.value.value
     if (filterStatus.value?.value !== 'all') params.status = filterStatus.value.value
@@ -233,6 +260,12 @@ function timeAgo(dateStr) {
   if (diff < 86400) return `${Math.floor(diff / 3600)} jam lalu`
   if (diff < 172800) return '1 hari lalu'
   return `${Math.floor(diff / 86400)} hari lalu`
+}
+
+function formatDateTime(dateStr) {
+  if (!dateStr) return '—'
+  const d = new Date(dateStr)
+  return d.toLocaleString('id-ID', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
 }
 
 function categoryBadge(c) {
