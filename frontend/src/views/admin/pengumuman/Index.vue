@@ -77,33 +77,35 @@
       </div>
     </div>
 
-    <!-- ═══ DELETE CONFIRM MODAL ═══ -->
-    <Transition name="modal">
-      <div v-if="showDeleteConfirm" class="fixed inset-0 z-50 flex items-center justify-center p-4">
-        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" @click="showDeleteConfirm = false"></div>
-        <div class="relative w-full max-w-md rounded-2xl p-6 shadow-2xl text-center" style="background: var(--bg-card); border: 1px solid var(--border)">
-          <span class="material-symbols-outlined text-red-400 text-5xl mb-3">warning</span>
-          <h3 class="text-lg font-bold mb-2" style="color: var(--text-heading)">Hapus Pengumuman?</h3>
-          <p class="text-sm mb-6" style="color: var(--text-muted)">{{ deletingItem?.title }}</p>
-          <div class="flex justify-center gap-3">
-            <button @click="showDeleteConfirm = false" class="px-5 py-2.5 rounded-lg text-sm font-bold cursor-pointer" style="color: var(--text-muted); background: var(--bg-input); border: 1px solid var(--border)">Batal</button>
-            <button @click="deleteItem" :disabled="deleting" class="px-5 py-2.5 rounded-lg text-sm font-bold cursor-pointer bg-red-500 text-white disabled:opacity-50">
-              {{ deleting ? 'Menghapus...' : 'Hapus' }}
-            </button>
+    <Teleport to="#admin-root">
+      <!-- ═══ DELETE CONFIRM MODAL ═══ -->
+      <Transition name="modal">
+        <div v-if="showDeleteConfirm" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" @click="showDeleteConfirm = false"></div>
+          <div class="relative w-full max-w-md rounded-2xl p-6 shadow-2xl text-center" style="background: var(--bg-card); border: 1px solid var(--border)">
+            <span class="material-symbols-outlined text-red-400 text-5xl mb-3">warning</span>
+            <h3 class="text-lg font-bold mb-2" style="color: var(--text-heading)">Hapus Pengumuman?</h3>
+            <p class="text-sm mb-6" style="color: var(--text-muted)">{{ deletingItem?.title }}</p>
+            <div class="flex justify-center gap-3">
+              <button @click="showDeleteConfirm = false" class="px-5 py-2.5 rounded-lg text-sm font-bold cursor-pointer" style="color: var(--text-muted); background: var(--bg-input); border: 1px solid var(--border)">Batal</button>
+              <button @click="deleteItem" :disabled="deleting" class="px-5 py-2.5 rounded-lg text-sm font-bold cursor-pointer bg-red-500 text-white disabled:opacity-50">
+                {{ deleting ? 'Menghapus...' : 'Hapus' }}
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-    </Transition>
+      </Transition>
 
-    <!-- ═══ TOAST ═══ -->
-    <Transition name="toast">
-      <div v-if="toast.show" class="fixed top-6 right-6 z-60 max-w-sm" :class="toast.type === 'success' ? 'toast-success' : 'toast-error'">
-        <div class="flex items-center gap-3 px-4 py-3 rounded-xl shadow-lg border">
-          <span class="material-symbols-outlined text-lg">{{ toast.type === 'success' ? 'check_circle' : 'error' }}</span>
-          <span class="text-sm font-medium">{{ toast.message }}</span>
+      <!-- ═══ TOAST ═══ -->
+      <Transition name="toast">
+        <div v-if="toast.show" class="fixed top-6 right-6 z-60 max-w-sm" :class="toast.type === 'success' ? 'toast-success' : 'toast-error'">
+          <div class="flex items-center gap-3 px-4 py-3 rounded-xl shadow-lg border">
+            <span class="material-symbols-outlined text-lg">{{ toast.type === 'success' ? 'check_circle' : 'error' }}</span>
+            <span class="text-sm font-medium">{{ toast.message }}</span>
+          </div>
         </div>
-      </div>
-    </Transition>
+      </Transition>
+    </Teleport>
 
   </div>
 </template>

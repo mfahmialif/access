@@ -1,11 +1,11 @@
 <template>
-  <div :data-theme="isDark ? 'dark' : 'light'"
+  <div id="admin-root" :data-theme="isDark ? 'dark' : 'light'"
        class="admin-root relative flex h-screen w-screen font-display overflow-hidden transition-colors duration-500">
 
     <!-- ═══════ MOBILE OVERLAY ═══════ -->
     <Transition name="fade">
       <div v-if="sidebarOpen"
-           class="sidebar-overlay fixed inset-0 bg-black/60 backdrop-blur-sm z-30 lg:hidden"
+           class="sidebar-overlay fixed inset-0 bg-black/70 z-30 lg:hidden"
            @click="sidebarOpen = false"></div>
     </Transition>
 
@@ -310,16 +310,14 @@ function toggleTheme() {
 .text-muted { color: var(--text-muted); }
 
 /* ═══ Expose CSS vars for child page components ═══ */
-.admin-root :deep(.stat-card) { background: var(--bg-card); box-shadow: var(--shadow-card); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+.admin-root :deep(.stat-card) { background: var(--bg-card); box-shadow: var(--shadow-card); transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease; will-change: transform; }
 .admin-root :deep(.stat-card:hover) {
-  transform: translateY(-6px);
-  border-color: rgba(251, 191, 36, 0.7);
-  box-shadow:
-    0 0 25px rgba(251, 191, 36, 0.15),
-    0 20px 40px -15px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(251, 191, 36, 0.1);
+  transform: translateY(-4px);
+  border-color: rgba(251, 191, 36, 0.5);
+  box-shadow: 0 8px 25px -8px rgba(0, 0, 0, 0.3);
 }
 .admin-root :deep(.table-wrapper) { background: var(--bg-table-body); border: 1px solid var(--border); }
+.admin-root :deep(.top-header) { background: var(--bg-header); }
 .admin-root :deep(.table-head) { background: var(--bg-table-head); border-bottom: 1px solid var(--border-light); }
 .admin-root :deep(.table-body > tr) { border-bottom: 1px solid var(--border); }
 .admin-root :deep(.table-body > tr:last-child) { border-bottom: none; }
@@ -331,7 +329,7 @@ function toggleTheme() {
 
 /* ═══ Premium Table Row Hover ═══ */
 .admin-root :deep(.table-row-hover) {
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: background-color 0.2s ease, border-left-color 0.2s ease;
   border-left: 3px solid transparent;
 }
 .admin-root :deep(.table-row-hover:hover) {

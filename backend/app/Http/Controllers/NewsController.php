@@ -5,9 +5,22 @@ namespace App\Http\Controllers;
 use App\Models\News;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class NewsController extends Controller
 {
+    public function stats()
+    {
+        $stats = DB::table('news')->selectRaw("
+            COUNT(*) as total,
+            SUM(CASE WHEN category = 'Artikel' THEN 1 ELSE 0 END) as artikel,
+            SUM(CASE WHEN category = 'Video' THEN 1 ELSE 0 END) as video,
+            SUM(CASE WHEN category = 'Gambar' THEN 1 ELSE 0 END) as gambar
+        ")->first();
+
+        return response()->json($stats);
+    }
+
     public function index(Request $request)
     {
         $query = News::query();

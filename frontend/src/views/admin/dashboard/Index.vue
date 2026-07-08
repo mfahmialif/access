@@ -181,7 +181,7 @@ async function fetchDashboard() {
 let refreshTimer = null
 onMounted(() => {
   fetchDashboard()
-  refreshTimer = setInterval(fetchDashboard, 30000)
+  refreshTimer = setInterval(fetchDashboard, 120000)
 })
 onUnmounted(() => clearInterval(refreshTimer))
 </script>

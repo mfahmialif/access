@@ -114,7 +114,7 @@ onBeforeUnmount(() => document.removeEventListener('click', handleClickOutside))
 
 <style scoped>
 /* ═══ Element Theming ═══ */
-.top-header { background: var(--bg-header); backdrop-filter: blur(12px); }
+.top-header { background: var(--bg-header); }
 .top-header.horiz-mode { background: var(--bg-card); border-bottom: 1px solid var(--border); }
 .search-input { background: var(--bg-input); border: 1px solid var(--border); color: var(--text-heading); }
 .search-input::placeholder { color: var(--text-muted); }
@@ -140,11 +140,9 @@ onBeforeUnmount(() => document.removeEventListener('click', handleClickOutside))
 .theme-toggle:hover {
   background: var(--color-accent);
   color: var(--text-btn);
-  box-shadow: 0 0 20px rgba(251, 191, 36, 0.4);
-  transform: rotate(15deg) scale(1.1);
 }
 .theme-toggle:active {
-  transform: rotate(0deg) scale(0.95);
+  transform: scale(0.95);
 }
 
 /* ═══ Notification Button ═══ */

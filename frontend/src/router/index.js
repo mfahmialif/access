@@ -317,6 +317,24 @@ const routes = [
         name: 'AdminLogAktivitas',
         component: () => import('../views/admin/log/Index.vue'),
         meta: { title: 'Access — Log Aktivitas', pageTitle: 'Log Aktivitas', requiresAuth: true }
+      },
+      {
+        path: 'screensaver',
+        name: 'AdminScreensaver',
+        component: () => import('../views/admin/screensaver/Index.vue'),
+        meta: { title: 'Access — Screensaver', pageTitle: 'Screensaver', requiresAuth: true }
+      },
+      {
+        path: 'screensaver/create',
+        name: 'AdminScreensaverCreate',
+        component: () => import('../views/admin/screensaver/Form.vue'),
+        meta: { title: 'Access — Tambah Screensaver', pageTitle: 'Tambah Screensaver', requiresAuth: true }
+      },
+      {
+        path: 'screensaver/:id/edit',
+        name: 'AdminScreensaverEdit',
+        component: () => import('../views/admin/screensaver/Form.vue'),
+        meta: { title: 'Access — Edit Screensaver', pageTitle: 'Edit Screensaver', requiresAuth: true }
       }
     ]
   }

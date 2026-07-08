@@ -4,9 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Models\AppLink;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class AppLinkController extends Controller
 {
+    public function stats()
+    {
+        $stats = DB::table('app_links')->selectRaw("
+            COUNT(*) as total,
+            SUM(CASE WHEN status = 'Published' THEN 1 ELSE 0 END) as published,
+            SUM(CASE WHEN status = 'Draft' THEN 1 ELSE 0 END) as draft
+        ")->first();
+
+        return response()->json($stats);
+    }
+
     public function index(Request $request)
     {
         $query = AppLink::query();

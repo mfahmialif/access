@@ -14,6 +14,7 @@ use App\Http\Controllers\TvDeviceController;
 use App\Http\Controllers\AppLinkController;
 use App\Http\Controllers\TvCommandController;
 use App\Http\Controllers\ProxyController;
+use App\Http\Controllers\ScreensaverController;
 use Illuminate\Support\Facades\Route;
 
 // ── Public routes ──
@@ -41,6 +42,7 @@ Route::get('/galleries/stats', [GalleryController::class, 'stats']);
 Route::get('/galleries/{gallery}', [GalleryController::class, 'show']);
 
 // News / Info Terkini (public read)
+Route::get('/news/stats', [NewsController::class, 'stats']);
 Route::get('/news', [NewsController::class, 'index']);
 Route::get('/news/{news}', [NewsController::class, 'show']);
 
@@ -50,6 +52,7 @@ Route::get('/announcements/stats', [AnnouncementController::class, 'stats']);
 Route::get('/announcements/{announcement}', [AnnouncementController::class, 'show']);
 
 // App Links / Portal (public read)
+Route::get('/app-links/stats', [AppLinkController::class, 'stats']);
 Route::get('/app-links', [AppLinkController::class, 'index']);
 Route::get('/app-links/{appLink}', [AppLinkController::class, 'show']);
 
@@ -60,6 +63,9 @@ Route::post('/tv/disconnect', [TvDeviceController::class, 'disconnect']);
 
 // Active banner (public — for TV display on load)
 Route::get('/tv-commands/active-banner', [TvCommandController::class, 'activeBanner']);
+
+// Screensaver (public — for TV display)
+Route::get('/screensaver/tv', [ScreensaverController::class, 'forTv']);
 
 // ── Protected routes (requires Sanctum token) ──
 Route::middleware('auth:sanctum')->group(function () {
@@ -134,4 +140,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/tv-commands/active-banners/{id}', [TvCommandController::class, 'updateBanner']);
     Route::delete('/tv-commands/active-banners/{id}', [TvCommandController::class, 'deleteBanner']);
     Route::get('/tv-commands/logs', [TvCommandController::class, 'logs']);
+
+    // Screensavers (protected CRUD)
+    Route::get('/screensavers/stats', [ScreensaverController::class, 'stats']);
+    Route::get('/screensavers', [ScreensaverController::class, 'index']);
+    Route::get('/screensavers/{screensaver}', [ScreensaverController::class, 'show']);
+    Route::post('/screensavers', [ScreensaverController::class, 'store']);
+    Route::post('/screensavers/{screensaver}', [ScreensaverController::class, 'update']);
+    Route::delete('/screensavers/{screensaver}', [ScreensaverController::class, 'destroy']);
+    Route::post('/screensavers/{screensaver}/images', [ScreensaverController::class, 'addImages']);
+    Route::delete('/screensavers/{screensaver}/images/{image}', [ScreensaverController::class, 'removeImage']);
 });

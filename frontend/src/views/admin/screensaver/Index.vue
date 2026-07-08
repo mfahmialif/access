@@ -3,9 +3,9 @@
 
     <!-- ═══ ACTION BAR ═══ -->
     <div class="flex items-center justify-between">
-      <router-link :to="{ name: 'AdminInfoTerkiniCreate' }" class="flex items-center gap-2 rounded-lg h-10 px-5 bg-accent text-btn-text font-bold transition-colors hover:bg-accent/90 shadow-[0_0_15px_rgba(251,191,36,0.3)] shrink-0 cursor-pointer active:scale-95" style="color: var(--text-btn)">
+      <router-link :to="{ name: 'AdminScreensaverCreate' }" class="flex items-center gap-2 rounded-lg h-10 px-5 bg-accent text-btn-text font-bold transition-colors hover:bg-accent/90 shadow-[0_0_15px_rgba(251,191,36,0.3)] shrink-0 cursor-pointer active:scale-95" style="color: var(--text-btn)">
         <span class="material-symbols-outlined text-[20px]">add_circle</span>
-        <span>Tambah Konten</span>
+        <span>Tambah Screensaver</span>
       </router-link>
     </div>
 
@@ -26,16 +26,16 @@
     <div class="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
       <div class="relative w-full lg:w-[400px]">
         <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-accent text-[20px] z-10">search</span>
-        <input v-model="searchQuery" @input="debouncedFetch" class="filter-input w-full rounded-xl py-2.5 pl-10 pr-4 text-sm focus:outline-none focus:ring-1 focus:ring-accent" placeholder="Search content..." type="text" />
+        <input v-model="searchQuery" @input="debouncedFetch" class="filter-input w-full rounded-xl py-2.5 pl-10 pr-4 text-sm focus:outline-none focus:ring-1 focus:ring-accent" placeholder="Cari TV..." type="text" />
       </div>
-      <div class="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3 lg:gap-4">
+      <div class="flex items-center gap-3">
         <div class="flex items-center gap-2">
-          <span class="text-sm font-medium shrink-0" style="color: var(--text-body)">Kategori:</span>
-          <VueMultiselect v-model="filterCategory" :options="categoryOptions" :close-on-select="true" :searchable="false" :allow-empty="false" :show-labels="false" label="name" track-by="value" @select="fetchData" class="flex-1 sm:w-[160px] sm:flex-none" />
+          <span class="text-sm font-medium shrink-0" style="color: var(--text-body)">TV:</span>
+          <VueMultiselect v-model="filterTv" :options="tvOptions" :close-on-select="true" :searchable="true" :allow-empty="false" :show-labels="false" label="name" track-by="value" @select="fetchData" class="w-[200px]" />
         </div>
         <div class="flex items-center gap-2">
           <span class="text-sm font-medium shrink-0" style="color: var(--text-body)">Status:</span>
-          <VueMultiselect v-model="filterStatus" :options="statusOptions" :close-on-select="true" :searchable="false" :allow-empty="false" :show-labels="false" label="name" track-by="value" @select="fetchData" class="flex-1 sm:w-[150px] sm:flex-none" />
+          <VueMultiselect v-model="filterStatus" :options="statusOptions" :close-on-select="true" :searchable="false" :allow-empty="false" :show-labels="false" label="name" track-by="value" @select="fetchData" class="w-[150px]" />
         </div>
       </div>
     </div>
@@ -51,34 +51,42 @@
         <table class="w-full text-left border-collapse">
           <thead><tr class="table-head">
             <th class="px-4 py-4 text-sm font-semibold w-16" style="color: var(--text-heading)">#</th>
-            <th class="px-4 py-4 text-sm font-semibold" style="color: var(--text-heading)">Thumbnail</th>
-            <th class="px-4 py-4 text-sm font-semibold" style="color: var(--text-heading)">Judul</th>
-            <th class="px-4 py-4 text-sm font-semibold" style="color: var(--text-heading)">Kategori</th>
-            <th class="px-4 py-4 text-sm font-semibold" style="color: var(--text-heading)">Waktu</th>
+            <th class="px-4 py-4 text-sm font-semibold" style="color: var(--text-heading)">TV Target</th>
+            <th class="px-4 py-4 text-sm font-semibold w-32" style="color: var(--text-heading)">Idle (dtk)</th>
+            <th class="px-4 py-4 text-sm font-semibold w-32" style="color: var(--text-heading)">Interval (dtk)</th>
+            <th class="px-4 py-4 text-sm font-semibold w-28" style="color: var(--text-heading)">Gambar</th>
             <th class="px-4 py-4 text-sm font-semibold" style="color: var(--text-heading)">Status</th>
             <th class="px-4 py-4 text-sm font-semibold text-right" style="color: var(--text-heading)">Actions</th>
           </tr></thead>
           <tbody class="table-body">
             <tr v-if="items.length === 0">
-              <td colspan="7" class="px-4 py-12 text-center text-sm" style="color: var(--text-muted)">Tidak ada data konten</td>
+              <td colspan="7" class="px-4 py-12 text-center text-sm" style="color: var(--text-muted)">Tidak ada screensaver</td>
             </tr>
             <tr v-for="(item, idx) in items" :key="item.id" class="table-row-hover">
               <td class="px-4 py-4 text-sm font-mono" style="color: var(--text-muted)">{{ (currentPage - 1) * perPage + idx + 1 }}</td>
               <td class="px-4 py-4">
-                <div class="w-16 h-10 rounded-lg overflow-hidden bg-cover bg-center border"
-                     :style="{ backgroundImage: item.image_path ? `url('${storageUrl(item.image_path)}')` : `url('/img/default-news.png')`, borderColor: 'var(--border)' }">
-                  <div v-if="item.category === 'Video'" class="w-full h-full flex items-center justify-center bg-black/40">
-                    <span class="material-symbols-outlined text-white text-[18px]">play_arrow</span>
-                  </div>
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-[20px]" :class="item.tv_device ? 'text-blue-400' : 'text-accent'">{{ item.tv_device ? 'tv' : 'devices' }}</span>
+                  <span class="text-sm font-bold" style="color: var(--text-heading)">{{ item.tv_device ? item.tv_device.name : 'Default (Semua TV)' }}</span>
+                </div>
+                <span v-if="item.tv_device" class="text-xs block mt-0.5" style="color: var(--text-muted)">{{ item.tv_device.location }}</span>
+              </td>
+              <td class="px-4 py-4 text-sm font-bold text-center" style="color: var(--text-body)">{{ item.idle_timeout }}</td>
+              <td class="px-4 py-4 text-sm font-bold text-center" style="color: var(--text-body)">{{ item.interval }}</td>
+              <td class="px-4 py-4">
+                <div class="flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-[18px] text-emerald-400">image</span>
+                  <span class="text-sm font-bold" style="color: var(--text-heading)">{{ item.images?.length || 0 }}</span>
                 </div>
               </td>
-              <td class="px-4 py-4"><span class="text-sm font-bold line-clamp-1" style="color: var(--text-heading)">{{ item.title }}</span></td>
-              <td class="px-4 py-4"><span :class="categoryBadge(item.category)">{{ item.category }}</span></td>
-              <td class="px-4 py-4 text-sm" style="color: var(--text-muted)">{{ timeAgo(item.created_at) }}</td>
-              <td class="px-4 py-4"><span :class="statusBadge(item.status)">{{ item.status }}</span></td>
+              <td class="px-4 py-4">
+                <span :class="item.is_active ? 'badge badge-published' : 'badge badge-draft'">
+                  {{ item.is_active ? 'Aktif' : 'Nonaktif' }}
+                </span>
+              </td>
               <td class="px-4 py-4 text-right">
                 <div class="flex items-center justify-end gap-1">
-                  <router-link :to="{ name: 'AdminInfoTerkiniEdit', params: { id: item.id } }" class="action-btn p-2 rounded-lg cursor-pointer" title="Edit"><span class="material-symbols-outlined text-[20px] text-accent">edit</span></router-link>
+                  <router-link :to="{ name: 'AdminScreensaverEdit', params: { id: item.id } }" class="action-btn p-2 rounded-lg cursor-pointer" title="Edit"><span class="material-symbols-outlined text-[20px] text-accent">edit</span></router-link>
                   <button @click="confirmDelete(item)" class="action-btn action-btn-delete p-2 rounded-lg cursor-pointer" title="Delete"><span class="material-symbols-outlined text-[20px] text-accent">delete</span></button>
                 </div>
               </td>
@@ -105,8 +113,8 @@
           <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" @click="showDeleteConfirm = false"></div>
           <div class="relative w-full max-w-md rounded-2xl p-6 shadow-2xl text-center" style="background: var(--bg-card); border: 1px solid var(--border)">
             <span class="material-symbols-outlined text-red-400 text-5xl mb-3">warning</span>
-            <h3 class="text-lg font-bold mb-2" style="color: var(--text-heading)">Hapus Konten?</h3>
-            <p class="text-sm mb-6" style="color: var(--text-muted)">{{ deletingItem?.title }}</p>
+            <h3 class="text-lg font-bold mb-2" style="color: var(--text-heading)">Hapus Screensaver?</h3>
+            <p class="text-sm mb-6" style="color: var(--text-muted)">{{ deletingItem?.tv_device?.name || 'Default (Semua TV)' }} — {{ deletingItem?.images?.length || 0 }} gambar</p>
             <div class="flex justify-center gap-3">
               <button @click="showDeleteConfirm = false" class="px-5 py-2.5 rounded-lg text-sm font-bold cursor-pointer" style="color: var(--text-muted); background: var(--bg-input); border: 1px solid var(--border)">Batal</button>
               <button @click="deleteItem" :disabled="deleting" class="px-5 py-2.5 rounded-lg text-sm font-bold cursor-pointer bg-red-500 text-white disabled:opacity-50">{{ deleting ? 'Menghapus...' : 'Hapus' }}</button>
@@ -132,7 +140,6 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
 import api from '../../../axios'
-import { storageUrl } from '../../../utils/asset'
 import VueMultiselect from 'vue-multiselect'
 import 'vue-multiselect/dist/vue-multiselect.css'
 
@@ -145,17 +152,19 @@ const totalItems = ref(0)
 const perPage = 10
 
 const searchQuery = ref('')
-const categoryOptions = [{ name: 'Semua', value: 'all' }, { name: 'Artikel', value: 'Artikel' }, { name: 'Video', value: 'Video' }, { name: 'Gambar', value: 'Gambar' }]
-const statusOptions = [{ name: 'All Status', value: 'all' }, { name: 'Published', value: 'Published' }, { name: 'Draft', value: 'Draft' }]
-const filterCategory = ref(categoryOptions[0])
+
+// ── TV filter options ──
+const tvOptions = ref([{ name: 'Semua', value: 'all' }, { name: 'Default (Semua TV)', value: 'default' }])
+const filterTv = ref(tvOptions.value[0])
+const statusOptions = [{ name: 'Semua Status', value: 'all' }, { name: 'Aktif', value: 'active' }, { name: 'Nonaktif', value: 'inactive' }]
 const filterStatus = ref(statusOptions[0])
 
 // ── Stats ──
 const statsCards = ref([
-  { label: 'Total Konten', value: 0, icon: 'article', iconBg: 'bg-accent/10', iconColor: 'text-accent' },
-  { label: 'Artikel', value: 0, icon: 'description', iconBg: 'bg-blue-500/10', iconColor: 'text-blue-400' },
-  { label: 'Video', value: 0, icon: 'videocam', iconBg: 'bg-red-500/10', iconColor: 'text-red-400' },
-  { label: 'Gambar', value: 0, icon: 'image', iconBg: 'bg-green-500/10', iconColor: 'text-green-400' },
+  { label: 'Total', value: 0, icon: 'slideshow', iconBg: 'bg-accent/10', iconColor: 'text-accent' },
+  { label: 'Aktif', value: 0, icon: 'check_circle', iconBg: 'bg-green-500/10', iconColor: 'text-green-400' },
+  { label: 'Nonaktif', value: 0, icon: 'cancel', iconBg: 'bg-red-500/10', iconColor: 'text-red-400' },
+  { label: 'Total Gambar', value: 0, icon: 'image', iconBg: 'bg-blue-500/10', iconColor: 'text-blue-400' },
 ])
 
 // ── Delete ──
@@ -181,10 +190,10 @@ async function fetchData() {
   try {
     const params = { page: currentPage.value, per_page: perPage }
     if (searchQuery.value) params.search = searchQuery.value
-    if (filterCategory.value?.value !== 'all') params.category = filterCategory.value.value
+    if (filterTv.value?.value !== 'all') params.tv_device_id = filterTv.value.value
     if (filterStatus.value?.value !== 'all') params.status = filterStatus.value.value
 
-    const { data } = await api.get('/news', { params })
+    const { data } = await api.get('/screensavers', { params })
     items.value = data.data
     totalPages.value = data.last_page
     totalItems.value = data.total
@@ -195,18 +204,30 @@ async function fetchData() {
 
 async function fetchStats() {
   try {
-    const { data } = await api.get('/news/stats')
+    const { data } = await api.get('/screensavers/stats')
     statsCards.value[0].value = data.total ?? 0
-    statsCards.value[1].value = data.artikel ?? 0
-    statsCards.value[2].value = data.video ?? 0
-    statsCards.value[3].value = data.gambar ?? 0
+    statsCards.value[1].value = data.active ?? 0
+    statsCards.value[2].value = data.inactive ?? 0
+    statsCards.value[3].value = data.total_images ?? 0
   } catch {
     // Fallback: derive from main data total
     try {
-      const { data } = await api.get('/news', { params: { per_page: 1 } })
+      const { data } = await api.get('/screensavers', { params: { per_page: 1 } })
       statsCards.value[0].value = data.total ?? 0
     } catch { /* silent */ }
   }
+}
+
+async function fetchTvDevices() {
+  try {
+    const { data } = await api.get('/tv-devices', { params: { per_page: 100 } })
+    const devices = data.data || []
+    tvOptions.value = [
+      { name: 'Semua', value: 'all' },
+      { name: 'Default (Semua TV)', value: 'default' },
+      ...devices.map(d => ({ name: `${d.name} — ${d.location}`, value: d.id }))
+    ]
+  } catch { /* silent */ }
 }
 
 function goPage(p) { if (p < 1 || p > totalPages.value) return; currentPage.value = p; fetchData() }
@@ -216,38 +237,15 @@ function confirmDelete(item) { deletingItem.value = item; showDeleteConfirm.valu
 async function deleteItem() {
   deleting.value = true
   try {
-    await api.delete(`/news/${deletingItem.value.id}`)
-    showToast('Konten berhasil dihapus')
+    await api.delete(`/screensavers/${deletingItem.value.id}`)
+    showToast('Screensaver berhasil dihapus')
     showDeleteConfirm.value = false
     fetchData(); fetchStats()
   } catch (e) { showToast(e.response?.data?.message || 'Gagal menghapus', 'error') }
   deleting.value = false
 }
 
-// ── Helpers ──
-function timeAgo(dateStr) {
-  if (!dateStr) return '—'
-  const d = new Date(dateStr); const now = new Date(); const diff = Math.floor((now - d) / 1000)
-  if (diff < 60) return 'Baru saja'
-  if (diff < 3600) return `${Math.floor(diff / 60)} menit lalu`
-  if (diff < 86400) return `${Math.floor(diff / 3600)} jam lalu`
-  if (diff < 172800) return '1 hari lalu'
-  return `${Math.floor(diff / 86400)} hari lalu`
-}
-
-function categoryBadge(c) {
-  if (c === 'Artikel') return 'badge badge-artikel'
-  if (c === 'Video') return 'badge badge-video'
-  if (c === 'Gambar') return 'badge badge-gambar'
-  return 'badge badge-default'
-}
-
-function statusBadge(s) {
-  if (s === 'Published') return 'badge badge-published'
-  return 'badge badge-draft'
-}
-
-onMounted(() => { fetchData(); fetchStats() })
+onMounted(() => { fetchData(); fetchStats(); fetchTvDevices() })
 </script>
 
 <style scoped>

@@ -103,6 +103,9 @@
       </button>
     </div>
   </Transition>
+
+  <!-- ═══ SCREENSAVER OVERLAY (only for TV displays) ═══ -->
+  <ScreensaverOverlay />
 </template>
 
 <script setup>
@@ -111,6 +114,7 @@ import { useRouter, useRoute } from 'vue-router'
 import api from './axios'
 import echo from './echo'
 import { fixHtmlAssetUrls } from './utils/asset'
+import ScreensaverOverlay from './components/ScreensaverOverlay.vue'
 
 const router = useRouter()
 const route = useRoute()

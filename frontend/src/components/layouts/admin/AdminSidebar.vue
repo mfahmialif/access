@@ -4,7 +4,7 @@
     <div class="flex items-center px-3 pb-4 shrink-0" :class="collapsed ? 'justify-center' : 'justify-between'">
       <div class="overflow-hidden transition-all duration-300 flex items-center" :style="collapsed ? 'width: 0; opacity: 0' : 'width: auto; opacity: 1'">
         <div class="overflow-hidden h-14">
-          <img src="/img/logo-full.png" alt="Access Admin" class="h-25 object-contain -mt-[22px]" />
+          <img src="/img/logo-full.png" alt="Access Admin" class="h-17 object-contain -mt-[15px]" />
         </div>
       </div>
       <img v-if="collapsed" src="/img/logo.png" alt="Access" class="w-12 h-12 object-contain mx-auto" />
@@ -157,6 +157,17 @@
                        :title="collapsed ? 'Manajemen TV' : ''">
             <span class="material-symbols-outlined text-[24px] shrink-0">tv</span>
             <span class="sidebar-label text-sm leading-normal">Manajemen TV</span>
+          </router-link>
+          <router-link to="/administrator/screensaver"
+                       :class="[
+                         'flex items-center gap-3 px-3 py-2 rounded-lg transition-colors sidebar-link',
+                         isActiveRoute('/administrator/screensaver')
+                           ? 'bg-accent text-btn-text font-bold'
+                           : 'nav-item text-body font-medium cursor-pointer'
+                       ]"
+                       :title="collapsed ? 'Screensaver' : ''">
+            <span class="material-symbols-outlined text-[24px] shrink-0">slideshow</span>
+            <span class="sidebar-label text-sm leading-normal">Screensaver</span>
           </router-link>
 
           <!-- Manajemen User — expandable (hidden when collapsed) -->
@@ -341,7 +352,7 @@ function handleLogout() {
 
 /* ═══ Premium Nav Hover ═══ */
 .nav-item {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: background-color 0.2s ease, color 0.2s ease, border-left-color 0.2s ease;
   border-left: 3px solid transparent;
   position: relative;
 }
@@ -349,16 +360,6 @@ function handleLogout() {
   background: var(--hover-nav-bg);
   color: var(--color-accent);
   border-left-color: var(--color-accent);
-  transform: translateX(4px);
-  box-shadow: -3px 0 12px -2px rgba(251, 191, 36, 0.15);
-}
-.nav-item:hover .material-symbols-outlined {
-  transform: scale(1.15);
-  filter: drop-shadow(0 0 6px rgba(251, 191, 36, 0.5));
-  transition: all 0.3s ease;
-}
-.nav-item:active {
-  transform: translateX(2px) scale(0.98);
 }
 
 /* ═══ Submenu Slide Animation ═══ */

@@ -27,6 +27,11 @@ class TvDevice extends Model
         return $this->hasOne(\App\Models\ActiveBanner::class);
     }
 
+    public function screensaver(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(\App\Models\Screensaver::class);
+    }
+
     /**
      * Generate a unique 6-digit numeric token.
      */

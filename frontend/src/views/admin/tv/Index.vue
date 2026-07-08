@@ -189,7 +189,7 @@
     </div>
 
     <!-- ═══ CREATE/EDIT DIALOG ═══ -->
-    <Teleport to="body">
+    <Teleport to="#admin-root">
       <Transition name="fade">
         <div v-if="showDialog" class="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center" @click.self="showDialog = false">
           <div class="rounded-2xl p-8 w-full max-w-lg shadow-2xl" style="background: var(--bg-card); border: 1px solid var(--border)">
@@ -227,7 +227,7 @@
     </Teleport>
 
     <!-- ═══ DELETE CONFIRM ═══ -->
-    <Teleport to="body">
+    <Teleport to="#admin-root">
       <Transition name="fade">
         <div v-if="showDeleteConfirm" class="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center" @click.self="showDeleteConfirm = false">
           <div class="rounded-2xl p-8 w-full max-w-md shadow-2xl" style="background: var(--bg-card); border: 1px solid var(--border)">
@@ -459,7 +459,7 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-.device-card { background: var(--bg-card); border: 1px solid var(--border); transition: all 0.3s ease; }
+.device-card { background: var(--bg-card); border: 1px solid var(--border); transition: border-color 0.2s ease; }
 .device-card:hover { border-color: var(--border-light); }
 .setup-card { background: linear-gradient(135deg, rgba(251, 191, 36, 0.06), var(--bg-card)); border-color: rgba(251, 191, 36, 0.25); box-shadow: 0 0 20px rgba(251, 191, 36, 0.05); }
 .token-box { background: var(--bg-main); border: 1px solid rgba(251, 191, 36, 0.2); }
