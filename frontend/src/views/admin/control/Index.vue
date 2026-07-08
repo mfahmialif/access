@@ -464,47 +464,48 @@ const staticPages = [
   { name: '📢 Pengumuman', path: '/pengumuman' },
 ]
 
-// ── Content dropdown (async search) ──
+// ── Content dropdown (async search via unified endpoint) ──
 const contentOptions = ref([...staticPages])
 const contentSearching = ref(false)
 let contentSearchTimer = null
 
 function onDropdownOpen() {
-  // Show static pages when dropdown first opens
+  // Show static pages + apps when dropdown first opens
   contentOptions.value = [...staticPages]
+  fetchAppsForDropdown()
+}
+
+async function fetchAppsForDropdown() {
+  try {
+    const { data } = await api.get('/app-links', { params: { per_page: 20, status: 'Published' } })
+    const list = data.data || data || []
+    const appItems = list.map(app => ({
+      name: `📱 ${app.title}`,
+      path: `/apps?open=${app.id}`,
+    }))
+    contentOptions.value = [...staticPages, ...appItems]
+  } catch { /* silent */ }
 }
 
 function searchContent(query) {
   clearTimeout(contentSearchTimer)
   if (!query || query.length < 2) {
     contentOptions.value = [...staticPages]
+    fetchAppsForDropdown()
     return
   }
   contentSearchTimer = setTimeout(async () => {
     contentSearching.value = true
+    // Filter static pages locally
     const results = [...staticPages.filter(p => p.name.toLowerCase().includes(query.toLowerCase()))]
     try {
-      const endpoints = [
-        { url: '/news', prefix: 'info-terkini', emoji: '📰' },
-        { url: '/agendas', prefix: 'agenda-harian', emoji: '📅' },
-        { url: '/weeklies', prefix: 'agenda-mingguan', emoji: '📆' },
-        { url: '/monthlies', prefix: 'agenda-bulanan', emoji: '🗓️' },
-        { url: '/galleries', prefix: 'gallery-video', emoji: '🎬' },
-        { url: '/announcements', prefix: 'pengumuman', emoji: '📢' },
-      ]
-      const responses = await Promise.all(
-        endpoints.map(ep => api.get(ep.url, { params: { search: query, per_page: 5 } }).catch(() => ({ data: { data: [] } })))
-      )
-      responses.forEach((res, i) => {
-        const list = res.data?.data || res.data || []
-        list.forEach(item => {
-          results.push({ name: `${endpoints[i].emoji} ${item.title}`, path: `/${endpoints[i].prefix}/${item.id}` })
-        })
-      })
+      // Single API call instead of 7 parallel requests
+      const { data } = await api.get('/content-search', { params: { q: query, limit: 5 } })
+      results.push(...data)
     } catch { /* silent */ }
     contentOptions.value = results
     contentSearching.value = false
-  }, 300)
+  }, 600)
 }
 
 const bannerTypes = [

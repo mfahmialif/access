@@ -8,21 +8,17 @@
         </Transition>
       </div>
 
-      <!-- Gradient overlay -->
-      <div class="screensaver-gradient"></div>
+      <!-- Gradient overlay (adapts to dark/light mode) -->
+      <div class="absolute inset-0 pointer-events-none"
+           :class="isDark 
+             ? 'bg-gradient-to-t from-[#020617]/90 via-transparent to-[#020617]/40' 
+             : 'bg-gradient-to-t from-white/95 via-transparent to-white/50'"></div>
 
       <!-- Bottom info bar -->
-      <div class="screensaver-info">
-        <div class="flex items-center gap-3">
-          <img src="/img/logo.png" alt="Access" class="w-10 h-10 object-contain opacity-60" />
-          <div>
-            <p class="text-white/80 text-sm font-bold tracking-widest uppercase">Access TV</p>
-            <p class="text-white/40 text-xs">Sentuh layar untuk buka aplikasi</p>
-          </div>
-        </div>
-        <div class="flex items-center gap-2 text-white/30">
-          <span class="material-symbols-outlined text-lg">touch_app</span>
-          <span class="text-xs font-medium">Tap to open apps</span>
+      <div class="absolute bottom-0 left-0 right-0 flex items-center justify-end px-10 py-6 pointer-events-none">
+        <div class="flex items-center gap-2" :class="isDark ? 'text-white/50' : 'text-slate-600'">
+          <span class="material-symbols-outlined text-lg animate-pulse">touch_app</span>
+          <span class="text-sm font-medium tracking-wide">Tap to open apps</span>
         </div>
       </div>
 
@@ -37,10 +33,12 @@
 <script setup>
 import { ref, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
+import { usePublicTheme } from '../composables/usePublicTheme'
 import api from '../axios'
 import echo from '../echo'
 
 const route = useRoute()
+const { isDark } = usePublicTheme()
 const overlayRef = ref(null)
 
 // ── State ──
@@ -268,29 +266,12 @@ watch(() => route.fullPath, async () => {
   background-repeat: no-repeat;
 }
 
-.screensaver-gradient {
+.screensaver-slide {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    to top,
-    rgba(0, 0, 0, 0.7) 0%,
-    rgba(0, 0, 0, 0) 30%,
-    rgba(0, 0, 0, 0) 70%,
-    rgba(0, 0, 0, 0.3) 100%
-  );
-  pointer-events: none;
-}
-
-.screensaver-info {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 24px 40px;
-  pointer-events: none;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .screensaver-dots {

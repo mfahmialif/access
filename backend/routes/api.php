@@ -16,6 +16,7 @@ use App\Http\Controllers\TvCommandController;
 use App\Http\Controllers\ProxyController;
 use App\Http\Controllers\ScreensaverController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\ContentSearchController;
 use Illuminate\Support\Facades\Route;
 
 // ── Public routes ──
@@ -60,6 +61,9 @@ Route::get('/announcements/{announcement}', [AnnouncementController::class, 'sho
 Route::get('/app-links/stats', [AppLinkController::class, 'stats']);
 Route::get('/app-links', [AppLinkController::class, 'index']);
 Route::get('/app-links/{appLink}', [AppLinkController::class, 'show']);
+
+// Unified content search (for push konten dropdown)
+Route::get('/content-search', [ContentSearchController::class, 'search']);
 
 // TV Device (public — connect + heartbeat + disconnect)
 Route::post('/tv/connect', [TvDeviceController::class, 'connect']);

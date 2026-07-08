@@ -203,13 +203,15 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, watch, onMounted, onUnmounted } from 'vue'
+import { useRoute } from 'vue-router'
 import api from '../../axios'
 import { usePublicTheme } from '../../composables/usePublicTheme'
 import PublicHeader from '../../components/PublicHeader.vue'
 import TickerBar from '../../components/TickerBar.vue'
 
 const { isDark } = usePublicTheme()
+const route = useRoute()
 
 // ── API Data ──
 const loading = ref(true)
@@ -376,9 +378,27 @@ const colorMapping = {
 function colorClasses(c) { return colorMapping[c]?.classes || colorMapping.amber.classes }
 function glowColor(c) { return colorMapping[c]?.glow || colorMapping.amber.glow }
 
-onMounted(() => {
-  fetchApps()
+onMounted(async () => {
+  await fetchApps()
   window.addEventListener('popstate', onPopState)
+  // Auto-open app if ?open=<id> is in query
+  autoOpenFromQuery()
+})
+
+function autoOpenFromQuery() {
+  const openId = route.query.open
+  if (openId && apps.value.length) {
+    const target = apps.value.find(a => String(a.id) === String(openId))
+    if (target) openEmbed(target)
+  }
+}
+
+// Watch for route query changes (e.g. push command changes the URL)
+watch(() => route.query.open, (newId) => {
+  if (newId && apps.value.length) {
+    const target = apps.value.find(a => String(a.id) === String(newId))
+    if (target) openEmbed(target)
+  }
 })
 
 onUnmounted(() => {
