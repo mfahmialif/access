@@ -12,28 +12,7 @@
         </div>
       </div>
 
-      <!-- Device Name Badge -->
-      <div v-if="deviceName" class="relative order-3 md:order-none w-full md:w-auto flex justify-center md:block">
-        <button @click="showDeviceMenu = !showDeviceMenu"
-                class="flex items-center gap-1.5 md:gap-2 glass-panel px-3 md:px-4 py-1 md:py-1.5 rounded-full border border-green-500/20 cursor-pointer hover:border-green-500/40 transition-all max-w-full">
-          <span class="relative flex h-2 w-2 shrink-0">
-            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-            <span class="relative inline-flex rounded-full h-2 w-2 bg-green-400"></span>
-          </span>
-          <span class="material-symbols-outlined text-green-400 text-sm md:text-base shrink-0">tv</span>
-          <span class="text-green-300 text-xs md:text-sm font-medium truncate max-w-[140px] md:max-w-[220px]">{{ deviceName }}</span>
-          <span class="material-symbols-outlined text-green-400/60 text-sm transition-transform shrink-0" :class="{ 'rotate-180': showDeviceMenu }">expand_more</span>
-        </button>
-        <!-- Dropdown -->
-        <Transition name="fade">
-          <div v-if="showDeviceMenu" class="absolute left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:right-0 top-full mt-2 z-50 w-52 rounded-xl overflow-hidden shadow-2xl border border-red-500/20" style="background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(20px)">
-            <button @click="disconnectTv" class="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-red-400 hover:bg-red-500/10 cursor-pointer transition-colors">
-              <span class="material-symbols-outlined text-[18px]">link_off</span>
-              Putuskan Sambungan
-            </button>
-          </div>
-        </Transition>
-      </div>
+
 
       <div class="flex items-center gap-2 md:gap-4 shrink-0">
         <div class="self-end">
@@ -57,27 +36,7 @@ import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
-// ── Device Name & TV Controls ──
-const deviceName = computed(() => {
-  try {
-    const device = JSON.parse(localStorage.getItem('tv_device') || 'null')
-    return device?.name || ''
-  } catch { return '' }
-})
 
-const showDeviceMenu = ref(false)
-
-function disconnectTv() {
-  const token = localStorage.getItem('tv_token')
-  if (token) {
-    const data = new Blob([JSON.stringify({ token })], { type: 'application/json' })
-    navigator.sendBeacon('/api/tv/disconnect', data)
-  }
-  localStorage.removeItem('tv_token')
-  localStorage.removeItem('tv_device')
-  showDeviceMenu.value = false
-  router.push({ name: 'ConnectToken' })
-}
 
 // ── Time & Date Logic ──
 const hours = ref('00')
@@ -152,12 +111,7 @@ onMounted(() => {
   updateTime()
   timer = setInterval(updateTime, 1000)
   
-  // Close TV menu if clicked outside
-  document.addEventListener('click', (e) => {
-    if (showDeviceMenu.value && !e.target.closest('.relative.order-3')) {
-      showDeviceMenu.value = false
-    }
-  })
+
 })
 
 onUnmounted(() => {

@@ -343,6 +343,5 @@ const patternBg = `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox
 .agenda-scroll:hover :deep(.simplebar-scrollbar::before) { opacity: 0.6; }
 .agenda-scroll :deep(.simplebar-scrollbar:hover::before) { background: rgba(251, 191, 36, 0.8); opacity: 1; }
 .agenda-scroll :deep(.simplebar-track.simplebar-vertical) { width: 10px; right: 2px; }
-.agenda-scroll :deep(.simplebar-content-wrapper) { padding-right: 14px; }
 .agenda-scroll :deep(.simplebar-track.simplebar-horizontal) { display: none; }
 </style>

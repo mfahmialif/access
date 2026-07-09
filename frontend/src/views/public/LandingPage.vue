@@ -228,7 +228,7 @@
         <!-- CARD 6: Pengumuman -->
         <div class="col-span-full group relative rounded-2xl bg-gradient-to-br from-yellow-900/40 to-yellow-950/40 border border-yellow-500/30 hover:border-yellow-500/60 p-4 md:p-6 flex flex-col transition-all duration-500 cursor-pointer shadow-[0_0_30px_rgba(234,179,8,0.1)] hover:shadow-[0_0_40px_rgba(234,179,8,0.2)]"
              @click="navigateTo('pengumuman')">
-          <div class="absolute -right-2 -top-2 z-20">
+          <div class="absolute right-0 -top-2 z-20">
             <span class="relative flex h-5 w-5">
               <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-75"></span>
               <span class="relative inline-flex rounded-full h-5 w-5 bg-yellow-500 border-2 border-[#020617]"></span>
@@ -444,7 +444,6 @@ onMounted(() => {
 .landing-scroll:hover :deep(.simplebar-scrollbar::before) { opacity: 0.6; }
 .landing-scroll :deep(.simplebar-scrollbar:hover::before) { background: rgba(251, 191, 36, 0.8); opacity: 1; }
 .landing-scroll :deep(.simplebar-track.simplebar-vertical) { width: 10px; right: 2px; }
-.landing-scroll :deep(.simplebar-content-wrapper) { padding-right: 14px; }
 .landing-scroll :deep(.simplebar-track.simplebar-horizontal) { display: none; }
 
 /* ═══ Skeleton Loading ═══ */

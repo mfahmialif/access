@@ -8,12 +8,16 @@
       <div class="relative">
         <div class="absolute inset-0 bg-accent/20 blur-2xl rounded-full scale-150 animate-pulse"></div>
         <div class="relative w-28 h-28 md:w-36 md:h-36 rounded-full bg-[#13224A] border-2 border-accent/40 flex items-center justify-center">
-          <span class="material-symbols-outlined text-accent text-[56px] md:text-[72px] animate-spin" style="animation-duration: 2s">progress_activity</span>
+          <span v-if="reconnectCountdown > 0" class="text-accent text-[56px] md:text-[72px] font-bold">{{ reconnectCountdown }}</span>
+          <span v-else class="material-symbols-outlined text-accent text-[56px] md:text-[72px] animate-spin" style="animation-duration: 2s">progress_activity</span>
         </div>
       </div>
       <div class="text-center">
         <h2 class="text-2xl md:text-4xl font-bold text-white mb-2">Menyambungkan Kembali...</h2>
-        <p class="text-slate-400 text-sm md:text-base">Menghubungkan ke <span class="text-accent font-bold">{{ rememberedDeviceName || 'TV' }}</span></p>
+        <p class="text-slate-400 text-sm md:text-base mb-6">Menghubungkan ke <span class="text-accent font-bold">{{ rememberedDeviceName || 'TV' }}</span></p>
+        <button v-if="reconnectCountdown > 0" @click="cancelReconnect" class="px-6 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold transition-all cursor-pointer border border-white/20 hover:border-white/40">
+          Batalkan
+        </button>
       </div>
     </div>
 
@@ -126,6 +130,8 @@ const errorMsg = ref('')
 const connecting = ref(false)
 const autoReconnecting = ref(false)
 const reconnectFailed = ref(false)
+const reconnectCountdown = ref(0)
+let reconnectTimer = null
 
 // ── Remembered Token ──
 const hasRememberedToken = computed(() => !!localStorage.getItem('tv_remembered_token'))
@@ -197,21 +203,42 @@ async function tryReconnect() {
   if (!token) return
   autoReconnecting.value = true
   reconnectFailed.value = false
+  reconnectCountdown.value = 3
 
-  try {
-    await connectWithToken(token)
-    router.push({ name: 'ConnectSuccess' })
-  } catch (e) {
-    autoReconnecting.value = false
-    reconnectFailed.value = true
-    if (e.response?.status === 404) {
-      errorMsg.value = 'Token sebelumnya sudah tidak valid. Silakan masukkan token baru.'
-      localStorage.removeItem('tv_remembered_token')
-      localStorage.removeItem('tv_remembered_device')
-    } else {
-      errorMsg.value = 'Gagal terhubung ke server. Coba lagi nanti.'
+  reconnectTimer = setInterval(async () => {
+    reconnectCountdown.value--
+    if (reconnectCountdown.value <= 0) {
+      clearInterval(reconnectTimer)
+      reconnectTimer = null
+      
+      try {
+        await connectWithToken(token)
+        router.push({ name: 'ConnectSuccess' })
+      } catch (e) {
+        autoReconnecting.value = false
+        reconnectFailed.value = true
+        if (e.response?.status === 404) {
+          errorMsg.value = 'Token sebelumnya sudah tidak valid. Silakan masukkan token baru.'
+          localStorage.removeItem('tv_remembered_token')
+          localStorage.removeItem('tv_remembered_device')
+        } else {
+          errorMsg.value = 'Gagal terhubung ke server. Coba lagi nanti.'
+        }
+      }
     }
+  }, 1000)
+}
+
+function cancelReconnect() {
+  if (reconnectTimer) {
+    clearInterval(reconnectTimer)
+    reconnectTimer = null
   }
+  autoReconnecting.value = false
+  reconnectCountdown.value = 0
+  localStorage.removeItem('tv_remembered_token')
+  localStorage.removeItem('tv_remembered_device')
+  errorMsg.value = 'Sambung ulang otomatis dibatalkan.'
 }
 
 // ── Auto-reconnect on mount ──

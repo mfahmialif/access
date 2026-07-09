@@ -18,7 +18,7 @@
       <PublicHeader :showBack="true" />
 
       <!-- ═══════ LINK GRID ═══════ -->
-      <div class="flex-1 overflow-y-auto pb-6" style="min-height: 0; -webkit-overflow-scrolling: touch;">
+      <div class="flex-1 overflow-y-auto no-scrollbar pb-6" style="min-height: 0; -webkit-overflow-scrolling: touch;">
         <!-- Section Title -->
         <div class="flex items-center gap-3 mb-4 md:mb-6">
           <div class="h-px flex-1 bg-gradient-to-r from-accent/30 to-transparent"></div>

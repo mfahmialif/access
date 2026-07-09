@@ -419,5 +419,10 @@ body {
   transform: scale(1.1);
 }
 
-/* Force Vite HMR rebuild */
-
+/* ── Mobile Overrides: Hide SimpleBar on Mobile ── */
+@media (max-width: 768px) {
+  /* Sembunyikan track scrollbar (SimpleBar) di layar HP */
+  .simplebar-track.simplebar-vertical {
+    display: none !important;
+  }
+}
