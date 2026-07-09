@@ -5,8 +5,8 @@
         <div class="absolute inset-0 bg-gradient-to-br from-[#020617] via-[#0f172a] to-[#1e3a8a]"></div>
         <div class="absolute inset-0 opacity-15 mix-blend-overlay"
              :style="{ backgroundImage: patternBg }"></div>
-        <div class="absolute inset-0 opacity-30 bg-cover bg-center mix-blend-overlay blur-sm"
-             style="background-image: url('/img/background.jpg')"></div>
+        <div class="absolute inset-0 opacity-30 bg-cover bg-center mix-blend-overlay"
+             style="background-image: url('/img/background-blur.jpg')"></div>
         <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(59,130,246,0.2),transparent_60%)] pointer-events-none"></div>
       </div>
 
@@ -30,7 +30,7 @@
             <span class="material-symbols-outlined text-slate-500 group-hover:text-emerald-400 transition-colors group-hover:translate-x-1 duration-300">arrow_forward_ios</span>
           </div>
           <div class="flex-1 flex flex-col justify-end relative z-10">
-            <div class="bg-gradient-to-r from-emerald-500/10 to-transparent rounded-xl p-4 md:p-5 border-l-4 border-emerald-500/50 backdrop-blur-sm">
+            <div class="bg-gradient-to-r from-emerald-500/20 to-transparent rounded-xl p-4 md:p-5 border-l-4 border-emerald-500/50">
               <p class="text-slate-300 text-sm md:text-base font-medium leading-relaxed">
                 Kumpulan aplikasi web dan layanan digital.
               </p>

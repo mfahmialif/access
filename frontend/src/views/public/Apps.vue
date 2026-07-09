@@ -5,8 +5,8 @@
         <div class="absolute inset-0 bg-gradient-to-br from-[#020617] via-[#0f172a] to-[#1e3a8a]"></div>
         <div class="absolute inset-0 opacity-15 mix-blend-overlay"
              :style="{ backgroundImage: patternBg }"></div>
-        <div class="absolute inset-0 opacity-30 bg-cover bg-center mix-blend-overlay blur-sm"
-             style="background-image: url('/img/background.jpg')"></div>
+        <div class="absolute inset-0 opacity-30 bg-cover bg-center mix-blend-overlay"
+             :style="`background-image: url('${activeApp ? activeApp.icon : '/img/background-blur.jpg'}')`"></div>
         <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(59,130,246,0.2),transparent_60%)] pointer-events-none"></div>
       </div>
 
@@ -104,7 +104,7 @@
           <!-- App Switcher Panel (slides up from toolbar) -->
           <transition name="slide-up">
             <div v-if="dockExpanded"
-                 class="app-switcher-panel absolute bottom-full right-0 left-0 mx-2 mb-2 z-50 flex flex-col gap-1 p-2 rounded-2xl border backdrop-blur-xl shadow-2xl max-h-[50vh] overflow-y-auto no-scrollbar"
+                 class="app-switcher-panel absolute bottom-full right-0 left-0 mx-2 mb-2 z-50 flex flex-col gap-1 p-2 rounded-2xl border shadow-2xl max-h-[50vh] overflow-y-auto no-scrollbar"
                  :class="isDark ? 'border-white/10 bg-[#0a1128]/95' : 'border-slate-200 bg-white/95'">
 
               <!-- App List -->
@@ -143,7 +143,7 @@
           </transition>
 
           <!-- Toolbar Bar -->
-          <div class="flex items-center h-12 md:h-14 px-2 md:px-3 gap-1 border-t backdrop-blur-xl"
+          <div class="flex items-center h-12 md:h-14 px-2 md:px-3 gap-1 border-t"
                :class="isDark ? 'bg-gradient-to-t from-[#0a1128]/98 to-[#0a1128]/92 border-white/10' : 'bg-white/95 border-slate-200'">
 
             <!-- History Nav -->
