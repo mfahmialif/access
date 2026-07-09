@@ -39,7 +39,7 @@
           <div class="relative flex items-center justify-center">
             <button @click="showTvMenu = !showTvMenu" 
                     class="flex items-center justify-center size-10 rounded-full transition-all cursor-pointer group"
-                    :class="isDark ? (showTvMenu ? 'bg-[#0f2e20] text-green-400' : 'hover:bg-[#072418] text-green-400') : (showTvMenu ? 'bg-green-100 text-green-600' : 'hover:bg-green-50 text-green-500')"
+                    :class="isDark ? (showTvMenu ? 'bg-[#0f2e20] text-green-400' : 'text-green-400') : (showTvMenu ? 'bg-green-100 text-green-600' : 'text-green-500')"
                     title="Opsi TV">
               <div class="absolute top-2 right-2 flex h-2 w-2 shrink-0">
                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
@@ -66,7 +66,7 @@
                       <span class="text-xs font-bold text-red-500">Memutuskan...</span>
                     </div>
                     <div class="w-px h-6 mx-1" :class="isDark ? 'bg-[#1e293b]' : 'bg-slate-200'"></div>
-                    <button @click="cancelDisconnect" class="px-3 py-1.5 rounded-xl text-xs font-bold text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 bg-slate-100 hover:bg-slate-200 dark:bg-[#1e293b] dark:hover:bg-[#334155] transition-all cursor-pointer">
+                    <button @click="cancelDisconnect" class="px-3 py-1.5 rounded-xl text-xs font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-[#1e293b] transition-all cursor-pointer">
                       Batal
                     </button>
                   </div>
@@ -79,7 +79,7 @@
                     <span class="text-[10px] font-medium mt-0.5" :class="isDark ? 'text-slate-400' : 'text-slate-500'">{{ unitName }}</span>
                   </div>
                   <div class="w-px h-8" :class="isDark ? 'bg-[#1e293b]' : 'bg-slate-200'"></div>
-                  <button @click="initiateDisconnect" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-red-500 hover:bg-[#450a0a] border border-transparent hover:border-[#7f1d1d] transition-all cursor-pointer">
+                  <button @click="initiateDisconnect" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-red-500 border border-transparent transition-all cursor-pointer">
                     <span class="material-symbols-outlined text-[16px]">link_off</span>
                     Putuskan
                   </button>
@@ -93,7 +93,7 @@
         <!-- Screensaver (activate immediately) -->
         <button @click="activateScreensaver(); showConfigMenu = false"
                 class="flex items-center justify-center size-10 rounded-full transition-all cursor-pointer"
-                :class="isDark ? 'hover:bg-[#1e293b] text-accent hover:text-[#fcd34d]' : 'hover:bg-slate-100 text-slate-600 hover:text-amber-500'"
+                :class="isDark ? 'text-accent' : 'text-slate-600'"
                 title="Aktifkan Screensaver">
           <span class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'FILL' 1;">dark_mode</span>
         </button>
@@ -101,7 +101,7 @@
         <!-- Theme Toggle -->
         <button @click="toggleTheme(); showConfigMenu = false"
                 class="flex items-center justify-center size-10 rounded-full transition-all cursor-pointer"
-                :class="isDark ? 'hover:bg-[#1e293b] text-accent hover:text-[#fcd34d]' : 'hover:bg-slate-100 text-slate-600 hover:text-amber-500'"
+                :class="isDark ? 'text-accent' : 'text-slate-600'"
                 :title="isDark ? 'Mode Terang' : 'Mode Gelap'">
           <span class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'FILL' 1;">
             {{ isDark ? 'light_mode' : 'dark_mode' }}
@@ -113,7 +113,7 @@
         <!-- Refresh Page -->
         <button @click="refreshPage"
                 class="flex items-center justify-center size-10 rounded-full transition-all cursor-pointer"
-                :class="isDark ? 'hover:bg-[#1e293b] text-accent hover:text-[#fcd34d]' : 'hover:bg-slate-100 text-slate-600 hover:text-amber-500'"
+                :class="isDark ? 'text-accent' : 'text-slate-600'"
                 title="Muat Ulang Halaman">
           <span class="material-symbols-outlined text-[22px]">refresh</span>
         </button>
@@ -126,7 +126,7 @@
               @click="router.push({ name: 'Landing' })"
               class="fixed right-[16px] z-40 flex items-center justify-center size-[44px] rounded-full shadow-[0_4px_15px_rgba(0,0,0,0.3)] transition-all cursor-pointer"
               style="bottom: 115px;"
-              :class="isDark ? 'bg-[#0f172a] opacity-90 border border-[#1e293b] text-accent hover:opacity-100 hover:border-accent hover:shadow-[0_0_20px_rgba(251,191,36,0.3)]' : 'bg-white opacity-90 border border-slate-300 text-slate-600 hover:opacity-100 hover:border-slate-400 hover:shadow-[0_4px_20px_rgba(0,0,0,0.15)]'"
+              :class="isDark ? 'bg-[#0f172a] opacity-90 border border-[#1e293b] text-accent' : 'bg-white opacity-90 border border-slate-300 text-slate-600'"
               title="Kembali ke Beranda">
         <span class="material-symbols-outlined text-[22px]">home</span>
       </button>
@@ -138,7 +138,7 @@
               class="public-theme-toggle"
               :class="[
                 { 'rotate-90': showConfigMenu },
-                isDark ? 'bg-[#0f172a] opacity-90 border border-[#1e293b] text-accent hover:opacity-100 hover:border-accent hover:shadow-[0_0_20px_rgba(251,191,36,0.3)]' : 'bg-white opacity-90 border border-slate-300 text-slate-600 hover:opacity-100 hover:border-slate-400 hover:shadow-[0_4px_20px_rgba(0,0,0,0.15)]'
+                isDark ? 'bg-[#0f172a] opacity-90 border border-[#1e293b] text-accent' : 'bg-white opacity-90 border border-slate-300 text-slate-600'
               ]"
               title="Konfigurasi">
         <span class="material-symbols-outlined text-[22px] transition-transform duration-300"
