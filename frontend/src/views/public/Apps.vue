@@ -104,19 +104,16 @@
           <!-- App Switcher Panel (slides up from toolbar) -->
           <transition name="slide-up">
             <div v-if="dockExpanded"
-                 class="app-switcher-panel absolute bottom-full right-0 left-0 mx-2 mb-2 z-50 flex flex-col gap-1 p-2 rounded-2xl border shadow-2xl max-h-[50vh] overflow-y-auto no-scrollbar"
-                 :class="isDark ? 'bg-[#0f172a] opacity-90 border-[#1e293b]' : 'bg-white opacity-90 border-slate-200'">
+                 class="app-switcher-panel absolute bottom-full right-0 left-0 mx-2 mb-2 z-50 flex flex-col gap-1 p-2 rounded-2xl border shadow-2xl max-h-[50vh] overflow-y-auto no-scrollbar border-slate-200 bg-white opacity-95">
 
               <!-- App List -->
               <button @click="closeEmbed"
-                      class="group flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 cursor-pointer w-full text-left mb-1"
-                      :class="isDark ? 'hover:bg-[#1e293b] border border-transparent' : 'hover:bg-slate-50 border border-transparent'">
-                <div class="size-9 rounded-full flex items-center justify-center shrink-0 transition-all"
-                     :class="isDark ? 'bg-[#1e293b] text-slate-300 group-hover:bg-[#334155]' : 'bg-slate-100 text-slate-500 group-hover:bg-slate-200'">
+                      class="group flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 cursor-pointer w-full text-left mb-1 hover:bg-slate-50 border border-transparent">
+                <div class="size-9 rounded-full flex items-center justify-center shrink-0 transition-all bg-slate-100 text-slate-500 group-hover:bg-slate-200">
                   <span class="material-symbols-outlined text-lg">home</span>
                 </div>
                 <div class="text-left min-w-0">
-                  <p class="text-sm font-semibold truncate" :class="isDark ? 'text-slate-200' : 'text-slate-700'">Kembali ke Portal Apps</p>
+                  <p class="text-sm font-semibold truncate text-slate-700">Kembali ke Portal Apps</p>
                 </div>
               </button>
               
@@ -124,62 +121,57 @@
                       @click="switchApp(app); dockExpanded = false"
                       class="group flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 cursor-pointer w-full text-left"
                       :class="activeApp?.id === app.id
-                        ? (isDark ? 'bg-[#423000] border border-[#713f12]' : 'bg-amber-50 border border-amber-300')
-                        : (isDark ? 'hover:bg-[#1e293b] border border-transparent' : 'hover:bg-slate-50 border border-transparent')">
+                        ? 'bg-amber-50 border border-amber-300'
+                        : 'hover:bg-slate-50 border border-transparent'">
                 <div class="size-9 rounded-full flex items-center justify-center shrink-0 transition-all"
                      :class="activeApp?.id === app.id
-                       ? (isDark ? 'bg-accent text-[#0a1128] shadow-[0_0_12px_rgba(251,191,36,0.4)]' : 'bg-amber-500 text-white shadow-sm')
-                       : (isDark ? 'bg-[#1e293b] text-slate-300 group-hover:bg-[#334155]' : 'bg-slate-100 text-slate-500 group-hover:bg-slate-200')">
+                       ? 'bg-amber-500 text-white shadow-sm'
+                       : 'bg-slate-100 text-slate-500 group-hover:bg-slate-200'">
                   <span class="material-symbols-outlined text-lg"
                         style="font-variation-settings: 'FILL' 1;">{{ app.icon }}</span>
                 </div>
                 <div class="text-left min-w-0">
-                  <p class="text-sm font-semibold truncate" :class="activeApp?.id === app.id ? (isDark ? 'text-accent' : 'text-amber-600') : (isDark ? 'text-slate-200' : 'text-slate-700')">{{ app.title }}</p>
-                  <p class="text-[11px] truncate" :class="isDark ? 'text-slate-500' : 'text-slate-400'" v-if="app.subtitle">{{ app.subtitle }}</p>
+                  <p class="text-sm font-semibold truncate" :class="activeApp?.id === app.id ? 'text-amber-600' : 'text-slate-700'">{{ app.title }}</p>
+                  <p class="text-[11px] truncate text-slate-400" v-if="app.subtitle">{{ app.subtitle }}</p>
                 </div>
-                <span v-if="activeApp?.id === app.id" class="material-symbols-outlined text-base ml-auto shrink-0" :class="isDark ? 'text-accent' : 'text-amber-500'">check_circle</span>
+                <span v-if="activeApp?.id === app.id" class="material-symbols-outlined text-base ml-auto shrink-0 text-amber-500">check_circle</span>
               </button>
             </div>
           </transition>
 
           <!-- Toolbar Bar -->
-          <div class="flex items-center h-12 md:h-14 px-2 md:px-3 gap-1 border-t"
-               :class="isDark ? 'bg-[#0f172a] opacity-90 border-[#1e293b]' : 'bg-white opacity-90 border-slate-200'">
+          <div class="flex items-center h-12 md:h-14 px-2 md:px-3 gap-1 border-t bg-white opacity-95 border-slate-200">
 
             <!-- History Nav -->
             <button @click="goIframeBack"
-                    class="flex items-center justify-center size-10 rounded-xl transition-all cursor-pointer shrink-0"
-                    :class="isDark ? 'hover:bg-[#1e293b] active:bg-[#334155] text-accent' : 'hover:bg-slate-100 active:bg-slate-200 text-slate-500 hover:text-amber-500'"
+                    class="flex items-center justify-center size-10 rounded-xl transition-all cursor-pointer shrink-0 hover:bg-slate-100 active:bg-slate-200 text-slate-500 hover:text-amber-500"
                     title="Kembali (Back)">
               <span class="material-symbols-outlined text-xl">arrow_back</span>
             </button>
             <button @click="goIframeForward"
-                    class="flex items-center justify-center size-10 rounded-xl transition-all cursor-pointer shrink-0"
-                    :class="isDark ? 'hover:bg-[#1e293b] active:bg-[#334155] text-accent' : 'hover:bg-slate-100 active:bg-slate-200 text-slate-500 hover:text-amber-500'"
+                    class="flex items-center justify-center size-10 rounded-xl transition-all cursor-pointer shrink-0 hover:bg-slate-100 active:bg-slate-200 text-slate-500 hover:text-amber-500"
                     title="Maju (Forward)">
               <span class="material-symbols-outlined text-xl">arrow_forward</span>
             </button>
 
             <!-- Refresh -->
             <button @click="refreshIframe"
-                    class="flex items-center justify-center size-10 rounded-xl transition-all cursor-pointer shrink-0"
-                    :class="isDark ? 'hover:bg-[#1e293b] active:bg-[#334155] text-accent' : 'hover:bg-slate-100 active:bg-slate-200 text-slate-500 hover:text-amber-500'">
+                    class="flex items-center justify-center size-10 rounded-xl transition-all cursor-pointer shrink-0 hover:bg-slate-100 active:bg-slate-200 text-slate-500 hover:text-amber-500">
               <span class="material-symbols-outlined text-xl">refresh</span>
             </button>
 
             <!-- Active App Indicator (center) — tap to open switcher -->
             <button @click="dockExpanded = !dockExpanded"
-                    class="flex-1 flex items-center justify-center gap-2 min-w-0 px-2 py-1.5 rounded-xl transition-all cursor-pointer group"
-                    :class="isDark ? 'hover:bg-[#1e293b] active:bg-[#334155]' : 'hover:bg-slate-100 active:bg-slate-200'">
+                    class="flex-1 flex items-center justify-center gap-2 min-w-0 px-2 py-1.5 rounded-xl transition-all cursor-pointer group hover:bg-slate-100 active:bg-slate-200">
               <div class="size-7 rounded-lg flex items-center justify-center shrink-0 transition-all"
                    :class="colorClasses(activeApp.color)">
                 <span class="material-symbols-outlined text-sm"
                       style="font-variation-settings: 'FILL' 1;">{{ activeApp.icon }}</span>
               </div>
-              <p class="text-sm font-semibold truncate transition-colors" :class="isDark ? 'text-white group-hover:text-accent-light' : 'text-slate-800 group-hover:text-amber-600'">{{ activeApp.title }}</p>
-              <span v-if="isProxied" class="material-symbols-outlined text-sm shrink-0" :class="isDark ? 'text-amber-400/70' : 'text-amber-500'" title="Dimuat melalui proxy">swap_horiz</span>
-              <span class="material-symbols-outlined text-lg shrink-0 transition-transform duration-200"
-                    :class="[dockExpanded ? 'rotate-180' : '', isDark ? 'text-accent' : 'text-slate-500']">expand_less</span>
+              <p class="text-sm font-semibold truncate transition-colors text-slate-800 group-hover:text-amber-600">{{ activeApp.title }}</p>
+              <span v-if="isProxied" class="material-symbols-outlined text-sm shrink-0 text-amber-500" title="Dimuat melalui proxy">swap_horiz</span>
+              <span class="material-symbols-outlined text-lg shrink-0 transition-transform duration-200 text-slate-500"
+                    :class="dockExpanded ? 'rotate-180' : ''">expand_less</span>
             </button>
           </div>
         </div>
