@@ -16,6 +16,13 @@ api.interceptors.request.use((config) => {
     config.headers.Authorization = `Bearer ${token}`
   }
   
+  // If impersonating a TV, always use the TV's unit_id
+  const impersonateUnitId = localStorage.getItem('impersonate_unit_id')
+  if (impersonateUnitId) {
+    config.headers['X-Unit-Id'] = impersonateUnitId
+    return config
+  }
+
   // Check if we are currently on an admin route
   const isAdminPath = window.location.pathname.startsWith('/admin')
   

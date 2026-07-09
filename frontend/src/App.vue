@@ -319,7 +319,11 @@ onMounted(async () => {
       const devRes = await api.get('/tv-devices', { params: { per_page: 100 } })
       const dev = (devRes.data.data || []).find(d => d.id == impersonateDeviceId.value)
       if (dev) {
-        impersonateDevice.value = { id: dev.id, name: dev.name }
+        impersonateDevice.value = { id: dev.id, name: dev.name, unit_id: dev.unit_id }
+        // Store TV's unit_id so axios interceptor uses it instead of admin's
+        if (dev.unit_id) {
+          localStorage.setItem('impersonate_unit_id', dev.unit_id)
+        }
       } else {
         impersonateDevice.value = { id: impersonateDeviceId.value, name: `TV #${impersonateDeviceId.value}` }
       }
@@ -350,6 +354,7 @@ function pushToTv(path) {
 function stopImpersonate() {
   impersonateDevice.value = null
   impersonateDeviceId.value = null
+  localStorage.removeItem('impersonate_unit_id')
   window.close()
 }
 
