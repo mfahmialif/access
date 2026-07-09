@@ -509,7 +509,7 @@ async function fetchAppsForDropdown() {
     const { data } = await api.get('/app-links', { params: { per_page: 20, status: 'Published' } })
     const list = data.data || data || []
     const appItems = list.map(app => ({
-      name: `📱 ${app.title}`,
+      name: `📱 ${app.title}` + (app.unit?.name ? ` (${app.unit.name})` : ''),
       path: `/apps?open=${app.id}`,
     }))
     contentOptions.value = [...staticPages, ...appItems]
