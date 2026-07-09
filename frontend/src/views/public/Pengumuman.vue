@@ -9,7 +9,7 @@
     <!-- ═══ FILTER TOOLBAR ═══ -->
         <div class="flex flex-col xl:flex-row xl:items-end justify-between px-1 md:px-2 gap-4">
           <div class="space-y-0.5 md:space-y-1 shrink-0">
-            <h2 class="text-2xl md:text-3xl font-black text-accent tracking-tight drop-shadow-sm">Pengumuman</h2>
+            <h2 class="text-2xl md:text-3xl font-black text-accent tracking-tight drop-shadow-sm whitespace-nowrap">Pengumuman</h2>
             <p :class="['font-medium text-sm md:text-base', isDark ? 'text-slate-300' : 'text-slate-500']">Informasi penting untuk seluruh warga</p>
           </div>
           <div class="grid w-full grid-cols-1 gap-2 sm:grid-cols-2 xl:flex xl:w-auto xl:items-center xl:flex-wrap">

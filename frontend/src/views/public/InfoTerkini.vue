@@ -7,13 +7,13 @@
   <!-- ═══════ CONTENT ═══════ -->
   <div class="flex-1 flex flex-col gap-6 md:gap-8 w-full font-display text-slate-100 pb-12">
     <!-- Title + Controls -->
-        <div class="flex items-start md:items-end flex-col md:flex-row justify-between px-1 md:px-2 gap-4">
-          <div class="space-y-1 md:space-y-2">
-            <h2 class="text-3xl md:text-4xl lg:text-5xl font-black text-accent tracking-tight drop-shadow-sm">Info Hari Ini / Berita</h2>
-            <p class="text-slate-300 font-medium text-base md:text-lg">Berita terkini seputar kegiatan</p>
+        <div class="flex flex-col xl:flex-row xl:items-end justify-between px-1 md:px-2 gap-4">
+          <div class="space-y-1 md:space-y-2 shrink-0">
+            <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-accent tracking-tight drop-shadow-sm whitespace-nowrap">Info Hari Ini / Berita</h2>
+            <p class="text-slate-300 font-medium text-sm md:text-base lg:text-lg">Berita terkini seputar kegiatan</p>
           </div>
           <!-- ═══ FILTER TOOLBAR ═══ -->
-          <div class="flex items-center gap-2 flex-wrap md:flex-nowrap w-full md:w-auto">
+          <div class="flex items-center gap-2 flex-wrap justify-start xl:justify-end w-full xl:w-auto">
             <!-- Search -->
             <div class="relative">
               <span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-500 text-sm!">search</span>
