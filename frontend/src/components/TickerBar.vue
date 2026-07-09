@@ -7,7 +7,6 @@
         <span class="hidden sm:inline">Access</span>
         <span class="sm:hidden">Access</span>
       </span>
-      <div class="absolute right-[-10px] top-0 bottom-0 w-0 h-0 border-t-[40px] md:border-t-[56px] border-t-accent border-r-[14px] md:border-r-[20px] border-r-transparent"></div>
     </div>
     <div class="relative flex overflow-x-hidden flex-1 h-full items-center pl-5 md:pl-8">
       <div class="animate-marquee whitespace-nowrap flex items-center gap-10 md:gap-24">

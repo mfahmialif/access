@@ -136,7 +136,10 @@
     <Transition name="fade">
       <button @click="showConfigMenu = !showConfigMenu"
               class="public-theme-toggle"
-              :class="{ 'rotate-90': showConfigMenu }"
+              :class="[
+                { 'rotate-90': showConfigMenu },
+                isDark ? 'bg-[#0f172a] opacity-90 border border-[#1e293b] text-accent hover:opacity-100 hover:border-accent hover:shadow-[0_0_20px_rgba(251,191,36,0.3)]' : 'bg-white opacity-90 border border-slate-300 text-slate-600 hover:opacity-100 hover:border-slate-400 hover:shadow-[0_4px_20px_rgba(0,0,0,0.15)]'
+              ]"
               title="Konfigurasi">
         <span class="material-symbols-outlined text-[22px] transition-transform duration-300"
               :class="{ 'rotate-90': showConfigMenu }">
