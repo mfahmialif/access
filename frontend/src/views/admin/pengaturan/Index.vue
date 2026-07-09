@@ -1,8 +1,116 @@
 <template>
   <div class="flex flex-col gap-6">
 
-    <!-- ═══ TAMPILAN PORTAL ═══ -->
+    <!-- ═══ LOGO UNIT ═══ -->
     <div class="settings-card rounded-xl overflow-hidden mt-6">
+      <div class="card-header px-6 py-4 flex items-center gap-2">
+        <span class="material-symbols-outlined text-accent text-[20px]">image</span>
+        <h3 class="font-bold" style="color: var(--text-heading)">Logo Unit</h3>
+      </div>
+      <div class="px-6 py-5 space-y-6">
+
+        <!-- Unit Selector -->
+        <div class="setting-row" v-if="showUnitSelector">
+          <div class="setting-label">
+            <h4 class="text-sm font-bold" style="color: var(--text-heading)">Pilih Unit</h4>
+            <p class="text-xs mt-0.5" style="color: var(--text-muted)">Upload logo untuk unit tertentu</p>
+          </div>
+          <div class="setting-control">
+            <VueMultiselect
+              v-model="selectedUnit"
+              :options="unitOptions"
+              label="name"
+              track-by="id"
+              placeholder="Pilih unit..."
+              :allow-empty="true"
+              :searchable="false"
+              :show-labels="false"
+            />
+          </div>
+        </div>
+
+        <!-- Auto-selected unit info (for single-unit admin) -->
+        <div v-if="!showUnitSelector && selectedUnit" class="setting-row">
+          <div class="setting-label">
+            <h4 class="text-sm font-bold" style="color: var(--text-heading)">Unit</h4>
+          </div>
+          <div class="setting-control">
+            <div class="flex items-center gap-2 px-4 py-2.5 rounded-lg" style="background: var(--bg-input); border: 1px solid var(--border)">
+              <span class="material-symbols-outlined text-accent text-[18px]">domain</span>
+              <span class="text-sm font-bold" style="color: var(--text-heading)">{{ selectedUnit.name }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Upload Area (visible when unit is selected) -->
+        <template v-if="selectedUnit">
+          <!-- Logo (small icon) -->
+          <div class="setting-row">
+            <div class="setting-label">
+              <h4 class="text-sm font-bold" style="color: var(--text-heading)">Logo</h4>
+              <p class="text-xs mt-0.5" style="color: var(--text-muted)">Ikon kecil, tampil di sidebar saat collapsed (disarankan rasio 1:1)</p>
+            </div>
+            <div class="setting-control">
+              <div class="flex items-center gap-4">
+                <div class="logo-preview-box flex items-center justify-center rounded-xl overflow-hidden" style="width: 80px; height: 80px">
+                  <img :src="logoPreview" alt="Logo" class="w-full h-full object-contain" />
+                </div>
+                <div class="flex flex-col gap-2">
+                  <label class="upload-btn flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold cursor-pointer transition-all">
+                    <span class="material-symbols-outlined text-[16px]">upload</span>
+                    Upload
+                    <input type="file" accept="image/*" class="hidden" @change="e => handleUpload(e, 'logo')" />
+                  </label>
+                  <button v-if="unitLogos.logo_path" @click="handleDelete('logo')"
+                          class="delete-btn flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold cursor-pointer transition-all">
+                    <span class="material-symbols-outlined text-[16px]">delete</span>
+                    Hapus
+                  </button>
+                </div>
+              </div>
+              <p v-if="uploadingLogo" class="text-xs mt-2 text-accent animate-pulse">Mengupload...</p>
+            </div>
+          </div>
+
+          <!-- Logo Full -->
+          <div class="setting-row">
+            <div class="setting-label">
+              <h4 class="text-sm font-bold" style="color: var(--text-heading)">Logo Full</h4>
+              <p class="text-xs mt-0.5" style="color: var(--text-muted)">Logo lengkap, tampil di header TV & sidebar expanded</p>
+            </div>
+            <div class="setting-control">
+              <div class="flex items-center gap-4">
+                <div class="logo-preview-box flex items-center justify-center rounded-xl overflow-hidden" style="width: 200px; height: 80px">
+                  <img :src="logoFullPreview" alt="Logo Full" class="w-full h-full object-contain" />
+                </div>
+                <div class="flex flex-col gap-2">
+                  <label class="upload-btn flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold cursor-pointer transition-all">
+                    <span class="material-symbols-outlined text-[16px]">upload</span>
+                    Upload
+                    <input type="file" accept="image/*" class="hidden" @change="e => handleUpload(e, 'logo_full')" />
+                  </label>
+                  <button v-if="unitLogos.logo_full_path" @click="handleDelete('logo_full')"
+                          class="delete-btn flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold cursor-pointer transition-all">
+                    <span class="material-symbols-outlined text-[16px]">delete</span>
+                    Hapus
+                  </button>
+                </div>
+              </div>
+              <p v-if="uploadingLogoFull" class="text-xs mt-2 text-accent animate-pulse">Mengupload...</p>
+            </div>
+          </div>
+        </template>
+
+        <!-- Placeholder when no unit selected -->
+        <div v-else class="flex flex-col items-center justify-center py-8 gap-3">
+          <span class="material-symbols-outlined text-[48px]" style="color: var(--text-muted)">perm_media</span>
+          <p class="text-sm" style="color: var(--text-muted)">Pilih unit terlebih dahulu untuk mengelola logo</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ TAMPILAN PORTAL ═══ -->
+    <div class="settings-card rounded-xl overflow-hidden">
       <div class="card-header px-6 py-4 flex items-center gap-2">
         <span class="material-symbols-outlined text-accent text-[20px]">web</span>
         <h3 class="font-bold" style="color: var(--text-heading)">Tampilan Portal</h3>
@@ -72,12 +180,131 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import api from '../../../axios'
+import VueMultiselect from 'vue-multiselect'
+import 'vue-multiselect/dist/vue-multiselect.css'
+import { useAuthStore } from '../../../stores/auth'
 
+const authStore = useAuthStore()
+
+// ── Settings ──
 const welcomeMessage = ref('Selamat Datang di Portal Aplikasi UII Dalwa. Silakan pilih menu aplikasi di layar.')
 const hijriAdjustment = ref(0)
 
+// ── Logo Unit ──
+const unitOptions = ref([])
+const selectedUnit = ref(null)
+const unitLogos = ref({ logo_path: null, logo_full_path: null })
+const uploadingLogo = ref(false)
+const uploadingLogoFull = ref(false)
+
+// Determine if unit selector should be shown
+const showUnitSelector = computed(() => {
+  // Superadmin always sees selector
+  if (authStore.isSuperadmin) return true
+  // Admin/Operator with multiple units sees selector
+  const userUnits = authStore.user?.units || []
+  return userUnits.length > 1
+})
+
+// Logo preview URLs (fallback to default)
+const logoPreview = computed(() => {
+  if (unitLogos.value.logo_path) {
+    return `/storage/${unitLogos.value.logo_path}`
+  }
+  return '/img/logo.png'
+})
+
+const logoFullPreview = computed(() => {
+  if (unitLogos.value.logo_full_path) {
+    return `/storage/${unitLogos.value.logo_full_path}`
+  }
+  return '/img/logo-full.png'
+})
+
+// Load units for selector
+async function loadUnits() {
+  try {
+    const { data } = await api.get('/my-units')
+    unitOptions.value = data
+
+    // Auto-select for single-unit admin
+    const userUnits = authStore.user?.units || []
+    if (!authStore.isSuperadmin && userUnits.length === 1) {
+      selectedUnit.value = data.find(u => u.id === userUnits[0].id) || data[0]
+    }
+  } catch {
+    // ignore
+  }
+}
+
+// Load logos when unit changes
+async function loadUnitLogos() {
+  if (!selectedUnit.value) {
+    unitLogos.value = { logo_path: null, logo_full_path: null }
+    return
+  }
+  try {
+    const { data } = await api.get(`/unit-logos/${selectedUnit.value.id}`)
+    unitLogos.value = data
+  } catch {
+    unitLogos.value = { logo_path: null, logo_full_path: null }
+  }
+}
+
+watch(selectedUnit, () => {
+  loadUnitLogos()
+})
+
+// Upload handler
+async function handleUpload(event, type) {
+  const file = event.target.files[0]
+  if (!file || !selectedUnit.value) return
+
+  const loading = type === 'logo' ? uploadingLogo : uploadingLogoFull
+  loading.value = true
+
+  const fd = new FormData()
+  fd.append('unit_id', selectedUnit.value.id)
+  fd.append('type', type)
+  fd.append('file', file)
+
+  try {
+    await api.post('/settings/upload-logo', fd, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    })
+    await loadUnitLogos()
+    // Also refresh auth user data so sidebar can update
+    await authStore.fetchUser()
+  } catch (err) {
+    const msg = err.response?.data?.message || 'Gagal mengupload logo.'
+    alert(msg)
+  } finally {
+    loading.value = false
+    // Reset file input
+    event.target.value = ''
+  }
+}
+
+// Delete handler
+async function handleDelete(type) {
+  if (!selectedUnit.value) return
+  if (!confirm(`Hapus ${type === 'logo' ? 'Logo' : 'Logo Full'} untuk unit ${selectedUnit.value.name}?`)) return
+
+  try {
+    await api.post('/settings/delete-logo', {
+      unit_id: selectedUnit.value.id,
+      type
+    })
+    await loadUnitLogos()
+    await authStore.fetchUser()
+  } catch {
+    alert('Gagal menghapus logo.')
+  }
+}
+
+// ── Settings load/save ──
 function loadSettings() {
   api.get('/settings').then(res => {
     const data = res.data
@@ -99,6 +326,7 @@ function saveSettings() {
 
 onMounted(() => {
   loadSettings()
+  loadUnits()
 })
 </script>
 
@@ -122,6 +350,16 @@ onMounted(() => {
   background: var(--bg-input); color: var(--text-heading); border: 1px solid var(--border);
 }
 .upload-btn:hover { border-color: var(--color-accent); color: var(--color-accent); }
+
+.delete-btn {
+  background: transparent; color: var(--text-muted); border: 1px solid var(--border);
+}
+.delete-btn:hover { border-color: #ef4444; color: #ef4444; }
+
+.logo-preview-box {
+  background: var(--bg-input); border: 1px solid var(--border);
+  padding: 8px;
+}
 
 /* Range slider */
 .range-input {
@@ -184,4 +422,66 @@ onMounted(() => {
   border: 1px solid var(--border);
 }
 .reset-btn:hover { border-color: #ef4444; color: #ef4444; }
+
+/* ═══ VueMultiselect Dark Theme ═══ */
+:deep(.multiselect) {
+  min-height: 42px;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: var(--bg-input);
+  color: var(--text-heading);
+  font-size: 0.875rem;
+}
+:deep(.multiselect__tags) {
+  background: var(--bg-input);
+  border: none;
+  border-radius: 0.5rem;
+  min-height: 42px;
+  padding: 8px 40px 0 12px;
+}
+:deep(.multiselect__single) {
+  background: transparent;
+  color: var(--text-heading);
+  font-size: 0.875rem;
+  margin-bottom: 0;
+}
+:deep(.multiselect__placeholder) {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+:deep(.multiselect__select) {
+  height: 42px;
+}
+:deep(.multiselect__select::before) {
+  border-color: var(--text-muted) transparent transparent;
+}
+:deep(.multiselect__content-wrapper) {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  margin-top: 4px;
+}
+:deep(.multiselect__option) {
+  color: var(--text-body);
+  font-size: 0.875rem;
+  padding: 10px 12px;
+}
+:deep(.multiselect__option--highlight) {
+  background: var(--color-accent);
+  color: var(--text-btn);
+}
+:deep(.multiselect__option--selected) {
+  background: rgba(251, 191, 36, 0.15);
+  color: var(--color-accent);
+  font-weight: 700;
+}
+:deep(.multiselect__option--selected.multiselect__option--highlight) {
+  background: var(--color-accent);
+  color: var(--text-btn);
+}
+:deep(.multiselect__input) {
+  background: transparent;
+  color: var(--text-heading);
+  font-size: 0.875rem;
+}
 </style>

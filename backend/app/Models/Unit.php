@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Unit extends Model
 {
     protected $fillable = [
-        'name', 'slug', 'description', 'logo_path', 'status',
+        'name', 'slug', 'description', 'logo_path', 'logo_full_path', 'status',
     ];
 
     public function users(): BelongsToMany

@@ -4,7 +4,7 @@
     <header class="flex items-center justify-between mb-2 md:mb-3 pb-2 border-b border-white/5 gap-2 shrink-0">
       <div class="flex items-center gap-2 md:gap-4 shrink-0 min-w-0">
         <div class="min-w-0">
-          <img src="/img/logo-full.png" alt="Access" class="h-14 md:h-20 object-contain drop-shadow-lg shrink-0" />
+          <img :src="unitLogoFull" alt="Access" class="h-14 md:h-20 object-contain drop-shadow-lg shrink-0" />
           <div class="flex items-center gap-2 mt-1 hidden sm:flex">
             <span class="h-px w-4 md:w-6 bg-accent/60 shrink-0"></span>
             <p class="text-accent/90 text-[10px] md:text-xs font-medium tracking-[0.2em] uppercase truncate">Portal Layanan Digital</p>
@@ -87,6 +87,17 @@ function updateTime() {
     hijriDate.value = ''
   }
 }
+
+// ── Unit Logo (from TV device in localStorage) ──
+const unitLogoFull = computed(() => {
+  try {
+    const device = JSON.parse(localStorage.getItem('tv_device') || 'null')
+    if (device?.unit?.logo_full_path) {
+      return `/storage/${device.unit.logo_full_path}`
+    }
+  } catch { /* ignore */ }
+  return '/img/logo-full.png'
+})
 
 const hijriAdjustment = ref(0)
 

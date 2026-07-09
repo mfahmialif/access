@@ -26,6 +26,7 @@ Route::post('/login', [AuthController::class, 'login']);
 // Settings (public read)
 Route::get('/settings', [SettingController::class, 'index']);
 Route::get('/settings/{key}', [SettingController::class, 'show']);
+Route::get('/unit-logos/{unit}', [SettingController::class, 'getUnitLogos']);
 
 // Proxy (public — for iframe embed of external sites)
 Route::get('/proxy/check', [ProxyController::class, 'check']);
@@ -91,6 +92,8 @@ Route::middleware(['auth:sanctum', \App\Http\Middleware\UnitScope::class])->grou
 
     // Settings (protected update)
     Route::post('/settings', [SettingController::class, 'update']);
+    Route::post('/settings/upload-logo', [SettingController::class, 'uploadLogo']);
+    Route::post('/settings/delete-logo', [SettingController::class, 'deleteLogo']);
 
     // Dashboard stats
     Route::get('/dashboard/stats', [DashboardController::class, 'stats']);

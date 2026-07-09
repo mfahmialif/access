@@ -28,7 +28,7 @@ class AuthController extends Controller
         }
 
         // Hanya Admin, Operator, dan Superadmin yang boleh login
-        $user->load(['role:id,name', 'units:id,name,slug']);
+        $user->load(['role:id,name', 'units:id,name,slug,logo_path,logo_full_path']);
         if (! $user->role || ! in_array($user->role->name, ['Superadmin', 'Admin', 'Operator'])) {
             throw ValidationException::withMessages([
                 'username' => ['Akun Anda tidak memiliki akses ke dashboard.'],
@@ -41,7 +41,7 @@ class AuthController extends Controller
         // Update last active
         $user->update(['last_active_at' => now()]);
         // reload relations after update so they are still available
-        $user->load(['role:id,name', 'units:id,name,slug']);
+        $user->load(['role:id,name', 'units:id,name,slug,logo_path,logo_full_path']);
 
         $token = $user->createToken('auth-token')->plainTextToken;
 
@@ -68,7 +68,7 @@ class AuthController extends Controller
      */
     public function user(Request $request)
     {
-        $request->user()->load(['role:id,name', 'units:id,name,slug']);
+        $request->user()->load(['role:id,name', 'units:id,name,slug,logo_path,logo_full_path']);
         return response()->json($request->user());
     }
 }

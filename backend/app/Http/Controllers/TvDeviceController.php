@@ -247,8 +247,8 @@ class TvDeviceController extends Controller
             'last_heartbeat' => now(),
         ]);
 
-        // Load unit relation so the frontend can display the unit name
-        $device->load('unit:id,name');
+        // Load unit relation so the frontend can display the unit name and logo
+        $device->load('unit:id,name,logo_path,logo_full_path');
 
         $this->safeBroadcast($device);
 

@@ -4,10 +4,10 @@
     <div class="flex items-center px-3 pb-4 shrink-0" :class="collapsed ? 'justify-center' : 'justify-between'">
       <div class="overflow-hidden transition-all duration-300 flex items-center" :style="collapsed ? 'width: 0; opacity: 0' : 'width: auto; opacity: 1'">
         <div class="overflow-hidden h-14">
-          <img src="/img/logo-full.png" alt="Access Admin" class="h-17 object-contain -mt-[15px]" />
+          <img :src="sidebarLogoFull" alt="Access Admin" class="h-17 object-contain -mt-[15px]" />
         </div>
       </div>
-      <img v-if="collapsed" src="/img/logo.png" alt="Access" class="w-12 h-12 object-contain mx-auto" />
+      <img v-if="collapsed" :src="sidebarLogo" alt="Access" class="w-12 h-12 object-contain mx-auto" />
       <button @click="$emit('close-sidebar')"
               class="close-btn p-1.5 rounded-lg transition-colors cursor-pointer lg:hidden">
         <span class="material-symbols-outlined text-[22px]">close</span>
@@ -313,6 +313,21 @@ defineEmits(['close-sidebar', 'toggle-collapse'])
 const router = useRouter()
 const route = useRoute()
 const authStore = useAuthStore()
+
+// ── Dynamic Logos ──
+const sidebarLogoFull = computed(() => {
+  if (authStore.isSuperadmin) return '/img/logo-full.png'
+  const unit = authStore.user?.units?.[0]
+  if (unit?.logo_full_path) return `/storage/${unit.logo_full_path}`
+  return '/img/logo-full.png'
+})
+
+const sidebarLogo = computed(() => {
+  if (authStore.isSuperadmin) return '/img/logo.png'
+  const unit = authStore.user?.units?.[0]
+  if (unit?.logo_path) return `/storage/${unit.logo_path}`
+  return '/img/logo.png'
+})
 
 const navItems = [
   { icon: 'dashboard', label: 'Dashboard', route: '/administrator/dashboard' },
