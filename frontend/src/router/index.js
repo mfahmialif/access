@@ -42,22 +42,10 @@ const routes = [
         meta: { title: 'Access — Info Terkini', requiresTv: true }
       },
       {
-        path: 'info-terkini/:id',
-        name: 'DetailNews',
-        component: DetailPage,
-        meta: { title: 'Access — Detail Berita', requiresTv: true, detailType: 'news' }
-      },
-      {
         path: 'agenda-harian',
         name: 'AgendaHarian',
         component: AgendaHarian,
         meta: { title: 'Access — Agenda Harian', requiresTv: true }
-      },
-      {
-        path: 'agenda-harian/:id',
-        name: 'DetailAgenda',
-        component: DetailPage,
-        meta: { title: 'Access — Detail Agenda Harian', requiresTv: true, detailType: 'agenda' }
       },
       {
         path: 'agenda-mingguan',
@@ -66,22 +54,10 @@ const routes = [
         meta: { title: 'Access — Agenda Mingguan', requiresTv: true }
       },
       {
-        path: 'agenda-mingguan/:id',
-        name: 'DetailWeekly',
-        component: DetailPage,
-        meta: { title: 'Access — Detail Agenda Mingguan', requiresTv: true, detailType: 'weekly' }
-      },
-      {
         path: 'agenda-bulanan',
         name: 'AgendaBulanan',
         component: AgendaBulanan,
         meta: { title: 'Access — Agenda Bulanan', requiresTv: true }
-      },
-      {
-        path: 'agenda-bulanan/:id',
-        name: 'DetailMonthly',
-        component: DetailPage,
-        meta: { title: 'Access — Detail Agenda Bulanan', requiresTv: true, detailType: 'monthly' }
       },
       {
         path: 'gallery-video',
@@ -90,22 +66,10 @@ const routes = [
         meta: { title: 'Access — Gallery & Video', requiresTv: true }
       },
       {
-        path: 'gallery-video/:id',
-        name: 'DetailGallery',
-        component: DetailPage,
-        meta: { title: 'Access — Detail Gallery', requiresTv: true, detailType: 'gallery' }
-      },
-      {
         path: 'pengumuman',
         name: 'Pengumuman',
         component: Pengumuman,
         meta: { title: 'Access — Pengumuman', requiresTv: true }
-      },
-      {
-        path: 'pengumuman/:id',
-        name: 'DetailAnnouncement',
-        component: DetailPage,
-        meta: { title: 'Access — Detail Pengumuman', requiresTv: true, detailType: 'announcement' }
       },
       {
         path: 'urgent',
@@ -123,6 +87,42 @@ const routes = [
   },
 
   // ═══ Standalone Pages (no layout) ═══
+  {
+    path: '/info-terkini/:id',
+    name: 'DetailNews',
+    component: DetailPage,
+    meta: { title: 'Access — Detail Berita', requiresTv: true, detailType: 'news' }
+  },
+  {
+    path: '/agenda-harian/:id',
+    name: 'DetailAgenda',
+    component: DetailPage,
+    meta: { title: 'Access — Detail Agenda Harian', requiresTv: true, detailType: 'agenda' }
+  },
+  {
+    path: '/agenda-mingguan/:id',
+    name: 'DetailWeekly',
+    component: DetailPage,
+    meta: { title: 'Access — Detail Agenda Mingguan', requiresTv: true, detailType: 'weekly' }
+  },
+  {
+    path: '/agenda-bulanan/:id',
+    name: 'DetailMonthly',
+    component: DetailPage,
+    meta: { title: 'Access — Detail Agenda Bulanan', requiresTv: true, detailType: 'monthly' }
+  },
+  {
+    path: '/gallery-video/:id',
+    name: 'DetailGallery',
+    component: DetailPage,
+    meta: { title: 'Access — Detail Gallery', requiresTv: true, detailType: 'gallery' }
+  },
+  {
+    path: '/pengumuman/:id',
+    name: 'DetailAnnouncement',
+    component: DetailPage,
+    meta: { title: 'Access — Detail Pengumuman', requiresTv: true, detailType: 'announcement' }
+  },
   {
     path: '/connect',
     name: 'ConnectToken',
