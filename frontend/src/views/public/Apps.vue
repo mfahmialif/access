@@ -105,7 +105,7 @@
           <transition name="slide-up">
             <div v-if="dockExpanded"
                  class="app-switcher-panel absolute bottom-full right-0 left-0 mx-2 mb-2 z-50 flex flex-col gap-1 p-2 rounded-2xl border shadow-2xl max-h-[50vh] overflow-y-auto no-scrollbar"
-                 :class="isDark ? 'border-[#1e293b] bg-[#0a1128] opacity-95' : 'border-slate-200 bg-white opacity-95'">
+                 :class="isDark ? 'bg-[#0f172a] opacity-90 border-[#1e293b]' : 'bg-white opacity-90 border-slate-200'">
 
               <!-- App List -->
               <button @click="closeEmbed"
@@ -144,18 +144,18 @@
 
           <!-- Toolbar Bar -->
           <div class="flex items-center h-12 md:h-14 px-2 md:px-3 gap-1 border-t"
-               :class="isDark ? 'bg-[#0a1128] opacity-95 border-[#1e293b]' : 'bg-white opacity-95 border-slate-200'">
+               :class="isDark ? 'bg-[#0f172a] opacity-90 border-[#1e293b]' : 'bg-white opacity-90 border-slate-200'">
 
             <!-- History Nav -->
             <button @click="goIframeBack"
                     class="flex items-center justify-center size-10 rounded-xl transition-all cursor-pointer shrink-0"
-                    :class="isDark ? 'hover:bg-[#1e293b] active:bg-[#334155] text-slate-300 hover:text-accent' : 'hover:bg-slate-100 active:bg-slate-200 text-slate-500 hover:text-amber-500'"
+                    :class="isDark ? 'hover:bg-[#1e293b] active:bg-[#334155] text-accent' : 'hover:bg-slate-100 active:bg-slate-200 text-slate-500 hover:text-amber-500'"
                     title="Kembali (Back)">
               <span class="material-symbols-outlined text-xl">arrow_back</span>
             </button>
             <button @click="goIframeForward"
                     class="flex items-center justify-center size-10 rounded-xl transition-all cursor-pointer shrink-0"
-                    :class="isDark ? 'hover:bg-[#1e293b] active:bg-[#334155] text-slate-300 hover:text-accent' : 'hover:bg-slate-100 active:bg-slate-200 text-slate-500 hover:text-amber-500'"
+                    :class="isDark ? 'hover:bg-[#1e293b] active:bg-[#334155] text-accent' : 'hover:bg-slate-100 active:bg-slate-200 text-slate-500 hover:text-amber-500'"
                     title="Maju (Forward)">
               <span class="material-symbols-outlined text-xl">arrow_forward</span>
             </button>
@@ -163,7 +163,7 @@
             <!-- Refresh -->
             <button @click="refreshIframe"
                     class="flex items-center justify-center size-10 rounded-xl transition-all cursor-pointer shrink-0"
-                    :class="isDark ? 'hover:bg-[#1e293b] active:bg-[#334155] text-slate-300 hover:text-accent' : 'hover:bg-slate-100 active:bg-slate-200 text-slate-500 hover:text-amber-500'">
+                    :class="isDark ? 'hover:bg-[#1e293b] active:bg-[#334155] text-accent' : 'hover:bg-slate-100 active:bg-slate-200 text-slate-500 hover:text-amber-500'">
               <span class="material-symbols-outlined text-xl">refresh</span>
             </button>
 
@@ -179,7 +179,7 @@
               <p class="text-sm font-semibold truncate transition-colors" :class="isDark ? 'text-white group-hover:text-accent-light' : 'text-slate-800 group-hover:text-amber-600'">{{ activeApp.title }}</p>
               <span v-if="isProxied" class="material-symbols-outlined text-sm shrink-0" :class="isDark ? 'text-amber-400/70' : 'text-amber-500'" title="Dimuat melalui proxy">swap_horiz</span>
               <span class="material-symbols-outlined text-lg shrink-0 transition-transform duration-200"
-                    :class="[dockExpanded ? 'rotate-180' : '', isDark ? 'text-slate-400' : 'text-slate-500']">expand_less</span>
+                    :class="[dockExpanded ? 'rotate-180' : '', isDark ? 'text-accent' : 'text-slate-500']">expand_less</span>
             </button>
           </div>
         </div>
