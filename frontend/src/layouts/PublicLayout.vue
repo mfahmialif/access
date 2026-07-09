@@ -30,7 +30,7 @@
       <div v-if="showConfigMenu" 
            class="fixed right-[16px] z-50 flex flex-col gap-1 p-1.5 rounded-full shadow-[0_10px_40px_rgba(0,0,0,0.3)] border transition-all duration-300"
            :class="[
-             isDark ? 'bg-[#0f172a] opacity-95 border-[#1e293b]' : 'bg-white opacity-95 border-slate-200',
+             isDark ? 'bg-[#0f172a] opacity-90 border border-[#1e293b]' : 'bg-white opacity-90 border border-slate-300',
              route.name !== 'Landing' ? 'bottom-[170px]' : 'bottom-[115px]'
            ]">
         
@@ -52,12 +52,12 @@
             <Transition name="fade">
               <div v-if="showTvMenu" 
                    class="absolute right-[calc(100%+12px)] top-1/2 -translate-y-1/2 z-50 flex items-center gap-3 p-2.5 rounded-2xl shadow-xl border whitespace-nowrap"
-                   :class="isDark ? 'bg-[#0f172a] opacity-95 border-[#1e293b]' : 'bg-white opacity-95 border-slate-200'">
+                   :class="isDark ? 'bg-[#0f172a] opacity-90 border-[#1e293b]' : 'bg-white opacity-90 border-slate-300'">
                 <template v-if="disconnectCountdown > 0">
                   <div class="flex items-center gap-2 px-1">
                     <div class="relative flex items-center justify-center size-7 shrink-0">
                       <svg class="absolute inset-0 size-full -rotate-90" viewBox="0 0 36 36">
-                        <circle cx="18" cy="18" r="16" fill="none" class="stroke-slate-200 dark:stroke-white/10" stroke-width="4"></circle>
+                        <circle cx="18" cy="18" r="16" fill="none" class="stroke-slate-200 dark:stroke-[#1e293b]" stroke-width="4"></circle>
                         <circle cx="18" cy="18" r="16" fill="none" class="stroke-red-500 transition-all duration-1000 ease-linear" stroke-width="4" stroke-dasharray="100" :stroke-dashoffset="100 - ((disconnectCountdown / 3) * 100)"></circle>
                       </svg>
                       <span class="text-[10px] font-bold text-red-500 relative z-10">{{ disconnectCountdown }}</span>
@@ -93,7 +93,7 @@
         <!-- Screensaver (activate immediately) -->
         <button @click="activateScreensaver(); showConfigMenu = false"
                 class="flex items-center justify-center size-10 rounded-full transition-all cursor-pointer"
-                :class="isDark ? 'hover:bg-[#042f2e] text-teal-400 hover:text-teal-300' : 'hover:bg-teal-50 text-teal-600 hover:text-teal-700'"
+                :class="isDark ? 'hover:bg-[#1e293b] text-accent hover:text-[#fcd34d]' : 'hover:bg-slate-100 text-slate-600 hover:text-amber-500'"
                 title="Aktifkan Screensaver">
           <span class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'FILL' 1;">dark_mode</span>
         </button>
@@ -101,19 +101,19 @@
         <!-- Theme Toggle -->
         <button @click="toggleTheme(); showConfigMenu = false"
                 class="flex items-center justify-center size-10 rounded-full transition-all cursor-pointer"
-                :class="isDark ? 'hover:bg-[#1e293b] text-slate-300 hover:text-white' : 'hover:bg-slate-100 text-slate-600 hover:text-slate-900'"
+                :class="isDark ? 'hover:bg-[#1e293b] text-accent hover:text-[#fcd34d]' : 'hover:bg-slate-100 text-slate-600 hover:text-amber-500'"
                 :title="isDark ? 'Mode Terang' : 'Mode Gelap'">
           <span class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'FILL' 1;">
             {{ isDark ? 'light_mode' : 'dark_mode' }}
           </span>
         </button>
         
-        <div class="h-px w-6 mx-auto my-0.5" :class="isDark ? 'bg-white/10' : 'bg-slate-200'"></div>
+        <div class="h-px w-6 mx-auto my-0.5" :class="isDark ? 'bg-[#1e293b]' : 'bg-slate-200'"></div>
         
         <!-- Refresh Page -->
         <button @click="refreshPage"
                 class="flex items-center justify-center size-10 rounded-full transition-all cursor-pointer"
-                :class="isDark ? 'hover:bg-white/10 text-slate-300 hover:text-white' : 'hover:bg-slate-100 text-slate-600 hover:text-slate-900'"
+                :class="isDark ? 'hover:bg-[#1e293b] text-accent hover:text-[#fcd34d]' : 'hover:bg-slate-100 text-slate-600 hover:text-amber-500'"
                 title="Muat Ulang Halaman">
           <span class="material-symbols-outlined text-[22px]">refresh</span>
         </button>
