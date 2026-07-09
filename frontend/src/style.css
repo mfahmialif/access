@@ -53,8 +53,8 @@
   --color-bg-deepest: #020617;
   --color-bg-deep: #0f172a;
 
-  --color-card-glass: rgba(15, 23, 42, 0.5);
-  --color-card-hover: rgba(30, 58, 138, 0.4);
+  --color-card-glass: #1e293b;
+  --color-card-hover: #1e3a8a;
 
   --animate-marquee: marquee 70s linear infinite;
   --animate-pulse-slow: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
@@ -97,9 +97,7 @@ body {
 /* Glass panels */
 .glass-panel {
   background: var(--color-card-glass);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid #334155;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
   transform: translateZ(0);
   will-change: transform;
@@ -107,8 +105,8 @@ body {
 
 .glass-panel-hover:hover {
   background: var(--color-card-hover);
-  border-color: rgba(251, 191, 36, 0.5);
-  box-shadow: 0 0 25px rgba(251, 191, 36, 0.2);
+  border-color: #fbbf24;
+  box-shadow: 0 0 25px rgba(251, 191, 36, 0.3);
 }
 
 /* Text utilities */
