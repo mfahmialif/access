@@ -110,9 +110,9 @@
               <!-- App List -->
               <button @click="closeEmbed"
                       class="group flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 cursor-pointer w-full text-left mb-1"
-                      :class="isDark ? 'hover:bg-white/10 border border-transparent' : 'hover:bg-slate-50 border border-transparent'">
+                      :class="isDark ? 'hover:bg-[#1e293b] border border-transparent' : 'hover:bg-slate-50 border border-transparent'">
                 <div class="size-9 rounded-full flex items-center justify-center shrink-0 transition-all"
-                     :class="isDark ? 'bg-white/10 text-slate-300 group-hover:bg-white/15' : 'bg-slate-100 text-slate-500 group-hover:bg-slate-200'">
+                     :class="isDark ? 'bg-[#1e293b] text-slate-300 group-hover:bg-[#334155]' : 'bg-slate-100 text-slate-500 group-hover:bg-slate-200'">
                   <span class="material-symbols-outlined text-lg">home</span>
                 </div>
                 <div class="text-left min-w-0">
@@ -124,12 +124,12 @@
                       @click="switchApp(app); dockExpanded = false"
                       class="group flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 cursor-pointer w-full text-left"
                       :class="activeApp?.id === app.id
-                        ? (isDark ? 'bg-accent/15 border border-accent/30' : 'bg-amber-50 border border-amber-300')
-                        : (isDark ? 'hover:bg-white/10 border border-transparent' : 'hover:bg-slate-50 border border-transparent')">
+                        ? (isDark ? 'bg-[#423000] border border-[#713f12]' : 'bg-amber-50 border border-amber-300')
+                        : (isDark ? 'hover:bg-[#1e293b] border border-transparent' : 'hover:bg-slate-50 border border-transparent')">
                 <div class="size-9 rounded-full flex items-center justify-center shrink-0 transition-all"
                      :class="activeApp?.id === app.id
                        ? (isDark ? 'bg-accent text-[#0a1128] shadow-[0_0_12px_rgba(251,191,36,0.4)]' : 'bg-amber-500 text-white shadow-sm')
-                       : (isDark ? 'bg-white/10 text-slate-300 group-hover:bg-white/15' : 'bg-slate-100 text-slate-500 group-hover:bg-slate-200')">
+                       : (isDark ? 'bg-[#1e293b] text-slate-300 group-hover:bg-[#334155]' : 'bg-slate-100 text-slate-500 group-hover:bg-slate-200')">
                   <span class="material-symbols-outlined text-lg"
                         style="font-variation-settings: 'FILL' 1;">{{ app.icon }}</span>
                 </div>
@@ -149,13 +149,13 @@
             <!-- History Nav -->
             <button @click="goIframeBack"
                     class="flex items-center justify-center size-10 rounded-xl transition-all cursor-pointer shrink-0"
-                    :class="isDark ? 'hover:bg-white/10 active:bg-white/15 text-slate-300 hover:text-accent' : 'hover:bg-slate-100 active:bg-slate-200 text-slate-500 hover:text-amber-500'"
+                    :class="isDark ? 'hover:bg-[#1e293b] active:bg-[#334155] text-slate-300 hover:text-accent' : 'hover:bg-slate-100 active:bg-slate-200 text-slate-500 hover:text-amber-500'"
                     title="Kembali (Back)">
               <span class="material-symbols-outlined text-xl">arrow_back</span>
             </button>
             <button @click="goIframeForward"
                     class="flex items-center justify-center size-10 rounded-xl transition-all cursor-pointer shrink-0"
-                    :class="isDark ? 'hover:bg-white/10 active:bg-white/15 text-slate-300 hover:text-accent' : 'hover:bg-slate-100 active:bg-slate-200 text-slate-500 hover:text-amber-500'"
+                    :class="isDark ? 'hover:bg-[#1e293b] active:bg-[#334155] text-slate-300 hover:text-accent' : 'hover:bg-slate-100 active:bg-slate-200 text-slate-500 hover:text-amber-500'"
                     title="Maju (Forward)">
               <span class="material-symbols-outlined text-xl">arrow_forward</span>
             </button>
@@ -163,14 +163,14 @@
             <!-- Refresh -->
             <button @click="refreshIframe"
                     class="flex items-center justify-center size-10 rounded-xl transition-all cursor-pointer shrink-0"
-                    :class="isDark ? 'hover:bg-white/10 active:bg-white/15 text-slate-300 hover:text-accent' : 'hover:bg-slate-100 active:bg-slate-200 text-slate-500 hover:text-amber-500'">
+                    :class="isDark ? 'hover:bg-[#1e293b] active:bg-[#334155] text-slate-300 hover:text-accent' : 'hover:bg-slate-100 active:bg-slate-200 text-slate-500 hover:text-amber-500'">
               <span class="material-symbols-outlined text-xl">refresh</span>
             </button>
 
             <!-- Active App Indicator (center) — tap to open switcher -->
             <button @click="dockExpanded = !dockExpanded"
                     class="flex-1 flex items-center justify-center gap-2 min-w-0 px-2 py-1.5 rounded-xl transition-all cursor-pointer group"
-                    :class="isDark ? 'hover:bg-white/10 active:bg-white/15' : 'hover:bg-slate-100 active:bg-slate-200'">
+                    :class="isDark ? 'hover:bg-[#1e293b] active:bg-[#334155]' : 'hover:bg-slate-100 active:bg-slate-200'">
               <div class="size-7 rounded-lg flex items-center justify-center shrink-0 transition-all"
                    :class="colorClasses(activeApp.color)">
                 <span class="material-symbols-outlined text-sm"
