@@ -248,6 +248,12 @@ function handleTvCommand(e) {
       // Re-fetch: if this device has a per-device banner in DB, show it
       fetchActiveBanner()
       break
+    case 'screensaver_activate':
+      window.dispatchEvent(new Event('screensaver-force-activate'))
+      break
+    case 'screensaver_deactivate':
+      window.dispatchEvent(new Event('screensaver-force-deactivate'))
+      break
   }
 }
 

@@ -281,6 +281,27 @@ function stopEchoListener() {
   echoListening = false
 }
 
+// ── Force activate/deactivate from admin (via Control Center) ──
+async function handleForceActivate() {
+  // Only respond on TV displays
+  if (!isTvDisplay()) return
+
+  // If config not loaded yet, fetch it first
+  if (!configLoaded.value || mediaItems.value.length === 0) {
+    await fetchConfig()
+  }
+
+  // Show screensaver immediately (skip idle timeout)
+  if (configLoaded.value && mediaItems.value.length > 0) {
+    showScreensaver()
+  }
+}
+
+function handleForceDeactivate() {
+  if (!isTvDisplay()) return
+  dismiss()
+}
+
 // ── Lifecycle ──
 onMounted(async () => {
   if (isTvDisplay()) {
@@ -290,6 +311,10 @@ onMounted(async () => {
     }
     startEchoListener()
   }
+
+  // Listen for admin-pushed screensaver commands
+  window.addEventListener('screensaver-force-activate', handleForceActivate)
+  window.addEventListener('screensaver-force-deactivate', handleForceDeactivate)
 })
 
 onUnmounted(() => {
@@ -297,6 +322,8 @@ onUnmounted(() => {
   clearInterval(slideTimer)
   clearTimeout(slideTimer)
   stopEchoListener()
+  window.removeEventListener('screensaver-force-activate', handleForceActivate)
+  window.removeEventListener('screensaver-force-deactivate', handleForceDeactivate)
 })
 
 // ── Re-check on route changes ──

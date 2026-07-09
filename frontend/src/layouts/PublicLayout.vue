@@ -90,6 +90,14 @@
           <div class="h-px w-6 mx-auto my-0.5" :class="isDark ? 'bg-white/10' : 'bg-slate-200'"></div>
         </template>
         
+        <!-- Screensaver (activate immediately) -->
+        <button @click="activateScreensaver(); showConfigMenu = false"
+                class="flex items-center justify-center size-10 rounded-full transition-all cursor-pointer"
+                :class="isDark ? 'hover:bg-teal-500/15 text-teal-400 hover:text-teal-300' : 'hover:bg-teal-50 text-teal-600 hover:text-teal-700'"
+                title="Aktifkan Screensaver">
+          <span class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'FILL' 1;">dark_mode</span>
+        </button>
+        
         <!-- Theme Toggle -->
         <button @click="toggleTheme(); showConfigMenu = false"
                 class="flex items-center justify-center size-10 rounded-full transition-all cursor-pointer"
@@ -194,6 +202,10 @@ function cancelDisconnect() {
 function refreshPage() {
   showConfigMenu.value = false
   window.location.reload()
+}
+
+function activateScreensaver() {
+  window.dispatchEvent(new Event('screensaver-force-activate'))
 }
 
 function forceDisconnect() {

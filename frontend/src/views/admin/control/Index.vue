@@ -109,7 +109,7 @@
     </div>
 
     <!-- ═══ ACTION CARDS GRID ═══ -->
-    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-5">
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
 
       <!-- Force Reload -->
       <div class="action-card rounded-xl p-6 flex flex-col gap-4">
@@ -157,6 +157,36 @@
           <span v-else class="material-symbols-outlined text-[18px]">home</span>
           Force Home
         </button>
+      </div>
+
+      <!-- Push Screensaver -->
+      <div class="action-card rounded-xl p-6 flex flex-col gap-4">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-xl bg-teal-500/15 flex items-center justify-center border border-teal-500/30">
+            <span class="material-symbols-outlined text-teal-400 text-[28px]">dark_mode</span>
+          </div>
+          <div>
+            <h3 class="font-bold text-sm" style="color: var(--text-heading)">Push Screensaver</h3>
+            <p class="text-xs" style="color: var(--text-muted)">Aktifkan / matikan screensaver di TV</p>
+          </div>
+        </div>
+        <div class="flex flex-col gap-3 flex-1">
+          <div>
+            <label class="text-xs font-medium mb-1.5 block" style="color: var(--text-muted)">Target</label>
+            <VueMultiselect v-model="screensaverTarget" :options="targetOptions" :close-on-select="true" :searchable="true" :allow-empty="false" :show-labels="false" label="name" track-by="value" placeholder="Pilih target..." />
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <button @click="pushScreensaver('activate')" :disabled="sending.screensaver" class="action-btn-teal flex-1 flex items-center justify-center gap-2 rounded-lg h-10 font-bold text-sm cursor-pointer active:scale-[0.98] transition-all disabled:opacity-50">
+            <span v-if="sending.screensaver" class="material-symbols-outlined text-[18px] animate-spin">progress_activity</span>
+            <span v-else class="material-symbols-outlined text-[18px]">dark_mode</span>
+            Aktifkan
+          </button>
+          <button @click="pushScreensaver('deactivate')" :disabled="sending.screensaver" class="action-btn-dismiss flex-1 flex items-center justify-center gap-2 rounded-lg h-10 font-bold text-sm cursor-pointer active:scale-[0.98] transition-all disabled:opacity-50">
+            <span class="material-symbols-outlined text-[18px]">light_mode</span>
+            Matikan
+          </button>
+        </div>
       </div>
 
     </div>
@@ -436,6 +466,7 @@ const sending = reactive({
   push: false, broadcast: false, reload: false,
   home: false, banner: false, bannerDismiss: false,
   targetedPush: false, targetedRemove: false,
+  screensaver: false,
 })
 
 const toast = reactive({ show: false, message: '', type: 'success' })
@@ -522,6 +553,7 @@ const onlineTvDevices = computed(() => tvDevices.value.filter(d => d.status === 
 
 const reloadTarget = ref(null)
 const homeTarget = ref(null)
+const screensaverTarget = ref(null)
 const bannerTitle = ref('')
 const bannerMessage = ref('')
 const bannerType = ref(null)
@@ -763,6 +795,22 @@ async function forceHome() {
   sending.home = false
 }
 
+async function pushScreensaver(action) {
+  if (!screensaverTarget.value) return showToast('Pilih target terlebih dahulu', 'error')
+  sending.screensaver = true
+  try {
+    const { data } = await api.post('/tv-commands/screensaver', {
+      action,
+      target: screensaverTarget.value.value,
+    })
+    showToast(data.message, data.success ? 'success' : 'error')
+    fetchLogs()
+  } catch (e) {
+    showToast(e.response?.data?.message || 'Gagal kirim', 'error')
+  }
+  sending.screensaver = false
+}
+
 async function showBanner() {
   if (!bannerTitle.value || !bannerMessage.value || !bannerType.value) {
     return showToast('Isi judul, pesan, dan tipe banner', 'error')
@@ -808,6 +856,8 @@ function commandLabel(cmd) {
     home: 'Home',
     banner_show: 'Banner',
     banner_dismiss: 'Dismiss Banner',
+    screensaver_activate: 'Screensaver On',
+    screensaver_deactivate: 'Screensaver Off',
   }
   return map[cmd] || cmd
 }
@@ -852,6 +902,9 @@ onMounted(() => {
 
 .action-btn-red { background: #ef4444; color: white; box-shadow: 0 0 15px rgba(239, 68, 68, 0.3); }
 .action-btn-red:hover { box-shadow: 0 0 25px rgba(239, 68, 68, 0.5); }
+
+.action-btn-teal { background: #14b8a6; color: white; box-shadow: 0 0 15px rgba(20, 184, 166, 0.3); }
+.action-btn-teal:hover { box-shadow: 0 0 25px rgba(20, 184, 166, 0.5); }
 
 .action-btn-dismiss { background: var(--bg-input); color: var(--text-heading); border: 1px solid var(--border); }
 .action-btn-dismiss:hover { border-color: #ef4444; color: #ef4444; }

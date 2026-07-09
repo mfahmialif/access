@@ -163,6 +163,7 @@ Route::middleware(['auth:sanctum', \App\Http\Middleware\UnitScope::class])->grou
     Route::put('/tv-commands/active-banners/{id}', [TvCommandController::class, 'updateBanner']);
     Route::delete('/tv-commands/active-banners/{id}', [TvCommandController::class, 'deleteBanner']);
     Route::get('/tv-commands/logs', [TvCommandController::class, 'logs']);
+    Route::post('/tv-commands/screensaver', [TvCommandController::class, 'screensaver']);
 
     // Screensavers (protected CRUD)
     Route::get('/screensavers/stats', [ScreensaverController::class, 'stats']);

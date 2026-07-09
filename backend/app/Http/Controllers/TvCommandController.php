@@ -407,6 +407,45 @@ class TvCommandController extends Controller
     }
 
     /**
+     * POST /tv-commands/screensaver — Force activate/deactivate screensaver on TV(s)
+     */
+    public function screensaver(Request $request)
+    {
+        $request->validate([
+            'action' => 'required|in:activate,deactivate',
+            'target' => 'required|string', // "all" or device ID
+        ]);
+
+        $command = $request->action === 'activate' ? 'screensaver_activate' : 'screensaver_deactivate';
+        $targetName = 'Semua TV';
+        $targetToken = null;
+        $targetId = null;
+
+        if ($request->target !== 'all') {
+            $device = TvDevice::findOrFail($request->target);
+            $targetName = $device->name;
+            $targetToken = $device->token;
+            $targetId = $device->id;
+        }
+
+        $event = new TvCommand($command, $targetToken, $targetId, []);
+        $sent = $this->safeBroadcast($event);
+
+        $label = $request->action === 'activate'
+            ? "Screensaver diaktifkan di {$targetName}"
+            : "Screensaver dimatikan di {$targetName}";
+
+        $log = $this->logCommand($request, $command, $targetName);
+        $log->update(['status' => $sent ? 'sent' : 'failed']);
+
+        return response()->json([
+            'message' => $sent ? $label : 'Gagal — broadcast server tidak aktif',
+            'success' => $sent,
+            'log'     => $log,
+        ]);
+    }
+
+    /**
      * GET /tv-commands/logs — Get command log history
      */
     public function logs(Request $request)
