@@ -5,12 +5,48 @@ namespace App\Http\Controllers;
 use App\Events\ScreensaverUpdated;
 use App\Models\Screensaver;
 use App\Models\ScreensaverImage;
+use App\Models\Setting;
 use App\Models\TvDevice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class ScreensaverController extends Controller
 {
+    /**
+     * Get the max video upload size (MB) from settings, default 100.
+     */
+    private function maxVideoSizeMb(): int
+    {
+        $setting = Setting::where('key', 'max_video_size_mb')->first();
+        return $setting ? (int) $setting->value : 100;
+    }
+
+    /**
+     * Determine media type from MIME.
+     */
+    private function detectMediaType($file): string
+    {
+        $mime = $file->getMimeType();
+        return str_starts_with($mime, 'video/') ? 'video' : 'image';
+    }
+
+    /**
+     * Build validation rules for media files.
+     */
+    private function mediaValidationRules(): array
+    {
+        $maxVideoKb = $this->maxVideoSizeMb() * 1024;
+        $maxImageKb = 10240; // 10MB for images
+
+        // Use the larger limit for the generic rule, then check per-file in controller
+        $maxKb = max($maxVideoKb, $maxImageKb);
+
+        return [
+            'images'   => 'nullable|array',
+            'images.*' => "file|mimes:jpg,jpeg,png,webp,gif,mp4,webm,mov|max:{$maxKb}",
+        ];
+    }
+
     public function stats()
     {
         $stats = Screensaver::selectRaw("
@@ -19,13 +55,16 @@ class ScreensaverController extends Controller
             SUM(CASE WHEN is_active = 0 THEN 1 ELSE 0 END) as inactive
         ")->first();
 
-        $totalImages = ScreensaverImage::count();
+        $totalImages = ScreensaverImage::where('media_type', 'image')->count();
+        $totalVideos = ScreensaverImage::where('media_type', 'video')->count();
 
         return response()->json([
             'total'        => (int) $stats->total,
             'active'       => (int) $stats->active,
             'inactive'     => (int) $stats->inactive,
             'total_images' => $totalImages,
+            'total_videos' => $totalVideos,
+            'total_media'  => $totalImages + $totalVideos,
         ]);
     }
 
@@ -77,18 +116,18 @@ class ScreensaverController extends Controller
     }
 
     /**
-     * Create a new screensaver + upload images (admin).
+     * Create a new screensaver + upload media (admin).
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $rules = array_merge([
             'tv_device_id' => 'nullable|exists:tv_devices,id',
             'idle_timeout'  => 'required|integer|min:1|max:3600',
             'interval'      => 'required|integer|min:1|max:120',
             'is_active'     => 'boolean',
-            'images'        => 'nullable|array',
-            'images.*'      => 'image|max:10240',
-        ]);
+        ], $this->mediaValidationRules());
+
+        $request->validate($rules);
 
         // Prevent duplicate: only one screensaver per TV target
         $exists = Screensaver::where('tv_device_id', $request->tv_device_id)->exists();
@@ -107,12 +146,14 @@ class ScreensaverController extends Controller
             'is_active'     => $request->boolean('is_active', true),
         ]);
 
-        // Upload images
+        // Upload media files
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $idx => $file) {
+                $mediaType = $this->detectMediaType($file);
                 $path = $file->store('screensavers', 'public');
                 $screensaver->images()->create([
                     'image_path' => $path,
+                    'media_type' => $mediaType,
                     'sort_order' => $idx,
                 ]);
             }
@@ -130,15 +171,15 @@ class ScreensaverController extends Controller
      */
     public function update(Request $request, Screensaver $screensaver)
     {
-        $request->validate([
+        $rules = array_merge([
             'tv_device_id' => 'nullable|exists:tv_devices,id',
             'idle_timeout'  => 'required|integer|min:1|max:3600',
             'interval'      => 'required|integer|min:1|max:120',
             'is_active'     => 'boolean',
-            'images'        => 'nullable|array',
-            'images.*'      => 'image|max:10240',
             'sort_orders'   => 'nullable|array',
-        ]);
+        ], $this->mediaValidationRules());
+
+        $request->validate($rules);
 
         // Prevent duplicate: only one screensaver per TV target (exclude self)
         $exists = Screensaver::where('tv_device_id', $request->tv_device_id)
@@ -168,13 +209,15 @@ class ScreensaverController extends Controller
             }
         }
 
-        // Upload new images
+        // Upload new media files
         if ($request->hasFile('images')) {
             $maxSort = $screensaver->images()->max('sort_order') ?? -1;
             foreach ($request->file('images') as $idx => $file) {
+                $mediaType = $this->detectMediaType($file);
                 $path = $file->store('screensavers', 'public');
                 $screensaver->images()->create([
                     'image_path' => $path,
+                    'media_type' => $mediaType,
                     'sort_order' => $maxSort + $idx + 1,
                 ]);
             }
@@ -188,14 +231,14 @@ class ScreensaverController extends Controller
     }
 
     /**
-     * Delete screensaver + all its images (admin).
+     * Delete screensaver + all its media (admin).
      */
     public function destroy(Screensaver $screensaver)
     {
         $tvDeviceId = $screensaver->tv_device_id;
         $screensaverId = $screensaver->id;
 
-        // Delete image files from storage
+        // Delete media files from storage
         foreach ($screensaver->images as $image) {
             Storage::disk('public')->delete($image->image_path);
         }
@@ -208,22 +251,27 @@ class ScreensaverController extends Controller
     }
 
     /**
-     * Add images to an existing screensaver (admin).
+     * Add media to an existing screensaver (admin).
      */
     public function addImages(Request $request, Screensaver $screensaver)
     {
+        $maxVideoKb = $this->maxVideoSizeMb() * 1024;
+        $maxKb = max($maxVideoKb, 10240);
+
         $request->validate([
             'images'   => 'required|array|min:1',
-            'images.*' => 'image|max:10240',
+            'images.*' => "file|mimes:jpg,jpeg,png,webp,gif,mp4,webm,mov|max:{$maxKb}",
         ]);
 
         $maxSort = $screensaver->images()->max('sort_order') ?? -1;
 
         $newImages = [];
         foreach ($request->file('images') as $idx => $file) {
+            $mediaType = $this->detectMediaType($file);
             $path = $file->store('screensavers', 'public');
             $newImages[] = $screensaver->images()->create([
                 'image_path' => $path,
+                'media_type' => $mediaType,
                 'sort_order' => $maxSort + $idx + 1,
             ]);
         }
@@ -232,18 +280,18 @@ class ScreensaverController extends Controller
     }
 
     /**
-     * Remove a single image from a screensaver (admin).
+     * Remove a single media from a screensaver (admin).
      */
     public function removeImage(Screensaver $screensaver, ScreensaverImage $image)
     {
         if ($image->screensaver_id !== $screensaver->id) {
-            return response()->json(['message' => 'Gambar tidak ditemukan di screensaver ini.'], 404);
+            return response()->json(['message' => 'Media tidak ditemukan di screensaver ini.'], 404);
         }
 
         Storage::disk('public')->delete($image->image_path);
         $image->delete();
 
-        return response()->json(['message' => 'Gambar berhasil dihapus.']);
+        return response()->json(['message' => 'Media berhasil dihapus.']);
     }
 
     /**
@@ -288,6 +336,7 @@ class ScreensaverController extends Controller
             'images'       => $screensaver->images->map(fn ($img) => [
                 'id'         => $img->id,
                 'url'        => asset('storage/' . $img->image_path),
+                'media_type' => $img->media_type ?? 'image',
                 'sort_order' => $img->sort_order,
             ])->values(),
         ]);

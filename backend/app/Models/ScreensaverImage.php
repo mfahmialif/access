@@ -10,6 +10,7 @@ class ScreensaverImage extends Model
     protected $fillable = [
         'screensaver_id',
         'image_path',
+        'media_type',
         'sort_order',
     ];
 

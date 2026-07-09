@@ -66,27 +66,40 @@
           <p class="text-[11px]" style="color: var(--text-muted)">Berapa detik idle sebelum screensaver muncul</p>
         </div>
         <div class="flex flex-col gap-1.5">
-          <label class="text-sm font-medium" style="color: var(--text-body)">Interval Gambar (detik) *</label>
+          <label class="text-sm font-medium" style="color: var(--text-body)">Interval Media (detik) *</label>
           <input v-model.number="form.interval" type="number" min="1" max="120" class="filter-input rounded-xl py-2.5 px-4 text-sm focus:outline-none focus:ring-1 focus:ring-accent" placeholder="8" />
-          <p class="text-[11px]" style="color: var(--text-muted)">Durasi tampil setiap gambar sebelum berganti</p>
+          <p class="text-[11px]" style="color: var(--text-muted)">Durasi tampil setiap gambar sebelum berganti. Video akan diputar sampai selesai.</p>
         </div>
       </div>
 
-      <!-- ── Image Upload Area ── -->
+      <!-- ── Media Upload Area ── -->
       <div class="flex flex-col gap-3">
-        <label class="text-sm font-medium" style="color: var(--text-body)">Gambar Screensaver</label>
+        <label class="text-sm font-medium" style="color: var(--text-body)">Media Screensaver</label>
 
-        <!-- Existing images (edit mode) -->
-        <div v-if="existingImages.length" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-          <div v-for="(img, idx) in existingImages" :key="img.id" class="image-card relative group rounded-xl overflow-hidden border" style="border-color: var(--border)">
-            <img :src="img.url" :alt="'Screensaver ' + (idx + 1)" class="w-full h-32 object-cover" />
+        <!-- Existing media (edit mode) -->
+        <div v-if="existingMedia.length" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+          <div v-for="(item, idx) in existingMedia" :key="item.id" class="image-card relative group rounded-xl overflow-hidden border" style="border-color: var(--border)">
+            <!-- Video thumbnail -->
+            <template v-if="item.media_type === 'video'">
+              <div class="relative w-full h-32 bg-black flex items-center justify-center">
+                <video :src="item.url" class="w-full h-32 object-cover" muted preload="metadata"></video>
+                <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <span class="material-symbols-outlined text-white/80 text-[40px] drop-shadow-lg" style="font-variation-settings: 'FILL' 1;">play_circle</span>
+                </div>
+              </div>
+            </template>
+            <!-- Image thumbnail -->
+            <template v-else>
+              <img :src="item.url" :alt="'Screensaver ' + (idx + 1)" class="w-full h-32 object-cover" />
+            </template>
             <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-              <button @click="removeExistingImage(img)" class="p-2 rounded-lg bg-red-500/80 text-white cursor-pointer hover:bg-red-500 transition-colors">
+              <button @click="removeExistingMedia(item)" class="p-2 rounded-lg bg-red-500/80 text-white cursor-pointer hover:bg-red-500 transition-colors">
                 <span class="material-symbols-outlined text-[20px]">delete</span>
               </button>
             </div>
-            <div class="absolute bottom-1 left-1 px-2 py-0.5 rounded text-[10px] font-bold bg-black/60 text-white">
-              #{{ idx + 1 }}
+            <div class="absolute bottom-1 left-1 flex items-center gap-1">
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-black/60 text-white">#{{ idx + 1 }}</span>
+              <span v-if="item.media_type === 'video'" class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-purple-500/80 text-white uppercase">Video</span>
             </div>
           </div>
         </div>
@@ -98,25 +111,38 @@
              @dragover.prevent="isDragging = true"
              @dragleave.prevent="isDragging = false"
              @drop.prevent="handleDrop">
-          <input ref="fileInputRef" type="file" multiple accept="image/*" class="hidden" @change="handleFileSelect" />
+          <input ref="fileInputRef" type="file" multiple accept="image/*,video/mp4,video/webm,video/quicktime" class="hidden" @change="handleFileSelect" />
           <span class="material-symbols-outlined text-4xl mb-2" :class="isDragging ? 'text-accent' : ''" :style="!isDragging ? 'color: var(--text-muted)' : ''">cloud_upload</span>
-          <p class="text-sm font-medium" style="color: var(--text-body)">Klik atau seret gambar ke sini</p>
-          <p class="text-xs mt-1" style="color: var(--text-muted)">JPG, PNG, WEBP — maks 10MB per file</p>
+          <p class="text-sm font-medium" style="color: var(--text-body)">Klik atau seret gambar/video ke sini</p>
+          <p class="text-xs mt-1" style="color: var(--text-muted)">JPG, PNG, WEBP — maks 10MB | MP4, WEBM — maks {{ maxVideoSizeMb }}MB</p>
         </div>
 
         <!-- New files preview -->
         <div v-if="newFiles.length" class="flex flex-col gap-2">
-          <p class="text-xs font-bold uppercase tracking-wider" style="color: var(--text-muted)">Gambar baru ({{ newFiles.length }})</p>
+          <p class="text-xs font-bold uppercase tracking-wider" style="color: var(--text-muted)">Media baru ({{ newFiles.length }})</p>
           <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
             <div v-for="(file, idx) in newFilePreviews" :key="idx" class="image-card relative group rounded-xl overflow-hidden border" style="border-color: var(--border)">
-              <img :src="file.preview" :alt="file.name" class="w-full h-32 object-cover" />
+              <!-- Video preview -->
+              <template v-if="file.isVideo">
+                <div class="relative w-full h-32 bg-black flex items-center justify-center">
+                  <video :src="file.preview" class="w-full h-32 object-cover" muted preload="metadata"></video>
+                  <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <span class="material-symbols-outlined text-white/80 text-[40px] drop-shadow-lg" style="font-variation-settings: 'FILL' 1;">play_circle</span>
+                  </div>
+                </div>
+              </template>
+              <!-- Image preview -->
+              <template v-else>
+                <img :src="file.preview" :alt="file.name" class="w-full h-32 object-cover" />
+              </template>
               <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                 <button @click="removeNewFile(idx)" class="p-2 rounded-lg bg-red-500/80 text-white cursor-pointer hover:bg-red-500 transition-colors">
                   <span class="material-symbols-outlined text-[20px]">close</span>
                 </button>
               </div>
-              <div class="absolute bottom-1 right-1 px-2 py-0.5 rounded text-[10px] font-bold bg-accent/80 text-black">
-                Baru
+              <div class="absolute bottom-1 right-1 flex items-center gap-1">
+                <span v-if="file.isVideo" class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-purple-500/80 text-white uppercase">Video</span>
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-accent/80 text-black">Baru</span>
               </div>
             </div>
           </div>
@@ -178,12 +204,13 @@ const formTvOption = computed({
   set: (val) => { form.value.tv_device_id = val.value }
 })
 
-// ── Image state ──
-const existingImages = ref([])
+// ── Media state ──
+const existingMedia = ref([])
 const newFiles = ref([])
 const newFilePreviews = ref([])
 const isDragging = ref(false)
 const fileInputRef = ref(null)
+const maxVideoSizeMb = ref(100) // default, fetched from settings
 
 // ── Toast ──
 const toast = reactive({ show: false, message: '', type: 'success' })
@@ -206,35 +233,57 @@ function handleFileSelect(e) {
 
 function handleDrop(e) {
   isDragging.value = false
-  const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'))
+  const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/') || f.type.startsWith('video/'))
   addFiles(files)
 }
 
 function addFiles(files) {
   for (const file of files) {
-    newFiles.value.push(file)
-    const reader = new FileReader()
-    reader.onload = (e) => {
-      newFilePreviews.value.push({ name: file.name, preview: e.target.result })
+    const isVideo = file.type.startsWith('video/')
+
+    // Check file size limits
+    if (isVideo && file.size > maxVideoSizeMb.value * 1024 * 1024) {
+      showToast(`Video "${file.name}" melebihi batas ${maxVideoSizeMb.value}MB`, 'error')
+      continue
     }
-    reader.readAsDataURL(file)
+    if (!isVideo && file.size > 10 * 1024 * 1024) {
+      showToast(`Gambar "${file.name}" melebihi batas 10MB`, 'error')
+      continue
+    }
+
+    newFiles.value.push(file)
+
+    if (isVideo) {
+      // For videos, create an object URL for preview
+      const objectUrl = URL.createObjectURL(file)
+      newFilePreviews.value.push({ name: file.name, preview: objectUrl, isVideo: true })
+    } else {
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        newFilePreviews.value.push({ name: file.name, preview: e.target.result, isVideo: false })
+      }
+      reader.readAsDataURL(file)
+    }
   }
 }
 
 function removeNewFile(idx) {
   newFiles.value.splice(idx, 1)
-  // Revoke URL to prevent memory leak
   const preview = newFilePreviews.value[idx]
+  // Revoke object URL for videos to prevent memory leak
+  if (preview?.isVideo && preview?.preview) {
+    URL.revokeObjectURL(preview.preview)
+  }
   newFilePreviews.value.splice(idx, 1)
 }
 
-async function removeExistingImage(img) {
+async function removeExistingMedia(item) {
   try {
-    await api.delete(`/screensavers/${route.params.id}/images/${img.id}`)
-    existingImages.value = existingImages.value.filter(i => i.id !== img.id)
-    showToast('Gambar dihapus')
+    await api.delete(`/screensavers/${route.params.id}/images/${item.id}`)
+    existingMedia.value = existingMedia.value.filter(i => i.id !== item.id)
+    showToast('Media dihapus')
   } catch (e) {
-    showToast(e.response?.data?.message || 'Gagal menghapus gambar', 'error')
+    showToast(e.response?.data?.message || 'Gagal menghapus media', 'error')
   }
 }
 
@@ -250,6 +299,16 @@ async function fetchTvDevices() {
   } catch { /* silent */ }
 }
 
+// ── Load max video size setting ──
+async function fetchMaxVideoSize() {
+  try {
+    const { data } = await api.get('/settings/max_video_size_mb')
+    if (data.value) {
+      maxVideoSizeMb.value = parseInt(data.value) || 100
+    }
+  } catch { /* silent — use default */ }
+}
+
 // ── Load for edit ──
 const formUnitOption = computed({
   get: () => unitStore.units.find(u => u.id === form.value.unit_id) || null,
@@ -257,7 +316,7 @@ const formUnitOption = computed({
 })
 
 onMounted(async () => {
-  await fetchTvDevices()
+  await Promise.all([fetchTvDevices(), fetchMaxVideoSize()])
 
   if (isEdit.value) {
     pageLoading.value = true
@@ -267,9 +326,10 @@ onMounted(async () => {
         idle_timeout: data.idle_timeout || 30,
         interval: data.interval || 8,
         is_active: data.is_active ?? true, unit_id: data.unit_id || '' }
-      existingImages.value = (data.images || []).map(img => ({
+      existingMedia.value = (data.images || []).map(img => ({
         id: img.id,
         url: img.image_path ? storageUrl(img.image_path) : '',
+        media_type: img.media_type || 'image',
         sort_order: img.sort_order,
       }))
     } catch { formError.value = 'Gagal memuat data.' }
@@ -292,7 +352,7 @@ async function handleSubmit() {
     fd.append('interval', form.value.interval)
     fd.append('is_active', form.value.is_active ? '1' : '0')
 
-    // Append new images
+    // Append new media files
     for (const file of newFiles.value) {
       fd.append('images[]', file)
     }
@@ -315,7 +375,12 @@ async function handleSubmit() {
 
 // ── Cleanup previews ──
 onUnmounted(() => {
-  // No object URLs to revoke since we use FileReader
+  // Revoke object URLs for video previews
+  for (const p of newFilePreviews.value) {
+    if (p.isVideo && p.preview) {
+      URL.revokeObjectURL(p.preview)
+    }
+  }
 })
 </script>
 

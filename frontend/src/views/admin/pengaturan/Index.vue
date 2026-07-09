@@ -158,6 +158,28 @@
       </div>
     </div>
 
+    <!-- ═══ SCREENSAVER ═══ -->
+    <div class="settings-card rounded-xl overflow-hidden">
+      <div class="card-header px-6 py-4 flex items-center gap-2">
+        <span class="material-symbols-outlined text-accent text-[20px]">slideshow</span>
+        <h3 class="font-bold" style="color: var(--text-heading)">Screensaver</h3>
+      </div>
+      <div class="px-6 py-5 space-y-6">
+        <div class="setting-row">
+          <div class="setting-label">
+            <h4 class="text-sm font-bold" style="color: var(--text-heading)">Maks Ukuran Video (MB)</h4>
+            <p class="text-xs mt-0.5" style="color: var(--text-muted)">Batas maksimum ukuran file video yang bisa diupload untuk screensaver</p>
+          </div>
+          <div class="setting-control">
+            <div class="flex items-center gap-3">
+              <input v-model.number="maxVideoSizeMb" type="number" min="1" max="500" class="setting-input w-32 rounded-lg py-2.5 px-4 text-sm focus:outline-none focus:ring-1 focus:ring-accent" placeholder="100" />
+              <span class="text-sm font-medium" style="color: var(--text-muted)">MB</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- ═══ SAVE BAR ═══ -->
     <div class="save-bar rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 sticky bottom-0 z-10">
       <p class="text-sm" style="color: var(--text-muted)">
@@ -192,6 +214,7 @@ const authStore = useAuthStore()
 // ── Settings ──
 const welcomeMessage = ref('Selamat Datang di Portal Aplikasi UII Dalwa. Silakan pilih menu aplikasi di layar.')
 const hijriAdjustment = ref(0)
+const maxVideoSizeMb = ref(100)
 
 // ── Logo Unit ──
 const unitOptions = ref([])
@@ -311,13 +334,15 @@ function loadSettings() {
     const data = res.data
     if (data.welcome_message) welcomeMessage.value = data.welcome_message
     if (data.hijri_adjustment !== undefined) hijriAdjustment.value = parseInt(data.hijri_adjustment)
+    if (data.max_video_size_mb !== undefined) maxVideoSizeMb.value = parseInt(data.max_video_size_mb) || 100
   }).catch(() => {})
 }
 
 function saveSettings() {
   api.post('/settings', {
     welcome_message: welcomeMessage.value,
-    hijri_adjustment: hijriAdjustment.value
+    hijri_adjustment: hijriAdjustment.value,
+    max_video_size_mb: maxVideoSizeMb.value
   }).then(() => {
     alert('Pengaturan berhasil disimpan!')
   }).catch(() => {

@@ -1,10 +1,29 @@
 <template>
   <Transition name="screensaver">
     <div v-if="visible" class="screensaver-overlay" @click="dismiss" @touchstart="dismiss" @keydown="dismiss" tabindex="0" ref="overlayRef">
-      <!-- Background images with crossfade -->
+      <!-- Background media with crossfade -->
       <div class="screensaver-slides">
         <Transition name="crossfade" mode="out-in">
-          <div :key="currentIndex" class="screensaver-slide" :style="{ backgroundImage: `url(${currentImage})` }"></div>
+          <div :key="currentIndex" class="screensaver-slide">
+            <!-- Video slide -->
+            <video
+              v-if="currentMediaType === 'video'"
+              ref="videoRef"
+              :src="currentMediaUrl"
+              class="absolute inset-0 w-full h-full object-cover"
+              autoplay
+              muted
+              playsinline
+              @ended="onVideoEnded"
+              @error="onVideoError"
+            ></video>
+            <!-- Image slide -->
+            <div
+              v-else
+              class="absolute inset-0"
+              :style="{ backgroundImage: `url(${currentMediaUrl})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }"
+            ></div>
+          </div>
         </Transition>
       </div>
 
@@ -22,10 +41,6 @@
         </div>
       </div>
 
-      <!-- Image counter dots -->
-      <div v-if="images.length > 1" class="screensaver-dots">
-        <span v-for="(_, i) in images" :key="i" class="dot" :class="{ active: i === currentIndex }"></span>
-      </div>
     </div>
   </Transition>
 </template>
@@ -40,13 +55,14 @@ import echo from '../echo'
 const route = useRoute()
 const { isDark } = usePublicTheme()
 const overlayRef = ref(null)
+const videoRef = ref(null)
 
 // ── State ──
 const visible = ref(false)
-const images = ref([])
+const mediaItems = ref([])   // [{ url, media_type, id, sort_order }]
 const currentIndex = ref(0)
 const idleTimeout = ref(30) // seconds
-const interval = ref(8)    // seconds
+const interval = ref(8)    // seconds between image slides
 const configLoaded = ref(false)
 
 // ── Timers ──
@@ -54,12 +70,15 @@ let idleTimer = null
 let slideTimer = null
 let echoListening = false
 
-// ── Computed ──
-const currentImage = ref('')
+// ── Current media info ──
+const currentMediaUrl = ref('')
+const currentMediaType = ref('image')
 
 watch(currentIndex, (idx) => {
-  if (images.value.length > 0) {
-    currentImage.value = images.value[idx]?.url || ''
+  if (mediaItems.value.length > 0) {
+    const item = mediaItems.value[idx]
+    currentMediaUrl.value = item?.url || ''
+    currentMediaType.value = item?.media_type || 'image'
   }
 })
 
@@ -81,23 +100,30 @@ async function fetchConfig() {
     if (data.active && data.images?.length) {
       const oldTimeout = idleTimeout.value
       const oldInterval = interval.value
-      const oldImageUrls = images.value.map(i => i.url).join(',')
+      const oldMediaUrls = mediaItems.value.map(i => i.url).join(',')
 
       idleTimeout.value = data.idle_timeout || 30
       interval.value = data.interval || 8
-      images.value = data.images
-      currentImage.value = data.images[0]?.url || ''
+      mediaItems.value = data.images.map(img => ({
+        url: img.url,
+        media_type: img.media_type || 'image',
+        id: img.id,
+        sort_order: img.sort_order,
+      }))
+      currentMediaUrl.value = mediaItems.value[0]?.url || ''
+      currentMediaType.value = mediaItems.value[0]?.media_type || 'image'
       configLoaded.value = true
 
-      const newImageUrls = data.images.map(i => i.url).join(',')
+      const newMediaUrls = mediaItems.value.map(i => i.url).join(',')
       const configChanged = oldTimeout !== idleTimeout.value ||
                             oldInterval !== interval.value ||
-                            oldImageUrls !== newImageUrls
+                            oldMediaUrls !== newMediaUrls
 
       // If config changed while screensaver is showing, restart slideshow
       if (configChanged && visible.value) {
         currentIndex.value = 0
-        currentImage.value = images.value[0]?.url || ''
+        currentMediaUrl.value = mediaItems.value[0]?.url || ''
+        currentMediaType.value = mediaItems.value[0]?.media_type || 'image'
         startSlideshow()
       }
 
@@ -159,9 +185,10 @@ function stopIdleDetection() {
 
 // ── Slideshow ──
 function showScreensaver() {
-  if (images.value.length === 0) return
+  if (mediaItems.value.length === 0) return
   currentIndex.value = 0
-  currentImage.value = images.value[0]?.url || ''
+  currentMediaUrl.value = mediaItems.value[0]?.url || ''
+  currentMediaType.value = mediaItems.value[0]?.media_type || 'image'
   visible.value = true
 
   nextTick(() => {
@@ -173,15 +200,61 @@ function showScreensaver() {
 
 function startSlideshow() {
   clearInterval(slideTimer)
-  if (images.value.length <= 1) return
+  if (mediaItems.value.length <= 1) return
 
-  slideTimer = setInterval(() => {
-    currentIndex.value = (currentIndex.value + 1) % images.value.length
+  // Only start interval timer if current slide is an image.
+  // For videos, we wait for `onended` event.
+  const currentItem = mediaItems.value[currentIndex.value]
+  if (currentItem?.media_type !== 'video') {
+    scheduleNextSlide()
+  }
+  // If video, the onended handler will advance the slide.
+}
+
+function scheduleNextSlide() {
+  clearTimeout(slideTimer)
+  slideTimer = setTimeout(() => {
+    advanceSlide()
   }, interval.value * 1000)
+}
+
+function advanceSlide() {
+  if (mediaItems.value.length <= 1) return
+  currentIndex.value = (currentIndex.value + 1) % mediaItems.value.length
+
+  // After advancing, check if the new slide is image or video
+  nextTick(() => {
+    const newItem = mediaItems.value[currentIndex.value]
+    if (newItem?.media_type !== 'video') {
+      // Image: schedule next advance on interval timer
+      scheduleNextSlide()
+    }
+    // Video: wait for onended
+  })
+}
+
+function onVideoEnded() {
+  // Video finished playing — advance to next slide
+  if (mediaItems.value.length > 1) {
+    advanceSlide()
+  }
+  // If only 1 media (a single video), replay it
+  else if (videoRef.value) {
+    videoRef.value.currentTime = 0
+    videoRef.value.play()
+  }
+}
+
+function onVideoError() {
+  // If video fails to load, skip to next slide after a short delay
+  setTimeout(() => {
+    advanceSlide()
+  }, 2000)
 }
 
 function dismiss() {
   visible.value = false
+  clearTimeout(slideTimer)
   clearInterval(slideTimer)
   resetIdleTimer()
 }
@@ -222,6 +295,7 @@ onMounted(async () => {
 onUnmounted(() => {
   stopIdleDetection()
   clearInterval(slideTimer)
+  clearTimeout(slideTimer)
   stopEchoListener()
 })
 
@@ -261,42 +335,6 @@ watch(() => route.fullPath, async () => {
 .screensaver-slide {
   position: absolute;
   inset: 0;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-
-.screensaver-slide {
-  position: absolute;
-  inset: 0;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-
-.screensaver-dots {
-  position: absolute;
-  bottom: 80px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 8px;
-  pointer-events: none;
-}
-
-.dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.3);
-  transition: all 0.4s ease;
-}
-
-.dot.active {
-  background: rgba(251, 191, 36, 0.9);
-  width: 24px;
-  border-radius: 4px;
-  box-shadow: 0 0 12px rgba(251, 191, 36, 0.5);
 }
 
 /* Screensaver enter/leave */

@@ -54,7 +54,7 @@
             <th class="px-4 py-4 text-sm font-semibold" style="color: var(--text-heading)">TV Target</th>
             <th class="px-4 py-4 text-sm font-semibold w-32" style="color: var(--text-heading)">Idle (dtk)</th>
             <th class="px-4 py-4 text-sm font-semibold w-32" style="color: var(--text-heading)">Interval (dtk)</th>
-            <th class="px-4 py-4 text-sm font-semibold w-28" style="color: var(--text-heading)">Gambar</th>
+            <th class="px-4 py-4 text-sm font-semibold w-28" style="color: var(--text-heading)">Media</th>
             <th class="px-4 py-4 text-sm font-semibold" style="color: var(--text-heading)">Status</th>
             <th v-if="unitStore.activeUnitId === 'all'" class="px-4 py-4 text-sm font-semibold tracking-wide" style="color: var(--text-heading)">Unit</th>
               <th class="px-4 py-4 text-sm font-semibold text-right" style="color: var(--text-heading)">Actions</th>
@@ -75,9 +75,15 @@
               <td class="px-4 py-4 text-sm font-bold text-center" style="color: var(--text-body)">{{ item.idle_timeout }}</td>
               <td class="px-4 py-4 text-sm font-bold text-center" style="color: var(--text-body)">{{ item.interval }}</td>
               <td class="px-4 py-4">
-                <div class="flex items-center gap-1.5">
-                  <span class="material-symbols-outlined text-[18px] text-emerald-400">image</span>
-                  <span class="text-sm font-bold" style="color: var(--text-heading)">{{ item.images?.length || 0 }}</span>
+                <div class="flex items-center gap-2">
+                  <div class="flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[16px] text-emerald-400">image</span>
+                    <span class="text-sm font-bold" style="color: var(--text-heading)">{{ (item.images || []).filter(i => (i.media_type || 'image') === 'image').length }}</span>
+                  </div>
+                  <div v-if="(item.images || []).some(i => i.media_type === 'video')" class="flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[16px] text-purple-400">videocam</span>
+                    <span class="text-sm font-bold" style="color: var(--text-heading)">{{ (item.images || []).filter(i => i.media_type === 'video').length }}</span>
+                  </div>
                 </div>
               </td>
               <td class="px-4 py-4">
@@ -169,7 +175,7 @@ const statsCards = ref([
   { label: 'Total', value: 0, icon: 'slideshow', iconBg: 'bg-accent/10', iconColor: 'text-accent' },
   { label: 'Aktif', value: 0, icon: 'check_circle', iconBg: 'bg-green-500/10', iconColor: 'text-green-400' },
   { label: 'Nonaktif', value: 0, icon: 'cancel', iconBg: 'bg-red-500/10', iconColor: 'text-red-400' },
-  { label: 'Total Gambar', value: 0, icon: 'image', iconBg: 'bg-blue-500/10', iconColor: 'text-blue-400' },
+  { label: 'Total Media', value: 0, icon: 'perm_media', iconBg: 'bg-blue-500/10', iconColor: 'text-blue-400' },
 ])
 
 // ── Delete ──
@@ -213,7 +219,7 @@ async function fetchStats() {
     statsCards.value[0].value = data.total ?? 0
     statsCards.value[1].value = data.active ?? 0
     statsCards.value[2].value = data.inactive ?? 0
-    statsCards.value[3].value = data.total_images ?? 0
+    statsCards.value[3].value = data.total_media ?? 0
   } catch {
     // Fallback: derive from main data total
     try {
