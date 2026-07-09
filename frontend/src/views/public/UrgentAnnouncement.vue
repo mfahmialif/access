@@ -1,10 +1,22 @@
 <template>
   <div class="fixed inset-0 z-[100] w-screen h-screen overflow-hidden font-display text-slate-100">
-    <!-- ═══════ BLURRED BACKGROUND ═══════ -->
+    <!-- ═══════ LAYERED BACKGROUND (TV-friendly, no blur) ═══════ -->
     <div class="absolute inset-0 w-full h-full z-0 overflow-hidden">
-      <div class="absolute inset-0 bg-cover bg-center"
-           style="background-image: url('/img/hero-bg.jpg')"></div>
-      <div class="absolute inset-0 backdrop-blur-md bg-[#020c1b]/80 z-10"></div>
+      <!-- Base deep gradient -->
+      <div class="absolute inset-0 bg-gradient-to-br from-[#020c1b] via-[#0a1628] to-[#0d1f3c]"></div>
+      <!-- Radial accent glow top-right -->
+      <div class="absolute inset-0" style="background: radial-gradient(ellipse 60% 50% at 80% 10%, rgba(251,191,36,0.07) 0%, transparent 70%)"></div>
+      <!-- Radial accent glow bottom-left -->
+      <div class="absolute inset-0" style="background: radial-gradient(ellipse 50% 60% at 15% 85%, rgba(59,130,246,0.06) 0%, transparent 70%)"></div>
+      <!-- Animated floating orbs -->
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="orb orb-3"></div>
+      <!-- Subtle grid pattern overlay -->
+      <div class="absolute inset-0 opacity-[0.03]"
+           style="background-image: linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px); background-size: 60px 60px;"></div>
+      <!-- Vignette edges -->
+      <div class="absolute inset-0" style="background: radial-gradient(ellipse 70% 70% at 50% 50%, transparent 40%, rgba(2,12,27,0.8) 100%)"></div>
     </div>
 
     <!-- ═══════ CENTERED OVERLAY ═══════ -->
@@ -174,6 +186,54 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+/* Animated floating orbs (TV-friendly, no blur) */
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.08;
+  pointer-events: none;
+  will-change: transform;
+}
+.orb-1 {
+  width: 400px;
+  height: 400px;
+  top: -10%;
+  right: -5%;
+  background: radial-gradient(circle, rgba(251,191,36,0.5) 0%, rgba(251,191,36,0) 70%);
+  animation: orbFloat1 20s ease-in-out infinite;
+}
+.orb-2 {
+  width: 350px;
+  height: 350px;
+  bottom: -8%;
+  left: -5%;
+  background: radial-gradient(circle, rgba(59,130,246,0.4) 0%, rgba(59,130,246,0) 70%);
+  animation: orbFloat2 25s ease-in-out infinite;
+}
+.orb-3 {
+  width: 250px;
+  height: 250px;
+  top: 40%;
+  left: 50%;
+  background: radial-gradient(circle, rgba(139,92,246,0.3) 0%, rgba(139,92,246,0) 70%);
+  animation: orbFloat3 18s ease-in-out infinite;
+}
+
+@keyframes orbFloat1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(-40px, 30px) scale(1.1); }
+  66% { transform: translate(20px, -20px) scale(0.95); }
+}
+@keyframes orbFloat2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(30px, -40px) scale(1.08); }
+  66% { transform: translate(-20px, 15px) scale(0.92); }
+}
+@keyframes orbFloat3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-35px, -25px) scale(1.15); }
+}
+
 /* Modal entrance animation */
 .modal-enter {
   animation: modalIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
