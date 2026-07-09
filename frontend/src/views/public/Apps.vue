@@ -90,7 +90,7 @@
           <div v-if="iframeLoading"
                class="absolute inset-0 flex flex-col items-center justify-center bg-[#020617] z-30 pointer-events-none">
             <div class="relative w-16 h-16 flex items-center justify-center">
-              <div class="absolute inset-0 rounded-full border-4 border-accent/20 border-t-accent animate-spin"></div>
+              <div class="absolute inset-0 rounded-full border-4 border-[#423000] border-t-accent animate-spin"></div>
               <span class="material-symbols-outlined text-accent text-2xl relative z-10"
                     style="font-variation-settings: 'FILL' 1;">{{ activeApp.icon }}</span>
             </div>
@@ -105,7 +105,7 @@
           <transition name="slide-up">
             <div v-if="dockExpanded"
                  class="app-switcher-panel absolute bottom-full right-0 left-0 mx-2 mb-2 z-50 flex flex-col gap-1 p-2 rounded-2xl border shadow-2xl max-h-[50vh] overflow-y-auto no-scrollbar"
-                 :class="isDark ? 'border-white/10 bg-[#0a1128] opacity-95' : 'border-slate-200 bg-white opacity-95'">
+                 :class="isDark ? 'border-[#1e293b] bg-[#0a1128] opacity-95' : 'border-slate-200 bg-white opacity-95'">
 
               <!-- App List -->
               <button @click="closeEmbed"
@@ -144,7 +144,7 @@
 
           <!-- Toolbar Bar -->
           <div class="flex items-center h-12 md:h-14 px-2 md:px-3 gap-1 border-t"
-               :class="isDark ? 'bg-[#0a1128] opacity-95 border-white/10' : 'bg-white opacity-95 border-slate-200'">
+               :class="isDark ? 'bg-[#0a1128] opacity-95 border-[#1e293b]' : 'bg-white opacity-95 border-slate-200'">
 
             <!-- History Nav -->
             <button @click="goIframeBack"
@@ -187,7 +187,7 @@
         <!-- Backdrop (only when panel is open) -->
         <transition name="fade">
           <div v-if="dockExpanded"
-               class="absolute inset-0 bg-black/20 z-[5]"
+               class="absolute inset-0 bg-black opacity-20 z-[5]"
                @click="dockExpanded = false"></div>
         </transition>
       </div>
@@ -341,27 +341,27 @@ function onPopState(e) {
 // ── Color Mapping ──
 const colorMapping = {
   amber: {
-    classes: 'bg-amber-500/15 border-amber-500/25 text-amber-400 group-hover:border-amber-400/50 group-hover:bg-amber-500/25',
+    classes: 'bg-[#423000] border-[#713f12] text-amber-400 group-hover:border-[#a16207] group-hover:bg-[#713f12]',
     glow: 'rgba(245, 158, 11, 0.06)',
   },
   blue: {
-    classes: 'bg-blue-500/15 border-blue-500/25 text-blue-400 group-hover:border-blue-400/50 group-hover:bg-blue-500/25',
+    classes: 'bg-[#172554] border-[#1e3a8a] text-blue-400 group-hover:border-[#1d4ed8] group-hover:bg-[#1e3a8a]',
     glow: 'rgba(59, 130, 246, 0.06)',
   },
   emerald: {
-    classes: 'bg-emerald-500/15 border-emerald-500/25 text-emerald-400 group-hover:border-emerald-400/50 group-hover:bg-emerald-500/25',
+    classes: 'bg-[#022c22] border-[#064e3b] text-emerald-400 group-hover:border-[#047857] group-hover:bg-[#064e3b]',
     glow: 'rgba(16, 185, 129, 0.06)',
   },
   violet: {
-    classes: 'bg-violet-500/15 border-violet-500/25 text-violet-400 group-hover:border-violet-400/50 group-hover:bg-violet-500/25',
+    classes: 'bg-[#2e1065] border-[#4c1d95] text-violet-400 group-hover:border-[#6d28d9] group-hover:bg-[#4c1d95]',
     glow: 'rgba(139, 92, 246, 0.06)',
   },
   rose: {
-    classes: 'bg-rose-500/15 border-rose-500/25 text-rose-400 group-hover:border-rose-400/50 group-hover:bg-rose-500/25',
+    classes: 'bg-[#4c0519] border-[#881337] text-rose-400 group-hover:border-[#be123c] group-hover:bg-[#881337]',
     glow: 'rgba(244, 63, 94, 0.06)',
   },
   cyan: {
-    classes: 'bg-cyan-500/15 border-cyan-500/25 text-cyan-400 group-hover:border-cyan-400/50 group-hover:bg-cyan-500/25',
+    classes: 'bg-[#083344] border-[#164e63] text-cyan-400 group-hover:border-[#0e7490] group-hover:bg-[#164e63]',
     glow: 'rgba(6, 182, 212, 0.06)',
   },
 }
