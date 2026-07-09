@@ -306,6 +306,7 @@ import { useRouter, useRoute } from 'vue-router'
 import simplebar from 'simplebar-vue'
 import 'simplebar-vue/dist/simplebar.min.css'
 import { useAuthStore } from '../../../stores/auth'
+import { storageUrl } from '../../../utils/asset'
 
 defineProps({ collapsed: { type: Boolean, default: false } })
 defineEmits(['close-sidebar', 'toggle-collapse'])
@@ -318,14 +319,14 @@ const authStore = useAuthStore()
 const sidebarLogoFull = computed(() => {
   if (authStore.isSuperadmin) return '/img/logo-full.png'
   const unit = authStore.user?.units?.[0]
-  if (unit?.logo_full_path) return `/storage/${unit.logo_full_path}`
+  if (unit?.logo_full_path) return storageUrl(unit.logo_full_path)
   return '/img/logo-full.png'
 })
 
 const sidebarLogo = computed(() => {
   if (authStore.isSuperadmin) return '/img/logo.png'
   const unit = authStore.user?.units?.[0]
-  if (unit?.logo_path) return `/storage/${unit.logo_path}`
+  if (unit?.logo_path) return storageUrl(unit.logo_path)
   return '/img/logo.png'
 })
 

@@ -33,6 +33,7 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { storageUrl } from '../utils/asset'
 
 const router = useRouter()
 
@@ -93,7 +94,7 @@ const unitLogoFull = computed(() => {
   try {
     const device = JSON.parse(localStorage.getItem('tv_device') || 'null')
     if (device?.unit?.logo_full_path) {
-      return `/storage/${device.unit.logo_full_path}`
+      return storageUrl(device.unit.logo_full_path)
     }
   } catch { /* ignore */ }
   return '/img/logo-full.png'

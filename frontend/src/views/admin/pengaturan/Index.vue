@@ -184,6 +184,7 @@ import { ref, computed, onMounted, watch } from 'vue'
 import api from '../../../axios'
 import VueMultiselect from 'vue-multiselect'
 import 'vue-multiselect/dist/vue-multiselect.css'
+import { storageUrl } from '../../../utils/asset'
 import { useAuthStore } from '../../../stores/auth'
 
 const authStore = useAuthStore()
@@ -211,14 +212,14 @@ const showUnitSelector = computed(() => {
 // Logo preview URLs (fallback to default)
 const logoPreview = computed(() => {
   if (unitLogos.value.logo_path) {
-    return `/storage/${unitLogos.value.logo_path}`
+    return storageUrl(unitLogos.value.logo_path)
   }
   return '/img/logo.png'
 })
 
 const logoFullPreview = computed(() => {
   if (unitLogos.value.logo_full_path) {
-    return `/storage/${unitLogos.value.logo_full_path}`
+    return storageUrl(unitLogos.value.logo_full_path)
   }
   return '/img/logo-full.png'
 })
