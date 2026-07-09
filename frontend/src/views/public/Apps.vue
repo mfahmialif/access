@@ -81,6 +81,7 @@
                   ref="iframeRef"
                   :src="embedUrl"
                   @load="onIframeLoad"
+                  sandbox="allow-same-origin allow-scripts allow-forms allow-modals allow-downloads"
                   allow="clipboard-read; clipboard-write"
                   referrerpolicy="no-referrer"
                   scrolling="yes"
@@ -288,6 +289,34 @@ function onIframeLoad(e) {
   if (!embedUrl.value) return
   iframeLoading.value = false
   e.target.focus()
+
+  // Intercept new tab/window attempts inside iframe
+  try {
+    const iframeDoc = e.target.contentDocument || e.target.contentWindow?.document
+    if (iframeDoc) {
+      // Override window.open to navigate inside iframe instead
+      e.target.contentWindow.open = function(url) {
+        if (url) e.target.contentWindow.location.href = url
+        return null
+      }
+
+      // Rewrite all target="_blank" links to open inside iframe
+      const rewriteLinks = () => {
+        const links = iframeDoc.querySelectorAll('a[target="_blank"], a[target="_new"]')
+        links.forEach(link => {
+          link.setAttribute('target', '_self')
+        })
+      }
+      rewriteLinks()
+
+      // Also watch for dynamically added links
+      const observer = new MutationObserver(() => rewriteLinks())
+      observer.observe(iframeDoc.body, { childList: true, subtree: true })
+    }
+  } catch (err) {
+    // Cross-origin iframe — sandbox already blocks popups
+    console.debug('Cannot access iframe content (cross-origin), sandbox will block popups:', err.message)
+  }
 }
 
 function refreshIframe() {
