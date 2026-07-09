@@ -1,19 +1,12 @@
 <template>
-  <div class="relative w-full min-h-screen overflow-x-hidden font-display text-slate-100 selection:bg-accent selection:text-[#0a192f]">
+  <div class="w-full min-h-full flex flex-col">
     <!-- ═══════ PATTERN OVERLAY ═══════ -->
-    <div class="absolute inset-0 pointer-events-none z-0"
-         :style="{ backgroundImage: patternBg, backgroundSize: '30px 30px' }"></div>
+      <div class="fixed inset-0 pointer-events-none z-[-1] bg-[#0a192f]"
+           :style="{ backgroundImage: patternBg, backgroundSize: '30px 30px' }"></div>
 
-    <!-- ═══════ MAIN WRAPPER ═══════ -->
-    <div class="relative z-10 flex flex-col min-h-screen w-full px-3 py-3 sm:px-4 md:px-6 lg:px-10 md:py-5 lg:py-6 max-w-[1920px] mx-auto">
-
-      <!-- ═══════ HEADER ═══════ -->
-      <!-- ═══════ HEADER ═══════ -->
-      <PublicHeader :showBack="true" />
-
-      <!-- ═══════ CONTENT ═══════ -->
-      <main class="flex-1 flex flex-col gap-4 md:gap-5 overflow-visible">
-        <!-- Title + Filter Controls -->
+  <!-- ═══════ CONTENT ═══════ -->
+  <div class="flex-1 flex flex-col gap-4 md:gap-5 overflow-visible font-display text-slate-100 w-full pb-12">
+    <!-- Title + Filter Controls -->
         <div class="flex flex-col xl:flex-row xl:items-end justify-between px-1 md:px-2 gap-4">
           <div class="space-y-0.5 md:space-y-1 shrink-0">
             <h2 class="text-2xl md:text-4xl font-black text-accent tracking-tight drop-shadow-sm">Galeri & Video</h2>
@@ -108,7 +101,7 @@
             <p class="text-base md:text-lg font-medium">Tidak ada konten untuk filter ini</p>
           </div>
         </div>
-      </main>
+      </div>
 
       <!-- ═══════ PAGINATION FOOTER ═══════ -->
       <footer v-if="totalPages > 1" class="flex items-center justify-center py-3 md:py-4">
@@ -135,7 +128,6 @@
         </div>
       </footer>
     </div>
-  </div>
 </template>
 
 <script setup>
@@ -143,7 +135,6 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import api from '../../axios'
 import { storageUrl } from '../../utils/asset'
-import PublicHeader from '../../components/PublicHeader.vue'
 
 const router = useRouter()
 

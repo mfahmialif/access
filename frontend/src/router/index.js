@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import PublicLayout from '../layouts/PublicLayout.vue'
 import LandingPage from '../views/public/LandingPage.vue'
 import InfoTerkini from '../views/public/InfoTerkini.vue'
 import AgendaHarian from '../views/public/agenda/harian.vue'
@@ -17,96 +18,105 @@ import AdminLayout from '../layouts/AdminLayout.vue'
 import AdminDashboard from '../views/admin/dashboard/Index.vue'
 
 const routes = [
+  // ═══ Public Pages (wrapped in PublicLayout — navbar, config, footer) ═══
   {
     path: '/',
-    name: 'Landing',
-    component: LandingPage,
-    meta: { title: 'Access — Smart TV Management System', requiresTv: true }
-  },
-  {
-    path: '/info-terkini',
-    name: 'InfoTerkini',
-    component: InfoTerkini,
-    meta: { title: 'Access — Info Terkini', requiresTv: true }
-  },
-  {
-    path: '/info-terkini/:id',
-    name: 'DetailNews',
-    component: DetailPage,
-    meta: { title: 'Access — Detail Berita', requiresTv: true, detailType: 'news' }
+    component: PublicLayout,
+    children: [
+      {
+        path: '',
+        name: 'Landing',
+        component: LandingPage,
+        meta: { title: 'Access — Smart TV Management System', requiresTv: true }
+      },
+      {
+        path: 'info-terkini',
+        name: 'InfoTerkini',
+        component: InfoTerkini,
+        meta: { title: 'Access — Info Terkini', requiresTv: true }
+      },
+      {
+        path: 'info-terkini/:id',
+        name: 'DetailNews',
+        component: DetailPage,
+        meta: { title: 'Access — Detail Berita', requiresTv: true, detailType: 'news' }
+      },
+      {
+        path: 'agenda-harian',
+        name: 'AgendaHarian',
+        component: AgendaHarian,
+        meta: { title: 'Access — Agenda Harian', requiresTv: true }
+      },
+      {
+        path: 'agenda-harian/:id',
+        name: 'DetailAgenda',
+        component: DetailPage,
+        meta: { title: 'Access — Detail Agenda Harian', requiresTv: true, detailType: 'agenda' }
+      },
+      {
+        path: 'agenda-mingguan',
+        name: 'AgendaMingguan',
+        component: AgendaMingguan,
+        meta: { title: 'Access — Agenda Mingguan', requiresTv: true }
+      },
+      {
+        path: 'agenda-mingguan/:id',
+        name: 'DetailWeekly',
+        component: DetailPage,
+        meta: { title: 'Access — Detail Agenda Mingguan', requiresTv: true, detailType: 'weekly' }
+      },
+      {
+        path: 'agenda-bulanan',
+        name: 'AgendaBulanan',
+        component: AgendaBulanan,
+        meta: { title: 'Access — Agenda Bulanan', requiresTv: true }
+      },
+      {
+        path: 'agenda-bulanan/:id',
+        name: 'DetailMonthly',
+        component: DetailPage,
+        meta: { title: 'Access — Detail Agenda Bulanan', requiresTv: true, detailType: 'monthly' }
+      },
+      {
+        path: 'gallery-video',
+        name: 'GalleryVideo',
+        component: GalleryVideo,
+        meta: { title: 'Access — Gallery & Video', requiresTv: true }
+      },
+      {
+        path: 'gallery-video/:id',
+        name: 'DetailGallery',
+        component: DetailPage,
+        meta: { title: 'Access — Detail Gallery', requiresTv: true, detailType: 'gallery' }
+      },
+      {
+        path: 'pengumuman',
+        name: 'Pengumuman',
+        component: Pengumuman,
+        meta: { title: 'Access — Pengumuman', requiresTv: true }
+      },
+      {
+        path: 'pengumuman/:id',
+        name: 'DetailAnnouncement',
+        component: DetailPage,
+        meta: { title: 'Access — Detail Pengumuman', requiresTv: true, detailType: 'announcement' }
+      },
+      {
+        path: 'urgent',
+        name: 'UrgentAnnouncement',
+        component: UrgentAnnouncement,
+        meta: { title: 'Access — Urgent Announcement', requiresTv: true }
+      },
+      {
+        path: 'apps',
+        name: 'Apps',
+        component: Apps,
+        meta: { title: 'Access — Dalwa Apps' }
+      },
+    ]
   },
 
-  {
-    path: '/agenda-harian',
-    name: 'AgendaHarian',
-    component: AgendaHarian,
-    meta: { title: 'Access — Agenda Harian', requiresTv: true }
-  },
-  {
-    path: '/agenda-harian/:id',
-    name: 'DetailAgenda',
-    component: DetailPage,
-    meta: { title: 'Access — Detail Agenda Harian', requiresTv: true, detailType: 'agenda' }
-  },
-
-  {
-    path: '/agenda-mingguan',
-    name: 'AgendaMingguan',
-    component: AgendaMingguan,
-    meta: { title: 'Access — Agenda Mingguan', requiresTv: true }
-  },
-  {
-    path: '/agenda-mingguan/:id',
-    name: 'DetailWeekly',
-    component: DetailPage,
-    meta: { title: 'Access — Detail Agenda Mingguan', requiresTv: true, detailType: 'weekly' }
-  },
-
-  {
-    path: '/agenda-bulanan',
-    name: 'AgendaBulanan',
-    component: AgendaBulanan,
-    meta: { title: 'Access — Agenda Bulanan', requiresTv: true }
-  },
-  {
-    path: '/agenda-bulanan/:id',
-    name: 'DetailMonthly',
-    component: DetailPage,
-    meta: { title: 'Access — Detail Agenda Bulanan', requiresTv: true, detailType: 'monthly' }
-  },
-
-  {
-    path: '/gallery-video',
-    name: 'GalleryVideo',
-    component: GalleryVideo,
-    meta: { title: 'Access — Gallery & Video', requiresTv: true }
-  },
-  {
-    path: '/gallery-video/:id',
-    name: 'DetailGallery',
-    component: DetailPage,
-    meta: { title: 'Access — Detail Gallery', requiresTv: true, detailType: 'gallery' }
-  },
-
-  {
-    path: '/pengumuman',
-    name: 'Pengumuman',
-    component: Pengumuman,
-    meta: { title: 'Access — Pengumuman', requiresTv: true }
-  },
-  {
-    path: '/pengumuman/:id',
-    name: 'DetailAnnouncement',
-    component: DetailPage,
-    meta: { title: 'Access — Detail Pengumuman', requiresTv: true, detailType: 'announcement' }
-  },
-
-  {
-    path: '/urgent',
-    name: 'UrgentAnnouncement',
-    component: UrgentAnnouncement,
-    meta: { title: 'Access — Urgent Announcement', requiresTv: true }
-  },
+  // ═══ Standalone Pages (no layout) ═══
   {
     path: '/connect',
     name: 'ConnectToken',
@@ -124,12 +134,6 @@ const routes = [
     name: 'ConnectFail',
     component: ConnectFail,
     meta: { title: 'Access — Koneksi Gagal' }
-  },
-  {
-    path: '/apps',
-    name: 'Apps',
-    component: Apps,
-    meta: { title: 'Access — Dalwa Apps' }
   },
   {
     path: '/login',

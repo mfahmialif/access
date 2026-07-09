@@ -1,17 +1,14 @@
 <template>
-  <div class="relative w-screen h-screen flex flex-col overflow-hidden font-display antialiased"
-       :class="!isDark ? 'text-slate-800 bg-slate-50' : 'text-white bg-[#0a192f]'">
+  <div class="w-full min-h-full flex flex-col">
     <!-- ═══════ AMBIENT ═══════ -->
-    <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-accent/5 rounded-full blur-[120px] pointer-events-none"></div>
-    <div class="absolute bottom-[-10%] right-[-10%] w-[30%] h-[30%] bg-blue-500/5 rounded-full blur-[100px] pointer-events-none"></div>
+      <div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-accent/5 rounded-full blur-[120px] pointer-events-none z-[-1]"></div>
+      <div class="fixed bottom-[-10%] right-[-10%] w-[30%] h-[30%] bg-blue-500/5 rounded-full blur-[100px] pointer-events-none z-[-1]"></div>
 
-    <!-- ═══════ HEADER ═══════ -->
-    <PublicHeader :showBack="true" />
-
-    <!-- ═══════ MAIN CONTENT ═══════ -->
-    <main class="flex-1 flex flex-col md:flex-row portrait:flex-col overflow-hidden p-2 md:p-6 gap-3 md:gap-6 relative">
-
-      <!-- ═══ LEFT: CALENDAR GRID (70%) ═══ -->
+  <!-- ═══════ MAIN CONTENT ═══════ -->
+  <div class="flex-1 flex flex-col md:flex-row portrait:flex-col overflow-hidden p-2 md:p-6 gap-3 md:gap-6 w-full h-full font-display antialiased"
+       :class="!isDark ? 'text-slate-800' : 'text-white'">
+    
+    <!-- ═══ LEFT: CALENDAR GRID (70%) ═══ -->
       <section class="flex-1 md:flex-[0.7] flex flex-col gap-4 h-full">
         <!-- Calendar Header -->
         <div class="rounded-2xl p-3 md:p-5 flex items-center justify-between"
@@ -327,7 +324,7 @@
           </div>
         </div>
       </Transition>
-    </main>
+    </div>
   </div>
 </template>
 
@@ -337,7 +334,6 @@ import { useRouter } from 'vue-router'
 import api from '../../../axios'
 import { storageUrl } from '../../../utils/asset'
 import { usePublicTheme } from '../../../composables/usePublicTheme'
-import PublicHeader from '../../../components/PublicHeader.vue'
 
 const router = useRouter()
 const { isDark } = usePublicTheme()

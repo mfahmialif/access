@@ -1,9 +1,5 @@
 <template>
-  <router-view v-slot="{ Component }">
-    <Transition name="page" mode="out-in">
-      <component :is="Component" />
-    </Transition>
-  </router-view>
+  <router-view />
 
   <!-- ═══ GLOBAL BANNER OVERLAY (only for TV displays, not admin/operator) ═══ -->
   <Transition name="banner">
@@ -104,116 +100,7 @@
     </div>
   </Transition>
 
-  <!-- ═══ PUBLIC CONFIG MENU & TOGGLE (only on public pages) ═══ -->
-  <Transition name="fade">
-    <div v-if="isPublicPage && showConfigMenu" 
-         class="fixed right-[16px] z-50 flex flex-col gap-1 p-1.5 rounded-full shadow-[0_10px_40px_rgba(0,0,0,0.3)] border transition-all duration-300"
-         :class="[
-           isDark ? 'bg-[#0f172a]/95 border-white/10 backdrop-blur-md' : 'bg-white/95 border-slate-200 backdrop-blur-md',
-           route.name !== 'Landing' ? 'bottom-[170px]' : 'bottom-[115px]'
-         ]">
-      
-      <!-- TV Device Info (Only if connected) -->
-      <template v-if="deviceName">
-        <div class="relative flex items-center justify-center">
-          <button @click="showTvMenu = !showTvMenu" 
-                  class="flex items-center justify-center size-10 rounded-full transition-all cursor-pointer group"
-                  :class="isDark ? (showTvMenu ? 'bg-green-500/20 text-green-400' : 'hover:bg-green-500/10 text-green-400') : (showTvMenu ? 'bg-green-100 text-green-600' : 'hover:bg-green-50 text-green-500')"
-                  title="Opsi TV">
-            <div class="absolute top-2 right-2 flex h-2 w-2 shrink-0">
-              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-              <span class="relative inline-flex rounded-full h-2 w-2 bg-green-400"></span>
-            </div>
-            <span class="material-symbols-outlined text-[20px]">tv</span>
-          </button>
-          
-          <!-- TV Menu Popup (Slide Left) -->
-          <Transition name="fade">
-            <div v-if="showTvMenu" 
-                 class="absolute right-[calc(100%+12px)] top-1/2 -translate-y-1/2 z-50 flex items-center gap-3 p-2.5 rounded-2xl shadow-xl border backdrop-blur-xl whitespace-nowrap"
-                 :class="isDark ? 'bg-[#0f172a]/95 border-white/10' : 'bg-white/95 border-slate-200'">
-              <template v-if="disconnectCountdown > 0">
-                <div class="flex items-center gap-2 px-1">
-                  <div class="relative flex items-center justify-center size-7 shrink-0">
-                    <svg class="absolute inset-0 size-full -rotate-90" viewBox="0 0 36 36">
-                      <circle cx="18" cy="18" r="16" fill="none" class="stroke-slate-200 dark:stroke-white/10" stroke-width="4"></circle>
-                      <circle cx="18" cy="18" r="16" fill="none" class="stroke-red-500 transition-all duration-1000 ease-linear" stroke-width="4" stroke-dasharray="100" :stroke-dashoffset="100 - ((disconnectCountdown / 3) * 100)"></circle>
-                    </svg>
-                    <span class="text-[10px] font-bold text-red-500 relative z-10">{{ disconnectCountdown }}</span>
-                  </div>
-                  <div class="flex flex-col ml-1">
-                    <span class="text-xs font-bold text-red-500">Memutuskan...</span>
-                  </div>
-                  <div class="w-px h-6 mx-1" :class="isDark ? 'bg-white/10' : 'bg-slate-200'"></div>
-                  <button @click="cancelDisconnect" class="px-3 py-1.5 rounded-xl text-xs font-bold text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 transition-all cursor-pointer">
-                    Batal
-                  </button>
-                </div>
-              </template>
-              
-              <template v-else>
-                <div class="flex flex-col px-1">
-                  <span class="text-[9px] uppercase tracking-widest text-slate-500 font-bold mb-0.5">Terhubung ke</span>
-                  <span class="text-sm font-bold" :class="isDark ? 'text-green-400' : 'text-green-600'">{{ deviceName }}</span>
-                </div>
-                <div class="w-px h-8" :class="isDark ? 'bg-white/10' : 'bg-slate-200'"></div>
-                <button @click="initiateDisconnect" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-red-500 hover:bg-red-500/10 border border-transparent hover:border-red-500/20 transition-all cursor-pointer">
-                  <span class="material-symbols-outlined text-[16px]">link_off</span>
-                  Putuskan
-                </button>
-              </template>
-            </div>
-          </Transition>
-        </div>
-        <div class="h-px w-6 mx-auto my-0.5" :class="isDark ? 'bg-white/10' : 'bg-slate-200'"></div>
-      </template>
-      
-      <!-- Theme Toggle -->
-      <button @click="toggleTheme(); showConfigMenu = false"
-              class="flex items-center justify-center size-10 rounded-full transition-all cursor-pointer"
-              :class="isDark ? 'hover:bg-white/10 text-slate-300 hover:text-white' : 'hover:bg-slate-100 text-slate-600 hover:text-slate-900'"
-              :title="isDark ? 'Mode Terang' : 'Mode Gelap'">
-        <span class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'FILL' 1;">
-          {{ isDark ? 'light_mode' : 'dark_mode' }}
-        </span>
-      </button>
-      
-      <div class="h-px w-6 mx-auto my-0.5" :class="isDark ? 'bg-white/10' : 'bg-slate-200'"></div>
-      
-      <!-- Refresh Page -->
-      <button @click="refreshPage"
-              class="flex items-center justify-center size-10 rounded-full transition-all cursor-pointer"
-              :class="isDark ? 'hover:bg-white/10 text-slate-300 hover:text-white' : 'hover:bg-slate-100 text-slate-600 hover:text-slate-900'"
-              title="Muat Ulang Halaman">
-        <span class="material-symbols-outlined text-[22px]">refresh</span>
-      </button>
-    </div>
-  </Transition>
 
-  <!-- ═══ PUBLIC BACK BUTTON (only on public pages, not on Landing) ═══ -->
-  <Transition name="fade">
-    <button v-if="isPublicPage && route.name !== 'Landing'"
-            @click="router.push({ name: 'Landing' })"
-            class="fixed right-[16px] z-40 flex items-center justify-center size-[44px] rounded-full shadow-[0_4px_15px_rgba(0,0,0,0.3)] transition-all cursor-pointer"
-            style="bottom: 115px;"
-            :class="isDark ? 'bg-[#0f172a]/80 border border-white/15 text-accent hover:bg-accent/20 hover:border-accent hover:shadow-[0_0_20px_rgba(251,191,36,0.3)]' : 'bg-white/90 border border-black/10 text-slate-600 hover:bg-white hover:border-black/20 hover:shadow-[0_4px_20px_rgba(0,0,0,0.15)]'"
-            title="Kembali ke Beranda">
-      <span class="material-symbols-outlined text-[22px]">home</span>
-    </button>
-  </Transition>
-
-  <Transition name="fade">
-    <button v-if="isPublicPage"
-            @click="showConfigMenu = !showConfigMenu"
-            class="public-theme-toggle"
-            :class="{ 'rotate-90': showConfigMenu }"
-            title="Konfigurasi">
-      <span class="material-symbols-outlined text-[22px] transition-transform duration-300"
-            :class="{ 'rotate-90': showConfigMenu }">
-        {{ showConfigMenu ? 'close' : 'settings' }}
-      </span>
-    </button>
-  </Transition>
 
   <!-- ═══ SCREENSAVER OVERLAY (only for TV displays) ═══ -->
   <ScreensaverOverlay />
@@ -231,51 +118,8 @@ import { usePublicTheme } from './composables/usePublicTheme'
 const router = useRouter()
 const route = useRoute()
 
-// ── Public Theme ──
-const { isDark, toggleTheme } = usePublicTheme()
-const isPublicPage = computed(() => {
-  return !route.path.startsWith('/administrator') && route.path !== '/login'
-})
-
-// ── Public Config Menu ──
-const showConfigMenu = ref(false)
-const showTvMenu = ref(false)
-
-const disconnectTimer = ref(null)
-const disconnectCountdown = ref(0)
-
-function initiateDisconnect() {
-  disconnectCountdown.value = 3
-  
-  disconnectTimer.value = setInterval(() => {
-    disconnectCountdown.value--
-    if (disconnectCountdown.value <= 0) {
-      cancelDisconnect()
-      forceDisconnect()
-      showTvMenu.value = false
-    }
-  }, 1000)
-}
-
-function cancelDisconnect() {
-  if (disconnectTimer.value) {
-    clearInterval(disconnectTimer.value)
-    disconnectTimer.value = null
-  }
-  disconnectCountdown.value = 0
-}
-
-function refreshPage() {
-  showConfigMenu.value = false
-  window.location.reload()
-}
-
-watch(showConfigMenu, (val) => {
-  if (!val) {
-    showTvMenu.value = false
-    cancelDisconnect()
-  }
-})
+// ── Public Theme (used by banner card styling) ──
+const { isDark } = usePublicTheme()
 
 // ── Global Banner State ──
 const globalBanner = ref(null) // { title, message, type }
@@ -284,13 +128,7 @@ const globalBanner = ref(null) // { title, message, type }
 const impersonateDevice = ref(null)   // { id, name }
 const impersonateDeviceId = ref(null) // device ID from query
 
-// ── TV Device State ──
-const deviceName = computed(() => {
-  try {
-    const device = JSON.parse(localStorage.getItem('tv_device') || 'null')
-    return device?.name || ''
-  } catch { return '' }
-})
+
 
 // ── Admin/operator detection (don't show banner for them, UNLESS admin_view=1 or impersonating) ──
 const isAdminUser = computed(() => {
@@ -335,7 +173,6 @@ function forceDisconnect() {
   if (heartbeatInterval) clearInterval(heartbeatInterval)
   echo.leave('tv-devices')
   router.push({ name: 'ConnectToken' })
-  showConfigMenu.value = false // Also close menu
 }
 
 // ── Current page for heartbeat tracking (sends route path) ──
@@ -573,6 +410,23 @@ onUnmounted(() => {
     opacity: 0;
     transform: scale(0.98) translateY(-8px);
   }
+}
+
+/* Public page crossfade — avoids Teleport + out-in crash */
+.page-crossfade-enter-active {
+  transition: opacity 0.3s ease-out;
+}
+.page-crossfade-leave-active {
+  transition: opacity 0.2s ease-in;
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.page-crossfade-enter-from {
+  opacity: 0;
+}
+.page-crossfade-leave-to {
+  opacity: 0;
 }
 
 /* Banner transitions */

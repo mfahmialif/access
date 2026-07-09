@@ -1,19 +1,13 @@
 <template>
-  <div class="relative min-h-screen w-full text-white font-display antialiased bg-[#020617]">
+  <div class="w-full min-h-full flex flex-col">
     <!-- ═══════ BACKGROUND ═══════ -->
-    <div class="fixed inset-0 bg-[#020617]/95 pointer-events-none z-0 mix-blend-multiply"></div>
-    <div class="fixed inset-0 bg-linear-to-b from-blue-950/80 to-[#020617] pointer-events-none z-0"></div>
+      <div class="fixed inset-0 bg-[#020617]/95 pointer-events-none z-[-1] mix-blend-multiply"></div>
+      <div class="fixed inset-0 bg-linear-to-b from-blue-950/80 to-[#020617] pointer-events-none z-[-1]"></div>
 
-    <!-- ═══════ MAIN WRAPPER ═══════ -->
-    <div class="relative z-10 flex flex-col min-h-screen w-full p-4 md:p-8 gap-4 md:gap-6 max-w-[1920px] mx-auto">
+  <!-- ═══════ MAIN CONTENT ═══════ -->
+  <div class="flex flex-col md:flex-row portrait:flex-col flex-1 gap-4 md:gap-8 pb-8 text-white font-display antialiased w-full h-full">
 
-      <!-- ═══════ HEADER ═══════ -->
-      <PublicHeader :showBack="true" />
-
-      <!-- ═══════ MAIN CONTENT ═══════ -->
-      <main class="flex flex-col md:flex-row portrait:flex-col flex-1 gap-4 md:gap-8 pb-8">
-
-        <!-- ═══════ LEFT: TIMELINE SIDEBAR ═══════ -->
+    <!-- ═══════ LEFT: TIMELINE SIDEBAR ═══════ -->
         <div class="w-full md:w-1/3 portrait:w-full flex flex-col glass-panel rounded-2xl overflow-hidden shadow-2xl ring-1 ring-yellow-500/10 md:h-[calc(100vh-10rem)]">
           <div class="p-4 md:p-6 bg-blue-950/40 border-b border-yellow-500/10 flex justify-between items-center shrink-0">
             <h2 class="text-base md:text-xl font-semibold flex items-center gap-2 text-accent">
@@ -229,7 +223,7 @@
             </div>
           </div>
         </div>
-      </main>
+      </div>
 
       <!-- ═══════ MOBILE DETAIL MODAL ═══════ -->
       <Transition name="detail">
@@ -342,7 +336,6 @@
         </div>
       </Transition>
     </div>
-  </div>
 </template>
 
 <script setup>
@@ -353,7 +346,6 @@ import 'simplebar-vue/dist/simplebar.min.css'
 import api from '../../../axios'
 import { storageUrl } from '../../../utils/asset'
 import { usePublicTheme } from '../../../composables/usePublicTheme'
-import PublicHeader from '../../../components/PublicHeader.vue'
 
 const router = useRouter()
 const { isDark } = usePublicTheme()

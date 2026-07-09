@@ -1,21 +1,16 @@
 <template>
-  <div class="relative w-screen h-screen overflow-hidden font-display antialiased"
-       :class="!isDark ? 'text-slate-800 bg-slate-50' : 'text-white bg-[#0a192f]'">
-    <!-- ═══════ PATTERN + GRADIENT ═══════ -->
-    <div class="absolute inset-0 pointer-events-none z-0"
+  <div class="w-full min-h-full flex flex-col">
+  <!-- ═══════ PATTERN + GRADIENT ═══════ -->
+    <div class="fixed inset-0 pointer-events-none z-[-1]"
          :style="{ backgroundImage: patternBg, backgroundSize: '30px 30px' }"></div>
-    <div class="absolute inset-0 pointer-events-none z-0"
+    <div class="fixed inset-0 pointer-events-none z-[-1]"
          :class="!isDark ? 'bg-linear-to-b from-slate-100/90 via-white/80 to-slate-100/90' : 'bg-linear-to-b from-[#0a192f]/95 via-[#0f2540]/80 to-[#0a192f]/95'"></div>
 
-    <!-- ═══════ MAIN WRAPPER ═══════ -->
-    <div class="relative z-10 flex flex-col h-full p-4 md:p-8 gap-4 md:gap-5 max-w-[1920px] mx-auto">
-
-      <!-- ═══════ HEADER ═══════ -->
-      <!-- ═══════ HEADER ═══════ -->
-      <PublicHeader :showBack="true" />
-
-      <!-- ═══════ WEEKLY CARDS — DESKTOP / LANDSCAPE ═══════ -->
-      <main class="hidden md:flex flex-1 items-center justify-center w-full overflow-hidden py-2">
+  <!-- ═══════ WEEKLY CARDS — DESKTOP / LANDSCAPE ═══════ -->
+  <div class="flex-1 w-full h-full font-display antialiased flex flex-col"
+       :class="!isDark ? 'text-slate-800' : 'text-white'">
+    
+    <main class="hidden md:flex flex-1 items-center justify-center w-full overflow-hidden py-2">
         <div class="flex items-center justify-center gap-3 w-full h-full min-w-0">
           <div v-for="(day, index) in weekDays" :key="'desk-'+day.name"
                @click="selectDay(index)"
@@ -180,8 +175,6 @@
           </simplebar>
         </div>
       </main>
-
-
     </div>
   </div>
 </template>
@@ -194,7 +187,6 @@ import 'simplebar-vue/dist/simplebar.min.css'
 import api from '../../../axios'
 import { storageUrl } from '../../../utils/asset'
 import { usePublicTheme } from '../../../composables/usePublicTheme'
-import PublicHeader from '../../../components/PublicHeader.vue'
 
 const router = useRouter()
 const { isDark } = usePublicTheme()

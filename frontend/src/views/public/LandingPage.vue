@@ -1,24 +1,18 @@
 <template>
-  <div class="relative w-full h-dvh overflow-hidden">
+  <div class="w-full min-h-full flex flex-col">
     <!-- ═══════ BACKGROUND LAYERS ═══════ -->
-    <div class="fixed inset-0 z-0 transform-gpu" style="will-change: transform">
-      <div class="absolute inset-0 bg-gradient-to-br from-[#020617] via-[#0f172a] to-[#1e3a8a]"></div>
-      <div class="absolute inset-0 opacity-15 mix-blend-overlay"
-           :style="{ backgroundImage: patternBg }"></div>
-      <div class="absolute inset-0 opacity-30 bg-cover bg-center mix-blend-overlay blur-sm"
-           style="background-image: url('/img/background.jpg')"></div>
-      <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(59,130,246,0.2),transparent_60%)] pointer-events-none"></div>
-    </div>
+      <div class="fixed inset-0 z-[-1] transform-gpu pointer-events-none" style="will-change: transform">
+        <div class="absolute inset-0 bg-gradient-to-br from-[#020617] via-[#0f172a] to-[#1e3a8a]"></div>
+        <div class="absolute inset-0 opacity-15 mix-blend-overlay"
+             :style="{ backgroundImage: patternBg }"></div>
+        <div class="absolute inset-0 opacity-30 bg-cover bg-center mix-blend-overlay blur-sm"
+             style="background-image: url('/img/background.jpg')"></div>
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(59,130,246,0.2),transparent_60%)] pointer-events-none"></div>
+      </div>
 
-    <!-- ═══════ MAIN CONTENT ═══════ -->
-    <div class="relative z-10 flex flex-col h-dvh p-3 md:p-4 lg:p-6">
-
-      <!-- ═══════ HEADER ═══════ -->
-      <PublicHeader :showBack="false" />
-
-      <!-- ═══════ MAIN GRID ═══════ -->
-      <simplebar class="flex-1 min-h-0 landing-scroll" :force-visible="true" :click-on-track="true">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 portrait:lg:grid-cols-2 gap-3 md:gap-5 lg:gap-6 pb-12 md:pb-16">
+    <!-- ═══════ MAIN GRID ═══════ -->
+    <div class="flex-1 w-full">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 portrait:lg:grid-cols-2 gap-3 md:gap-5 lg:gap-6 pb-12 md:pb-16 w-full font-display">
 
         <!-- CARD 7: Portal Layanan / Apps -->
         <div class="group relative rounded-2xl glass-panel glass-panel-hover p-4 md:p-6 flex flex-col transition-all duration-500 cursor-pointer"
@@ -255,12 +249,8 @@
             </div>
           </div>
         </div>
-        </div>
-      </simplebar>
+      </div>
     </div>
-
-    <!-- ═══════ TICKER BAR ═══════ -->
-    <TickerBar />
   </div>
 </template>
 
@@ -271,8 +261,6 @@ import simplebar from 'simplebar-vue'
 import 'simplebar-vue/dist/simplebar.min.css'
 import api from '../../axios'
 import { storageUrl } from '../../utils/asset'
-import PublicHeader from '../../components/PublicHeader.vue'
-import TickerBar from '../../components/TickerBar.vue'
 
 const router = useRouter()
 

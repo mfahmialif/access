@@ -1,24 +1,20 @@
 <template>
-  <div class="relative w-full h-dvh">
+  <div class="w-full min-h-full flex flex-col">
     <!-- ═══════ BACKGROUND LAYERS ═══════ -->
-    <div class="fixed inset-0 z-0 transform-gpu" style="will-change: transform; pointer-events: none;">
-      <div class="absolute inset-0 bg-gradient-to-br from-[#020617] via-[#0f172a] to-[#1e3a8a]"></div>
-      <div class="absolute inset-0 opacity-15 mix-blend-overlay"
-           :style="{ backgroundImage: patternBg }"></div>
-      <div class="absolute inset-0 opacity-30 bg-cover bg-center mix-blend-overlay blur-sm"
-           style="background-image: url('/img/background.jpg')"></div>
-      <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(59,130,246,0.2),transparent_60%)] pointer-events-none"></div>
-    </div>
+      <div class="fixed inset-0 z-[-1] transform-gpu pointer-events-none" style="will-change: transform;">
+        <div class="absolute inset-0 bg-gradient-to-br from-[#020617] via-[#0f172a] to-[#1e3a8a]"></div>
+        <div class="absolute inset-0 opacity-15 mix-blend-overlay"
+             :style="{ backgroundImage: patternBg }"></div>
+        <div class="absolute inset-0 opacity-30 bg-cover bg-center mix-blend-overlay blur-sm"
+             style="background-image: url('/img/background.jpg')"></div>
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(59,130,246,0.2),transparent_60%)] pointer-events-none"></div>
+      </div>
 
     <!-- ═══════ MAIN CONTENT (Grid View) ═══════ -->
-    <div v-show="!activeApp" class="relative z-10 flex flex-col h-dvh p-3 md:p-4 lg:p-6">
-
-      <!-- ═══════ HEADER ═══════ -->
-      <!-- ═══════ HEADER ═══════ -->
-      <PublicHeader :showBack="true" />
+    <div v-show="!activeApp" class="relative z-10 flex flex-col flex-1 w-full">
 
       <!-- ═══════ LINK GRID ═══════ -->
-      <div class="flex-1 overflow-y-auto no-scrollbar pb-6" style="min-height: 0; -webkit-overflow-scrolling: touch;">
+      <div class="flex-1 pb-12">
         <!-- Section Title -->
         <div class="flex items-center gap-3 mb-4 md:mb-6">
           <div class="h-px flex-1 bg-gradient-to-r from-accent/30 to-transparent"></div>
@@ -196,9 +192,6 @@
         </transition>
       </div>
     </Teleport>
-
-    <!-- ═══════ TICKER BAR (Welcome Message) ═══════ -->
-    <TickerBar v-show="!activeApp" />
   </div>
 </template>
 
@@ -207,8 +200,6 @@ import { ref, watch, onMounted, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
 import api from '../../axios'
 import { usePublicTheme } from '../../composables/usePublicTheme'
-import PublicHeader from '../../components/PublicHeader.vue'
-import TickerBar from '../../components/TickerBar.vue'
 
 const { isDark } = usePublicTheme()
 const route = useRoute()

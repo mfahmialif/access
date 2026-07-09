@@ -1,5 +1,5 @@
 <template>
-  <div class="relative w-screen h-screen overflow-hidden font-display text-slate-100">
+  <div class="fixed inset-0 z-[100] w-screen h-screen overflow-hidden font-display text-slate-100">
     <!-- ═══════ BLURRED BACKGROUND ═══════ -->
     <div class="absolute inset-0 w-full h-full z-0 overflow-hidden">
       <div class="absolute inset-0 bg-cover bg-center"

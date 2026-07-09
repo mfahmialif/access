@@ -1,23 +1,12 @@
 <template>
-  <div :class="[
-    'relative w-full min-h-screen overflow-x-hidden font-display selection:bg-accent',
-    isDark ? 'text-slate-100 selection:text-[#0a192f]' : 'text-slate-800 bg-slate-50 selection:text-white'
-  ]">
+  <div class="w-full min-h-full flex flex-col">
     <!-- ═══════ PATTERN OVERLAY ═══════ -->
-    <div class="absolute inset-0 pointer-events-none z-0"
-         :style="{ backgroundImage: isDark ? patternBg : patternBgLight, backgroundSize: '30px 30px' }"></div>
+      <div class="fixed inset-0 pointer-events-none z-[-1]"
+           :style="{ backgroundImage: isDark ? patternBg : patternBgLight, backgroundSize: '30px 30px' }"></div>
 
-    <!-- ═══════ MAIN WRAPPER ═══════ -->
-    <div class="relative z-10 flex flex-col min-h-screen w-full px-4 py-3 md:px-8 md:py-5 max-w-[1920px] mx-auto">
-
-      <!-- ═══════ HEADER ═══════ -->
-      <!-- ═══════ HEADER ═══════ -->
-      <PublicHeader :showBack="true" />
-
-      <!-- ═══════ CONTENT ═══════ -->
-      <main class="flex-1 flex flex-col gap-4 overflow-visible pb-4">
-
-        <!-- ═══ FILTER TOOLBAR ═══ -->
+  <!-- ═══════ CONTENT ═══════ -->
+  <div class="flex-1 flex flex-col gap-4 overflow-visible pb-12 w-full font-display">
+    <!-- ═══ FILTER TOOLBAR ═══ -->
         <div class="flex flex-col xl:flex-row xl:items-end justify-between px-1 md:px-2 gap-4">
           <div class="space-y-0.5 md:space-y-1 shrink-0">
             <h2 class="text-2xl md:text-3xl font-black text-accent tracking-tight drop-shadow-sm">Pengumuman</h2>
@@ -201,9 +190,7 @@
             <span class="material-symbols-outlined text-sm!">chevron_right</span>
           </button>
         </div>
-      </main>
-
-    </div>
+      </div>
   </div>
 </template>
 
@@ -213,7 +200,6 @@ import { useRouter } from 'vue-router'
 import api from '../../axios'
 import { storageUrl } from '../../utils/asset'
 import { usePublicTheme } from '../../composables/usePublicTheme'
-import PublicHeader from '../../components/PublicHeader.vue'
 
 const router = useRouter()
 const { isDark } = usePublicTheme()

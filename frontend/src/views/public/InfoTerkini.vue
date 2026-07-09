@@ -1,19 +1,12 @@
 <template>
-  <div class="relative min-h-screen w-full font-display text-slate-100 selection:bg-accent selection:text-[#0a192f] bg-[#020617]">
+  <div class="w-full min-h-full flex flex-col">
     <!-- ═══════ PATTERN OVERLAY ═══════ -->
-    <div class="fixed inset-0 pointer-events-none z-0"
-         :style="{ backgroundImage: patternBg, backgroundSize: '30px 30px' }"></div>
+      <div class="fixed inset-0 pointer-events-none z-[-1] bg-[#020617]"
+           :style="{ backgroundImage: patternBg, backgroundSize: '30px 30px' }"></div>
 
-    <!-- ═══════ MAIN WRAPPER ═══════ -->
-    <div class="relative z-10 flex flex-col min-h-screen w-full px-4 py-4 md:px-8 md:py-6 lg:px-10 lg:py-8 max-w-[1920px] mx-auto">
-
-      <!-- ═══════ HEADER ═══════ -->
-      <!-- ═══════ HEADER ═══════ -->
-      <PublicHeader :showBack="true" />
-
-      <!-- ═══════ CONTENT ═══════ -->
-      <main class="flex-1 flex flex-col gap-6 md:gap-8">
-        <!-- Title + Controls -->
+  <!-- ═══════ CONTENT ═══════ -->
+  <div class="flex-1 flex flex-col gap-6 md:gap-8 w-full font-display text-slate-100 pb-12">
+    <!-- Title + Controls -->
         <div class="flex items-start md:items-end flex-col md:flex-row justify-between px-1 md:px-2 gap-4">
           <div class="space-y-1 md:space-y-2">
             <h2 class="text-3xl md:text-4xl lg:text-5xl font-black text-accent tracking-tight drop-shadow-sm">Info Hari Ini / Berita</h2>
@@ -98,7 +91,7 @@
             <p class="text-lg font-medium">Tidak ada konten ditemukan</p>
           </div>
         </div>
-      </main>
+      </div>
 
       <!-- ═══════ PAGINATION FOOTER ═══════ -->
       <footer v-if="totalPages > 1" class="flex items-center justify-center py-6 mt-4">
@@ -125,7 +118,6 @@
         </div>
       </footer>
     </div>
-  </div>
 </template>
 
 <script setup>
@@ -133,7 +125,6 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import api from '../../axios'
 import { storageUrl } from '../../utils/asset'
-import PublicHeader from '../../components/PublicHeader.vue'
 
 const router = useRouter()
 
