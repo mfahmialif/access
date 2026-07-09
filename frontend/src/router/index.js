@@ -1,21 +1,27 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import PublicLayout from '../layouts/PublicLayout.vue'
-import LandingPage from '../views/public/LandingPage.vue'
-import InfoTerkini from '../views/public/InfoTerkini.vue'
-import AgendaHarian from '../views/public/agenda/harian.vue'
-import AgendaMingguan from '../views/public/agenda/mingguan.vue'
-import AgendaBulanan from '../views/public/agenda/bulanan.vue'
-import GalleryVideo from '../views/public/GalleryVideo.vue'
-import Pengumuman from '../views/public/Pengumuman.vue'
-import UrgentAnnouncement from '../views/public/UrgentAnnouncement.vue'
-import ConnectToken from '../views/public/connect/token.vue'
-import ConnectSuccess from '../views/public/connect/success.vue'
-import ConnectFail from '../views/public/connect/fail.vue'
-import DetailPage from '../views/public/DetailPage.vue'
-import Apps from '../views/public/Apps.vue'
-import Login from '../views/public/Login.vue'
-import AdminLayout from '../layouts/AdminLayout.vue'
-import AdminDashboard from '../views/admin/dashboard/Index.vue'
+
+// Layouts — lazy loaded
+const PublicLayout = () => import('../layouts/PublicLayout.vue')
+const AdminLayout = () => import('../layouts/AdminLayout.vue')
+
+// Public views — lazy loaded
+const LandingPage = () => import('../views/public/LandingPage.vue')
+const InfoTerkini = () => import('../views/public/InfoTerkini.vue')
+const AgendaHarian = () => import('../views/public/agenda/harian.vue')
+const AgendaMingguan = () => import('../views/public/agenda/mingguan.vue')
+const AgendaBulanan = () => import('../views/public/agenda/bulanan.vue')
+const GalleryVideo = () => import('../views/public/GalleryVideo.vue')
+const Pengumuman = () => import('../views/public/Pengumuman.vue')
+const UrgentAnnouncement = () => import('../views/public/UrgentAnnouncement.vue')
+const ConnectToken = () => import('../views/public/connect/token.vue')
+const ConnectSuccess = () => import('../views/public/connect/success.vue')
+const ConnectFail = () => import('../views/public/connect/fail.vue')
+const DetailPage = () => import('../views/public/DetailPage.vue')
+const Apps = () => import('../views/public/Apps.vue')
+const Login = () => import('../views/public/Login.vue')
+
+// Admin views — lazy loaded
+const AdminDashboard = () => import('../views/admin/dashboard/Index.vue')
 
 const routes = [
   // ═══ Public Pages (wrapped in PublicLayout — navbar, config, footer) ═══

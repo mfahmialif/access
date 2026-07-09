@@ -1,0 +1,1 @@
+.detail-enter-active[data-v-aad117f0]{animation:fadeIn-aad117f0 .3s ease-out}.detail-leave-active[data-v-aad117f0]{animation:fadeOut-aad117f0 .2s ease-in}@keyframes fadeIn-aad117f0{0%{opacity:0;transform:scale(1.02)}to{opacity:1;transform:scale(1)}}@keyframes fadeOut-aad117f0{0%{opacity:1}to{opacity:0;transform:scale(.98)}}
