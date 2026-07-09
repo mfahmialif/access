@@ -6,7 +6,7 @@
       <div class="absolute inset-0 opacity-15 mix-blend-overlay"
            :style="{ backgroundImage: patternBg }"></div>
       <div class="absolute inset-0 opacity-30 bg-cover bg-center mix-blend-overlay blur-sm"
-           style="background-image: url('/img/hero-bg.jpg')"></div>
+           style="background-image: url('/img/background.jpg')"></div>
       <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(59,130,246,0.2),transparent_60%)] pointer-events-none"></div>
     </div>
 
