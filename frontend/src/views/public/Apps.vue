@@ -388,12 +388,19 @@ function autoOpenFromQuery() {
 watch(() => route.query.open, (newId) => {
   if (newId && apps.value.length) {
     const target = apps.value.find(a => String(a.id) === String(newId))
-    if (target) openEmbed(target)
+    if (target) {
+      openEmbed(target)
+    } else {
+      closeEmbed()
+    }
+  } else {
+    closeEmbed()
   }
 })
 
 onUnmounted(() => {
   window.removeEventListener('popstate', onPopState)
+  closeEmbed()
 })
 </script>
 
