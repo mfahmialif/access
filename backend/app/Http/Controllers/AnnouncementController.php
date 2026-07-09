@@ -10,7 +10,18 @@ class AnnouncementController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Announcement::query();
+        $query = Announcement::with('unit:id,name');
+
+        $unitId = $request->header('X-Unit-Id') ?? $request->query('unit_id');
+        if ($unitId === 'null' || $unitId === 'undefined') {
+            $unitId = null;
+        }
+        
+        if ($unitId && $unitId !== 'all') {
+            $query->where(function ($q) use ($unitId) {
+                $q->where('unit_id', $unitId)->orWhereNull('unit_id');
+            });
+        }
 
         if ($request->filled('search')) {
             $s = $request->search;
@@ -46,12 +57,24 @@ class AnnouncementController extends Controller
         return response()->json($announcement);
     }
 
-    public function stats()
+    public function stats(Request $request)
     {
+        $query = Announcement::with('unit:id,name');
+        $unitId = $request->header('X-Unit-Id') ?? $request->query('unit_id');
+        if ($unitId === 'null' || $unitId === 'undefined') {
+            $unitId = null;
+        }
+        
+        if ($unitId && $unitId !== 'all') {
+            $query->where(function ($q) use ($unitId) {
+                $q->where('unit_id', $unitId)->orWhereNull('unit_id');
+            });
+        }
+
         return response()->json([
-            'total'  => Announcement::count(),
-            'aktif'  => Announcement::where('status', 'Aktif')->count(),
-            'urgent' => Announcement::where('priority', 'Urgent')->count(),
+            'total'  => (clone $query)->count(),
+            'aktif'  => (clone $query)->where('status', 'Aktif')->count(),
+            'urgent' => (clone $query)->where('priority', 'Urgent')->count(),
         ]);
     }
 
@@ -66,6 +89,11 @@ class AnnouncementController extends Controller
 
         $data = $request->only(['title', 'body', 'excerpt', 'priority', 'audience', 'location', 'status', 'datetime']);
         $data['created_by'] = $request->user()?->id;
+        if ($request->hasHeader('X-Unit-Id') && $request->header('X-Unit-Id') !== 'all') {
+            $data['unit_id'] = $request->header('X-Unit-Id');
+        } elseif ($request->filled('unit_id')) {
+            $data['unit_id'] = $request->input('unit_id');
+        }
 
         if ($request->hasFile('image')) {
             $data['image_path'] = $request->file('image')->store('announcements', 'public');
@@ -94,6 +122,10 @@ class AnnouncementController extends Controller
             $data['image_path'] = null;
         }
 
+        if ($request->filled('unit_id')) {
+            $data['unit_id'] = $request->input('unit_id');
+        }
+        
         $announcement->update($data);
         return response()->json($announcement);
     }

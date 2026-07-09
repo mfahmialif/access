@@ -173,6 +173,24 @@ const routes = [
         meta: { title: 'Access — Manajemen TV', pageTitle: 'Manajemen TV', requiresAuth: true }
       },
       {
+        path: 'manajemen-unit',
+        name: 'AdminManajemenUnit',
+        component: () => import('../views/admin/unit/Index.vue'),
+        meta: { title: 'Access — Manajemen Unit', pageTitle: 'Manajemen Unit', requiresAuth: true, superadminOnly: true }
+      },
+      {
+        path: 'manajemen-unit/create',
+        name: 'AdminManajemenUnitCreate',
+        component: () => import('../views/admin/unit/Form.vue'),
+        meta: { title: 'Access — Tambah Unit', pageTitle: 'Tambah Unit', requiresAuth: true, superadminOnly: true }
+      },
+      {
+        path: 'manajemen-unit/:id/edit',
+        name: 'AdminManajemenUnitEdit',
+        component: () => import('../views/admin/unit/Form.vue'),
+        meta: { title: 'Access — Edit Unit', pageTitle: 'Edit Unit', requiresAuth: true, superadminOnly: true }
+      },
+      {
         path: 'apps',
         name: 'AdminApps',
         component: () => import('../views/admin/apps/Index.vue'),
@@ -372,15 +390,18 @@ router.beforeEach((to) => {
     return { name: 'Login' }
   }
 
-  // Cek role: hanya Admin dan Operator yang boleh akses halaman admin
+  // Cek role: Admin, Operator, Superadmin
   if (to.meta.requiresAuth && isAuthenticated) {
     try {
       const authUser = JSON.parse(localStorage.getItem('auth_user') || '{}')
       const roleName = authUser?.role?.name
-      if (!roleName || !['Admin', 'Operator'].includes(roleName)) {
+      if (!roleName || !['Admin', 'Operator', 'Superadmin'].includes(roleName)) {
         localStorage.removeItem('auth_token')
         localStorage.removeItem('auth_user')
         return { name: 'Login' }
+      }
+      if (to.meta.superadminOnly && roleName !== 'Superadmin') {
+        return { name: 'AdminDashboard' }
       }
     } catch {
       return { name: 'Login' }

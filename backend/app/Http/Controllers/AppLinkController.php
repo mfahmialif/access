@@ -8,9 +8,15 @@ use Illuminate\Support\Facades\DB;
 
 class AppLinkController extends Controller
 {
-    public function stats()
+    public function stats(Request $request)
     {
-        $stats = DB::table('app_links')->selectRaw("
+        $query = AppLink::with('unit:id,name');
+        $unitId = $request->header('X-Unit-Id') ?? $request->query('unit_id');
+        if ($unitId && $unitId !== 'all') {
+            $query->where('unit_id', $unitId);
+        }
+
+        $stats = $query->selectRaw("
             COUNT(*) as total,
             SUM(CASE WHEN status = 'Published' THEN 1 ELSE 0 END) as published,
             SUM(CASE WHEN status = 'Draft' THEN 1 ELSE 0 END) as draft
@@ -21,7 +27,12 @@ class AppLinkController extends Controller
 
     public function index(Request $request)
     {
-        $query = AppLink::query();
+        $query = AppLink::with(['creator:id,name', 'unit:id,name']);
+
+        $unitId = $request->header('X-Unit-Id') ?? $request->query('unit_id');
+        if ($unitId && $unitId !== 'all') {
+            $query->where('unit_id', $unitId);
+        }
 
         if ($request->filled('search')) {
             $s = $request->search;
@@ -70,6 +81,11 @@ class AppLinkController extends Controller
 
         $data = $request->only(['title', 'subtitle', 'icon', 'url', 'color', 'sort_order', 'status']);
         $data['created_by'] = $request->user()?->id;
+        if ($request->hasHeader('X-Unit-Id') && $request->header('X-Unit-Id') !== 'all') {
+            $data['unit_id'] = $request->header('X-Unit-Id');
+        } elseif ($request->filled('unit_id')) {
+            $data['unit_id'] = $request->input('unit_id');
+        }
 
         return response()->json(AppLink::create($data), 201);
     }
@@ -87,6 +103,10 @@ class AppLinkController extends Controller
         ]);
 
         $data = $request->only(['title', 'subtitle', 'icon', 'url', 'color', 'sort_order', 'status']);
+        if ($request->filled('unit_id')) {
+            $data['unit_id'] = $request->input('unit_id');
+        }
+        
         $appLink->update($data);
 
         return response()->json($appLink);

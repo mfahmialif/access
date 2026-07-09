@@ -22,12 +22,25 @@ class ContentSearchController extends Controller
 
         $like = "%{$search}%";
 
+        $unitId = $request->header('X-Unit-Id') ?? $request->query('unit_id');
+        if ($unitId === 'null' || $unitId === 'undefined') {
+            $unitId = null;
+        }
+        $applyUnit = function($q) use ($unitId) {
+            if ($unitId && $unitId !== 'all') {
+                $q->where(function ($query) use ($unitId) {
+                    $query->where('unit_id', $unitId)->orWhereNull('unit_id');
+                });
+            }
+        };
+
         $results = collect();
 
         // News (Info Terkini)
-        $news = DB::table('news')
-            ->where('title', 'like', $like)
-            ->orderByDesc('id')
+        $newsQuery = DB::table('news')
+            ->where('title', 'like', $like);
+        $applyUnit($newsQuery);
+        $news = $newsQuery->orderByDesc('id')
             ->limit($limit)
             ->get(['id', 'title'])
             ->map(fn ($r) => [
@@ -37,9 +50,10 @@ class ContentSearchController extends Controller
         $results = $results->merge($news);
 
         // Agendas (Agenda Harian)
-        $agendas = DB::table('agendas')
-            ->where('title', 'like', $like)
-            ->orderByDesc('id')
+        $agendasQuery = DB::table('agendas')
+            ->where('title', 'like', $like);
+        $applyUnit($agendasQuery);
+        $agendas = $agendasQuery->orderByDesc('id')
             ->limit($limit)
             ->get(['id', 'title'])
             ->map(fn ($r) => [
@@ -49,9 +63,10 @@ class ContentSearchController extends Controller
         $results = $results->merge($agendas);
 
         // Weeklies (Agenda Mingguan)
-        $weeklies = DB::table('weeklies')
-            ->where('title', 'like', $like)
-            ->orderByDesc('id')
+        $weekliesQuery = DB::table('weeklies')
+            ->where('title', 'like', $like);
+        $applyUnit($weekliesQuery);
+        $weeklies = $weekliesQuery->orderByDesc('id')
             ->limit($limit)
             ->get(['id', 'title'])
             ->map(fn ($r) => [
@@ -61,9 +76,10 @@ class ContentSearchController extends Controller
         $results = $results->merge($weeklies);
 
         // Monthlies (Agenda Bulanan)
-        $monthlies = DB::table('monthlies')
-            ->where('title', 'like', $like)
-            ->orderByDesc('id')
+        $monthliesQuery = DB::table('monthlies')
+            ->where('title', 'like', $like);
+        $applyUnit($monthliesQuery);
+        $monthlies = $monthliesQuery->orderByDesc('id')
             ->limit($limit)
             ->get(['id', 'title'])
             ->map(fn ($r) => [
@@ -73,9 +89,10 @@ class ContentSearchController extends Controller
         $results = $results->merge($monthlies);
 
         // Galleries (Gallery & Video)
-        $galleries = DB::table('galleries')
-            ->where('title', 'like', $like)
-            ->orderByDesc('id')
+        $galleriesQuery = DB::table('galleries')
+            ->where('title', 'like', $like);
+        $applyUnit($galleriesQuery);
+        $galleries = $galleriesQuery->orderByDesc('id')
             ->limit($limit)
             ->get(['id', 'title'])
             ->map(fn ($r) => [
@@ -85,9 +102,10 @@ class ContentSearchController extends Controller
         $results = $results->merge($galleries);
 
         // Announcements (Pengumuman)
-        $announcements = DB::table('announcements')
-            ->where('title', 'like', $like)
-            ->orderByDesc('id')
+        $announcementsQuery = DB::table('announcements')
+            ->where('title', 'like', $like);
+        $applyUnit($announcementsQuery);
+        $announcements = $announcementsQuery->orderByDesc('id')
             ->limit($limit)
             ->get(['id', 'title'])
             ->map(fn ($r) => [
@@ -97,13 +115,14 @@ class ContentSearchController extends Controller
         $results = $results->merge($announcements);
 
         // App Links (Apps Portal)
-        $appLinks = DB::table('app_links')
+        $appLinksQuery = DB::table('app_links')
             ->where('status', 'Published')
             ->where(function ($q) use ($like) {
                 $q->where('title', 'like', $like)
                   ->orWhere('subtitle', 'like', $like);
-            })
-            ->orderBy('sort_order')
+            });
+        $applyUnit($appLinksQuery);
+        $appLinks = $appLinksQuery->orderBy('sort_order')
             ->limit($limit)
             ->get(['id', 'title'])
             ->map(fn ($r) => [

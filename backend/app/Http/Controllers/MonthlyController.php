@@ -10,7 +10,19 @@ class MonthlyController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Monthly::query()->orderBy('date')->orderBy('time');
+        $query = Monthly::with(['creator:id,name', 'unit:id,name']);
+
+        $unitId = $request->header('X-Unit-Id') ?? $request->query('unit_id');
+        if ($unitId === 'null' || $unitId === 'undefined') {
+            $unitId = null;
+        }
+        
+        if ($unitId && $unitId !== 'all') {
+            $query->where(function ($q) use ($unitId) {
+                $q->where('unit_id', $unitId)->orWhereNull('unit_id');
+            });
+        }
+        $query->orderBy('date')->orderBy('time');
 
         if ($request->filled('search')) {
             $s = $request->search;
@@ -56,8 +68,16 @@ class MonthlyController extends Controller
             'video'    => 'nullable|mimes:mp4,webm,ogg|max:51200',
         ]);
 
-        $data = $request->only(['title', 'date', 'time', 'location', 'teacher', 'icon', 'category', 'body', 'status']);
-        $data['created_by'] = $request->user()?->id;
+        $data = $request->only([
+            'title', 'date', 'time', 'location', 'teacher', 'icon',
+            'category', 'body', 'status',
+        ]);
+        $data['created_by'] = $request->user()->id;
+        if ($request->hasHeader('X-Unit-Id') && $request->header('X-Unit-Id') !== 'all') {
+            $data['unit_id'] = $request->header('X-Unit-Id');
+        } elseif ($request->filled('unit_id')) {
+            $data['unit_id'] = $request->input('unit_id');
+        }
 
         if ($request->hasFile('image')) {
             $data['image_path'] = $request->file('image')->store('monthlies', 'public');
@@ -106,6 +126,10 @@ class MonthlyController extends Controller
             $data['video_path'] = null;
         }
 
+        if ($request->filled('unit_id')) {
+            $data['unit_id'] = $request->input('unit_id');
+        }
+        
         $monthly->update($data);
 
         return response()->json($monthly);

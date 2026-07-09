@@ -40,7 +40,22 @@
           <input v-model="form.time" type="time" class="filter-input rounded-xl py-2.5 px-4 text-sm focus:outline-none focus:ring-1 focus:ring-accent" />
         </div>
       </div>
-
+      <div class="grid grid-cols-1 gap-4" v-if="unitStore.activeUnitId === 'all'">
+        <div class="flex flex-col gap-1.5">
+          <label class="text-sm font-medium" style="color: var(--text-body)">Unit *</label>
+          <VueMultiselect
+            v-model="formUnitOption"
+            :options="unitStore.units"
+            :close-on-select="true"
+            :searchable="true"
+            :allow-empty="false"
+            :show-labels="false"
+            label="name"
+            track-by="id"
+            placeholder="Pilih Unit"
+          />
+        </div>
+      </div>
       <!-- ── Row 2: Lokasi + Pengajar ── -->
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div class="flex flex-col gap-1.5">
@@ -168,10 +183,9 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import {  ref, computed, onMounted  } from 'vue'
+import { useUnitStore } from '../../../../stores/unit'
 import { useRouter, useRoute } from 'vue-router'
-import VueMultiselect from 'vue-multiselect'
-import 'vue-multiselect/dist/vue-multiselect.css'
 import { useWeeklyStore } from '../../../../stores/weekly'
 
 // Quill Editor
@@ -272,6 +286,9 @@ async function uploadPendingEditorMedia() {
       const res = await fetch(dataUrl)
       const blob = await res.blob()
       const fd = new FormData()
+    if (unitStore.activeUnitId === 'all' && form.value.unit_id) {
+      fd.append('unit_id', form.value.unit_id)
+    }
       fd.append('file', blob, 'editor-image.png')
       const { data } = await api.post('/upload-editor', fd, { headers: { 'Content-Type': 'multipart/form-data' } })
       body = body.replace(dataUrl, data.url)
@@ -349,7 +366,8 @@ function onQuillReady() {
 
 const router = useRouter()
 const route = useRoute()
-const weeklyStore = useWeeklyStore()
+const weeklyStore = useWeeklyStore() 
+const unitStore = useUnitStore()
 
 const isEdit = computed(() => !!route.params.id)
 const formLoading = ref(false)
@@ -366,7 +384,7 @@ const form = ref({
   category: 'Artikel',
   body: '',
   status: 'Aktif',
-})
+  unit_id: '' })
 
 const imageFile = ref(null)
 const imagePreview = ref(null)
@@ -412,12 +430,16 @@ const formIconOption = computed({
 })
 
 // ── Load existing data for edit ──
+const formUnitOption = computed({
+  get: () => unitStore.units.find(u => u.id === form.value.unit_id) || null,
+  set: (val) => { form.value.unit_id = val ? val.id : '' }
+})
+
 onMounted(async () => {
   if (isEdit.value) {
     try {
       const data = await weeklyStore.fetchWeekly(route.params.id)
-      form.value = {
-        title: data.title,
+      form.value = { title: data.title,
         day: data.day,
         time: data.time?.substring(0, 5) || '',
         location: data.location || '',
@@ -425,8 +447,7 @@ onMounted(async () => {
         icon: data.icon || 'event',
         category: data.category,
         body: data.body || '',
-        status: data.status,
-      }
+        status: data.status, unit_id: data.unit_id || '' }
       if (data.image_path) imagePreview.value = storageUrl(data.image_path)
       if (data.video_path) videoPreview.value = storageUrl(data.video_path)
     } catch {
@@ -456,6 +477,9 @@ async function handleSubmit() {
     await uploadPendingEditorMedia()
 
     const fd = new FormData()
+    if (unitStore.activeUnitId === 'all' && form.value.unit_id) {
+      fd.append('unit_id', form.value.unit_id)
+    }
     fd.append('title', form.value.title)
     fd.append('day', form.value.day)
     fd.append('time', form.value.time)

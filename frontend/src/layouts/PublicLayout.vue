@@ -76,6 +76,7 @@
                   <div class="flex flex-col px-1">
                     <span class="text-[9px] uppercase tracking-widest text-slate-500 font-bold mb-0.5">Terhubung ke</span>
                     <span class="text-sm font-bold" :class="isDark ? 'text-green-400' : 'text-green-600'">{{ deviceName }}</span>
+                    <span class="text-[10px] font-medium mt-0.5" :class="isDark ? 'text-slate-400' : 'text-slate-500'">{{ unitName }}</span>
                   </div>
                   <div class="w-px h-8" :class="isDark ? 'bg-white/10' : 'bg-slate-200'"></div>
                   <button @click="initiateDisconnect" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-red-500 hover:bg-red-500/10 border border-transparent hover:border-red-500/20 transition-all cursor-pointer">
@@ -213,6 +214,14 @@ const deviceName = computed(() => {
     const device = JSON.parse(localStorage.getItem('tv_device') || 'null')
     return device?.name || ''
   } catch { return '' }
+})
+
+// ── TV Unit Name ──
+const unitName = computed(() => {
+  try {
+    const device = JSON.parse(localStorage.getItem('tv_device') || 'null')
+    return device?.unit?.name || 'Semua Unit'
+  } catch { return 'Semua Unit' }
 })
 
 // ── Auto-close menus on config toggle ──

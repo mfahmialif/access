@@ -31,7 +31,22 @@
           <input v-model="form.subtitle" class="filter-input rounded-xl py-2.5 px-4 text-sm focus:outline-none focus:ring-1 focus:ring-accent" placeholder="Deskripsi singkat" />
         </div>
       </div>
-
+      <div class="grid grid-cols-1 gap-4" v-if="unitStore.activeUnitId === 'all'">
+        <div class="flex flex-col gap-1.5">
+          <label class="text-sm font-medium" style="color: var(--text-body)">Unit *</label>
+          <VueMultiselect
+            v-model="formUnitOption"
+            :options="unitStore.units"
+            :close-on-select="true"
+            :searchable="true"
+            :allow-empty="false"
+            :show-labels="false"
+            label="name"
+            track-by="id"
+            placeholder="Pilih Unit"
+          />
+        </div>
+      </div>
       <!-- ── Row 2: URL ── -->
       <div class="flex flex-col gap-1.5">
         <label class="text-sm font-medium" style="color: var(--text-body)">URL *</label>
@@ -80,13 +95,13 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import {  ref, computed, onMounted  } from 'vue'
+import { useUnitStore } from '../../../stores/unit'
 import { useRouter, useRoute } from 'vue-router'
-import VueMultiselect from 'vue-multiselect'
-import 'vue-multiselect/dist/vue-multiselect.css'
 import api from '../../../axios'
 
-const router = useRouter()
+const router = useRouter() 
+const unitStore = useUnitStore()
 const route = useRoute()
 const isEdit = computed(() => !!route.params.id)
 const pageLoading = ref(false)
@@ -96,7 +111,7 @@ const formError = ref('')
 const form = ref({
   title: '', subtitle: '', icon: 'link', url: '',
   color: 'amber', sort_order: 0, status: 'Published',
-})
+  unit_id: '' })
 
 // ── Options ──
 const colorOptions = [
@@ -131,17 +146,20 @@ function colorIconBg(c) { return colorMap[c]?.bg || 'bg-accent/15' }
 function colorIconText(c) { return colorMap[c]?.text || 'text-accent' }
 
 // ── Load for edit ──
+const formUnitOption = computed({
+  get: () => unitStore.units.find(u => u.id === form.value.unit_id) || null,
+  set: (val) => { form.value.unit_id = val ? val.id : '' }
+})
+
 onMounted(async () => {
   if (isEdit.value) {
     pageLoading.value = true
     try {
       const { data } = await api.get(`/app-links/${route.params.id}`)
-      form.value = {
-        title: data.title || '', subtitle: data.subtitle || '',
+      form.value = { title: data.title || '', subtitle: data.subtitle || '',
         icon: data.icon || 'link', url: data.url || '',
         color: data.color || 'amber', sort_order: data.sort_order ?? 0,
-        status: data.status || 'Published',
-      }
+        status: data.status || 'Published', unit_id: data.unit_id || '' }
     } catch { formError.value = 'Gagal memuat data.' }
     pageLoading.value = false
   }
@@ -152,6 +170,9 @@ async function handleSubmit() {
   formError.value = ''; formLoading.value = true
   try {
     const payload = { ...form.value }
+    if (unitStore.activeUnitId !== 'all') {
+      delete payload.unit_id
+    }
 
     if (isEdit.value) {
       await api.put(`/app-links/${route.params.id}`, payload)

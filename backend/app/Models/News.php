@@ -8,12 +8,17 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class News extends Model
 {
     protected $fillable = [
-        'title', 'category', 'body', 'image_path', 'video_path',
+        'unit_id', 'title', 'category', 'body', 'image_path', 'video_path',
         'speaker', 'duration', 'status', 'created_by', 'datetime',
     ];
 
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function unit(): BelongsTo
+    {
+        return $this->belongsTo(Unit::class);
     }
 }

@@ -10,7 +10,18 @@ class GalleryController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Gallery::query();
+        $query = Gallery::with('unit:id,name');
+
+        $unitId = $request->header('X-Unit-Id') ?? $request->query('unit_id');
+        if ($unitId === 'null' || $unitId === 'undefined') {
+            $unitId = null;
+        }
+        
+        if ($unitId && $unitId !== 'all') {
+            $query->where(function ($q) use ($unitId) {
+                $q->where('unit_id', $unitId)->orWhereNull('unit_id');
+            });
+        }
 
         if ($request->filled('search')) {
             $s = $request->search;
@@ -48,12 +59,24 @@ class GalleryController extends Controller
         return response()->json($gallery);
     }
 
-    public function stats()
+    public function stats(Request $request)
     {
+        $query = Gallery::with('unit:id,name');
+        $unitId = $request->header('X-Unit-Id') ?? $request->query('unit_id');
+        if ($unitId === 'null' || $unitId === 'undefined') {
+            $unitId = null;
+        }
+        
+        if ($unitId && $unitId !== 'all') {
+            $query->where(function ($q) use ($unitId) {
+                $q->where('unit_id', $unitId)->orWhereNull('unit_id');
+            });
+        }
+
         return response()->json([
-            'total' => Gallery::count(),
-            'gambar' => Gallery::where('category', 'Gambar')->count(),
-            'video' => Gallery::where('category', 'Video')->count(),
+            'total' => (clone $query)->count(),
+            'gambar' => (clone $query)->where('category', 'Gambar')->count(),
+            'video' => (clone $query)->where('category', 'Video')->count(),
         ]);
     }
 
@@ -71,6 +94,11 @@ class GalleryController extends Controller
 
         $data = $request->only(['title', 'category', 'description', 'status', 'duration', 'datetime']);
         $data['created_by'] = $request->user()?->id;
+        if ($request->hasHeader('X-Unit-Id') && $request->header('X-Unit-Id') !== 'all') {
+            $data['unit_id'] = $request->header('X-Unit-Id');
+        } elseif ($request->filled('unit_id')) {
+            $data['unit_id'] = $request->input('unit_id');
+        }
 
         if ($request->hasFile('image')) {
             $data['image_path'] = $request->file('image')->store('galleries', 'public');
@@ -119,6 +147,10 @@ class GalleryController extends Controller
             $data['video_path'] = null;
         }
 
+        if ($request->filled('unit_id')) {
+            $data['unit_id'] = $request->input('unit_id');
+        }
+        
         $gallery->update($data);
 
         return response()->json($gallery);

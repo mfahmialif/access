@@ -13,7 +13,18 @@ class AgendaController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Agenda::with('creator:id,name');
+        $query = Agenda::with(['creator:id,name', 'unit:id,name']);
+
+        $unitId = $request->header('X-Unit-Id') ?? $request->query('unit_id');
+        if ($unitId === 'null' || $unitId === 'undefined') {
+            $unitId = null;
+        }
+        
+        if ($unitId && $unitId !== 'all') {
+            $query->where(function ($q) use ($unitId) {
+                $q->where('unit_id', $unitId)->orWhereNull('unit_id');
+            });
+        }
 
         // Search
         if ($request->filled('search')) {
@@ -64,6 +75,11 @@ class AgendaController extends Controller
             'category', 'body', 'status',
         ]);
         $data['created_by'] = $request->user()->id;
+        if ($request->hasHeader('X-Unit-Id') && $request->header('X-Unit-Id') !== 'all') {
+            $data['unit_id'] = $request->header('X-Unit-Id');
+        } elseif ($request->filled('unit_id')) {
+            $data['unit_id'] = $request->input('unit_id');
+        }
 
         // Upload image (untuk Gambar & Artikel banner)
         if ($request->hasFile('image')) {
@@ -141,6 +157,10 @@ class AgendaController extends Controller
             $data['video_path'] = null;
         }
 
+        if ($request->filled('unit_id')) {
+            $data['unit_id'] = $request->input('unit_id');
+        }
+        
         $agenda->update($data);
         $agenda->load('creator:id,name');
 

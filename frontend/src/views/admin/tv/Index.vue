@@ -116,6 +116,10 @@
               <span style="color: var(--text-muted)">Firmware</span>
               <span style="color: var(--text-heading)">{{ device.firmware_version }}</span>
             </div>
+            <div v-if="unitStore.activeUnitId === 'all'" class="flex justify-between text-sm py-2 info-row">
+              <span style="color: var(--text-muted)">Unit</span>
+              <span style="color: var(--text-heading)">{{ device.unit?.name || '-' }}</span>
+            </div>
             <div class="flex justify-between text-sm py-2 info-row">
               <span style="color: var(--text-muted)">Menampilkan</span>
               <div class="text-right max-w-[200px]">
@@ -189,7 +193,7 @@
     </div>
 
     <!-- ═══ CREATE/EDIT DIALOG ═══ -->
-    <Teleport to="#admin-root">
+    <Teleport to="#admin-root" defer>
       <Transition name="fade">
         <div v-if="showDialog" class="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center" @click.self="showDialog = false">
           <div class="rounded-2xl p-8 w-full max-w-lg shadow-2xl" style="background: var(--bg-card); border: 1px solid var(--border)">
@@ -214,6 +218,20 @@
                   </button>
                 </div>
               </div>
+              <div v-if="unitStore.activeUnitId === 'all'">
+                <label class="block text-xs font-bold uppercase mb-2" style="color: var(--text-muted)">Unit *</label>
+                <VueMultiselect
+                  v-model="formUnitOption"
+                  :options="unitStore.units"
+                  :close-on-select="true"
+                  :searchable="true"
+                  :allow-empty="false"
+                  :show-labels="false"
+                  label="name"
+                  track-by="id"
+                  placeholder="Pilih Unit"
+                />
+              </div>
             </div>
             <div class="flex justify-end gap-3 mt-8">
               <button @click="showDialog = false" class="px-5 py-2.5 rounded-lg text-sm font-medium cursor-pointer btn-secondary">Batal</button>
@@ -227,7 +245,7 @@
     </Teleport>
 
     <!-- ═══ DELETE CONFIRM ═══ -->
-    <Teleport to="#admin-root">
+    <Teleport to="#admin-root" defer>
       <Transition name="fade">
         <div v-if="showDeleteConfirm" class="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center" @click.self="showDeleteConfirm = false">
           <div class="rounded-2xl p-8 w-full max-w-md shadow-2xl" style="background: var(--bg-card); border: 1px solid var(--border)">
@@ -248,14 +266,16 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useTvDeviceStore } from '../../../stores/tvDevice'
+import { useUnitStore } from '../../../stores/unit'
 import echo from '../../../echo'
 import { useRouter } from 'vue-router'
 import api from '../../../axios'
 
 const router = useRouter()
 const store = useTvDeviceStore()
+const unitStore = useUnitStore()
 
 const searchQuery = ref('')
 const filterStatus = ref('all')
@@ -279,7 +299,12 @@ const statsCards = computed(() => [
 // ── Dialog state ──
 const showDialog = ref(false)
 const editingDevice = ref(null)
-const form = ref({ name: '', location: '', orientation: 'landscape' })
+const form = ref({ name: '', location: '', orientation: 'landscape', unit_id: '' })
+
+const formUnitOption = computed({
+  get: () => unitStore.units.find(u => u.id === form.value.unit_id) || null,
+  set: (val) => { form.value.unit_id = val ? val.id : '' }
+})
 
 const showDeleteConfirm = ref(false)
 const deletingDevice = ref(null)
@@ -307,20 +332,30 @@ function goToPage(p) {
 // ── Create / Edit ──
 function openCreateDialog() {
   editingDevice.value = null
-  form.value = { name: '', location: '', orientation: 'landscape' }
+  form.value = { name: '', location: '', orientation: 'landscape', unit_id: '' }
   showDialog.value = true
 }
 
 function openEditDialog(device) {
   editingDevice.value = device
-  form.value = { name: device.name, location: device.location || '', orientation: device.orientation || 'landscape' }
+  form.value = { 
+    name: device.name, 
+    location: device.location || '', 
+    orientation: device.orientation || 'landscape',
+    unit_id: device.unit_id || ''
+  }
   showDialog.value = true
 }
 
 async function saveDevice() {
   try {
+    const payload = { ...form.value }
+    if (unitStore.activeUnitId !== 'all') {
+      delete payload.unit_id
+    }
+    
     if (editingDevice.value) {
-      await store.updateDevice(editingDevice.value.id, form.value)
+      await store.updateDevice(editingDevice.value.id, payload)
     } else {
       await store.createDevice(form.value)
     }

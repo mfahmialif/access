@@ -42,7 +42,22 @@
           </div>
         </div>
       </div>
-
+      <div class="grid grid-cols-1 gap-4" v-if="unitStore.activeUnitId === 'all'">
+        <div class="flex flex-col gap-1.5">
+          <label class="text-sm font-medium" style="color: var(--text-body)">Unit *</label>
+          <VueMultiselect
+            v-model="formUnitOption"
+            :options="unitStore.units"
+            :close-on-select="true"
+            :searchable="true"
+            :allow-empty="false"
+            :show-labels="false"
+            label="name"
+            track-by="id"
+            placeholder="Pilih Unit"
+          />
+        </div>
+      </div>
       <!-- ── Row 2: Idle Timeout + Interval ── -->
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div class="flex flex-col gap-1.5">
@@ -135,14 +150,14 @@
 </template>
 
 <script setup>
-import { ref, computed, reactive, onMounted, onUnmounted } from 'vue'
+import {  ref, computed, reactive, onMounted, onUnmounted  } from 'vue'
+import { useUnitStore } from '../../../stores/unit'
 import { useRouter, useRoute } from 'vue-router'
-import VueMultiselect from 'vue-multiselect'
-import 'vue-multiselect/dist/vue-multiselect.css'
 import api from '../../../axios'
 import { storageUrl } from '../../../utils/asset'
 
-const router = useRouter()
+const router = useRouter() 
+const unitStore = useUnitStore()
 const route = useRoute()
 const isEdit = computed(() => !!route.params.id)
 const pageLoading = ref(false)
@@ -154,7 +169,7 @@ const form = ref({
   idle_timeout: 30,
   interval: 8,
   is_active: true,
-})
+  unit_id: '' })
 
 // ── TV Options ──
 const tvOptions = ref([{ name: 'Default (Semua TV)', value: null }])
@@ -236,6 +251,11 @@ async function fetchTvDevices() {
 }
 
 // ── Load for edit ──
+const formUnitOption = computed({
+  get: () => unitStore.units.find(u => u.id === form.value.unit_id) || null,
+  set: (val) => { form.value.unit_id = val ? val.id : '' }
+})
+
 onMounted(async () => {
   await fetchTvDevices()
 
@@ -243,12 +263,10 @@ onMounted(async () => {
     pageLoading.value = true
     try {
       const { data } = await api.get(`/screensavers/${route.params.id}`)
-      form.value = {
-        tv_device_id: data.tv_device_id ?? null,
+      form.value = { tv_device_id: data.tv_device_id ?? null,
         idle_timeout: data.idle_timeout || 30,
         interval: data.interval || 8,
-        is_active: data.is_active ?? true,
-      }
+        is_active: data.is_active ?? true, unit_id: data.unit_id || '' }
       existingImages.value = (data.images || []).map(img => ({
         id: img.id,
         url: img.image_path ? storageUrl(img.image_path) : '',
@@ -264,6 +282,9 @@ async function handleSubmit() {
   formError.value = ''; formLoading.value = true
   try {
     const fd = new FormData()
+    if (unitStore.activeUnitId === 'all' && form.value.unit_id) {
+      fd.append('unit_id', form.value.unit_id)
+    }
     if (form.value.tv_device_id !== null) {
       fd.append('tv_device_id', form.value.tv_device_id)
     }

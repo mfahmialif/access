@@ -21,18 +21,30 @@ class DashboardController extends Controller
     {
         $this->refreshStatuses();
 
+        $unitId = request()->header('X-Unit-Id');
+
+        $applyUnit = function($query) use ($unitId) {
+            if ($unitId && $unitId !== 'all') {
+                $query->where('unit_id', $unitId);
+            }
+        };
+
         // ── TV devices ──
-        $totalTvs   = TvDevice::count();
-        $onlineTvs  = TvDevice::where('status', 'online')->count();
-        $offlineTvs = TvDevice::where('status', 'offline')->count();
+        $tvQuery = TvDevice::query();
+        $applyUnit($tvQuery);
+        $totalTvs   = (clone $tvQuery)->count();
+        $onlineTvs  = (clone $tvQuery)->where('status', 'online')->count();
+        $offlineTvs = (clone $tvQuery)->where('status', 'offline')->count();
 
         // ── Content (all publishable models) ──
         $contentModels = [Agenda::class, Weekly::class, Monthly::class, Gallery::class, News::class, Announcement::class];
         $totalContent = 0;
         $newContent30d = 0;
         foreach ($contentModels as $model) {
-            $totalContent  += $model::count();
-            $newContent30d += $model::where('created_at', '>=', now()->subDays(30))->count();
+            $query = $model::query();
+            $applyUnit($query);
+            $totalContent  += (clone $query)->count();
+            $newContent30d += (clone $query)->where('created_at', '>=', now()->subDays(30))->count();
         }
 
         // ── Users ──
@@ -45,7 +57,9 @@ class DashboardController extends Controller
             return (int) round(($new30d / $baseline) * 100);
         };
 
-        $newTvs30d   = TvDevice::where('created_at', '>=', now()->subDays(30))->count();
+        $newTvsQuery = TvDevice::where('created_at', '>=', now()->subDays(30));
+        $applyUnit($newTvsQuery);
+        $newTvs30d   = (clone $newTvsQuery)->count();
         $newUsers30d = User::where('created_at', '>=', now()->subDays(30))->count();
 
         // ── Recent activity (command logs) ──

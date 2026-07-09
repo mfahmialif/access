@@ -84,8 +84,8 @@
 
 <script setup>
 import { ref, computed } from 'vue'
-import VueMultiselect from 'vue-multiselect'
-import 'vue-multiselect/dist/vue-multiselect.css'
+
+
 
 const searchQuery = ref('')
 const periodOptions = [

@@ -144,9 +144,10 @@
     </div>
 
     <!-- ═══ MODAL ═══ -->
-    <Transition name="fade">
-      <div v-if="showModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" @click.self="showModal = false">
-        <div class="modal-card w-full max-w-lg rounded-2xl p-6 flex flex-col gap-5">
+    <Teleport to="#admin-root" defer>
+      <Transition name="fade">
+        <div v-if="showModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" @click.self="showModal = false">
+          <div class="modal-card w-full max-w-lg rounded-2xl p-6 flex flex-col gap-5">
           <h3 class="text-lg font-bold" style="color: var(--text-heading)">{{ editingUser ? 'Edit User' : 'Tambah User' }}</h3>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div class="flex flex-col gap-1.5">
@@ -180,6 +181,20 @@
               />
             </div>
             <div class="flex flex-col gap-1.5">
+              <label class="text-sm font-medium" style="color: var(--text-body)">Units</label>
+              <VueMultiselect
+                v-model="formUnitsOption"
+                :options="modalUnitOptions"
+                :multiple="true"
+                :close-on-select="false"
+                :clear-on-select="false"
+                :searchable="true"
+                label="name"
+                track-by="id"
+                placeholder="Pilih Unit"
+              />
+            </div>
+            <div class="flex flex-col gap-1.5">
               <label class="text-sm font-medium" style="color: var(--text-body)">Status</label>
               <VueMultiselect
                 v-model="formStatusOption"
@@ -203,16 +218,15 @@
             </button>
           </div>
         </div>
-      </div>
-    </Transition>
+        </div>
+      </Transition>
+    </Teleport>
 
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
-import VueMultiselect from 'vue-multiselect'
-import 'vue-multiselect/dist/vue-multiselect.css'
 import { useUserStore } from '../../../stores/user'
 import api from '../../../axios'
 
@@ -253,11 +267,19 @@ async function fetchAllRoles() {
 // ── Modal state ──
 const showModal = ref(false)
 const editingUser = ref(null)
-const form = ref({ username: '', name: '', email: '', password: '', role_id: '', status: 'Active' })
+const form = ref({ username: '', name: '', email: '', password: '', role_id: '', status: 'Active', unit_ids: [] })
 const formError = ref('')
 const formLoading = ref(false)
 
 // ── Fetch ──
+const allUnits = ref([])
+async function fetchAllUnits() {
+  try {
+    const { data } = await api.get('/units', { params: { per_page: 100 } })
+    allUnits.value = data
+  } catch { /* ignore */ }
+}
+
 function loadUsers() {
   userStore.fetchUsers({
     search: searchQuery.value || undefined,
@@ -271,6 +293,7 @@ function loadUsers() {
 onMounted(() => {
   loadUsers()
   fetchAllRoles()
+  fetchAllUnits()
 })
 
 // Watchers
@@ -306,7 +329,7 @@ const pageNumbers = computed(() => {
 // ── CRUD ──
 function openCreateModal() {
   editingUser.value = null
-  form.value = { username: '', name: '', email: '', password: '', role_id: '', status: 'Active' }
+  form.value = { username: '', name: '', email: '', password: '', role_id: '', status: 'Active', unit_ids: [] }
   formError.value = ''
   showModal.value = true
 }
@@ -320,6 +343,7 @@ function openEditModal(user) {
     password: '',
     role_id: user.role_id || user.role?.id || '',
     status: user.status,
+    unit_ids: user.units?.map(u => u.id) || []
   }
   formError.value = ''
   showModal.value = true
@@ -378,6 +402,12 @@ const formRoleOption = computed({
   set: (val) => { form.value.role_id = val ? val.id : '' }
 })
 
+const modalUnitOptions = computed(() => allUnits.value)
+const formUnitsOption = computed({
+  get: () => allUnits.value.filter(u => form.value.unit_ids.includes(u.id)),
+  set: (vals) => { form.value.unit_ids = vals ? vals.map(v => v.id) : [] }
+})
+
 // ── Helpers ──
 function formatLastActive(dateStr) {
   if (!dateStr) return '-'
@@ -394,10 +424,11 @@ function formatLastActive(dateStr) {
 
 function roleBadge(role) {
   const base = 'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold'
-  if (role === 'Admin') return `${base} bg-purple-900/40 text-purple-400 border border-purple-800/50`
-  if (role === 'Operator') return `${base} bg-blue-900/40 text-blue-400 border border-blue-800/50`
-  if (role === 'User') return `${base} bg-orange-900/40 text-orange-400 border border-orange-800/50`
-  return `${base} bg-slate-800/50 text-slate-400 border border-slate-700/50`
+  if (role === 'Superadmin') return `${base} badge badge-superadmin`
+  if (role === 'Admin') return `${base} badge badge-admin`
+  if (role === 'Operator') return `${base} badge badge-operator`
+  if (role === 'User') return `${base} badge badge-user`
+  return `${base} badge badge-default`
 }
 
 function statusBadge(status) {

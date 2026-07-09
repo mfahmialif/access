@@ -263,7 +263,7 @@ class ScreensaverController extends Controller
         $screensaver = null;
 
         if ($device) {
-            $screensaver = Screensaver::with('images')
+            $screensaver = Screensaver::with(['images', 'unit:id,name'])
                 ->where('tv_device_id', $device->id)
                 ->where('is_active', true)
                 ->first();
@@ -271,7 +271,7 @@ class ScreensaverController extends Controller
 
         // Fallback to default screensaver
         if (!$screensaver) {
-            $screensaver = Screensaver::with('images')
+            $screensaver = Screensaver::with(['images', 'unit:id,name'])
                 ->whereNull('tv_device_id')
                 ->where('is_active', true)
                 ->first();

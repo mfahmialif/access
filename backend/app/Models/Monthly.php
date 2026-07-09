@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Monthly extends Model
 {
     protected $fillable = [
-        'title', 'date', 'time', 'location', 'teacher', 'icon',
+        'unit_id', 'title', 'date', 'time', 'location', 'teacher', 'icon',
         'category', 'body', 'image_path', 'video_path',
         'status', 'created_by',
     ];
@@ -20,5 +20,10 @@ class Monthly extends Model
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function unit(): BelongsTo
+    {
+        return $this->belongsTo(Unit::class);
     }
 }

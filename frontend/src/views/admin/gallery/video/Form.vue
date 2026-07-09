@@ -34,7 +34,22 @@
           <VueMultiselect v-model="formStatusOption" :options="statusOptions" :close-on-select="true" :searchable="false" :allow-empty="false" :show-labels="false" label="name" track-by="value" placeholder="Pilih Status" />
         </div>
       </div>
-
+      <div class="grid grid-cols-1 gap-4" v-if="unitStore.activeUnitId === 'all'">
+        <div class="flex flex-col gap-1.5">
+          <label class="text-sm font-medium" style="color: var(--text-body)">Unit *</label>
+          <VueMultiselect
+            v-model="formUnitOption"
+            :options="unitStore.units"
+            :close-on-select="true"
+            :searchable="true"
+            :allow-empty="false"
+            :show-labels="false"
+            label="name"
+            track-by="id"
+            placeholder="Pilih Unit"
+          />
+        </div>
+      </div>
       <!-- ── Deskripsi ── -->
       <div class="flex flex-col gap-1.5">
         <label class="text-sm font-medium" style="color: var(--text-body)">Deskripsi</label>
@@ -89,14 +104,14 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import {  ref, computed, onMounted  } from 'vue'
+import { useUnitStore } from '../../../../stores/unit'
 import { useRouter, useRoute } from 'vue-router'
-import VueMultiselect from 'vue-multiselect'
-import 'vue-multiselect/dist/vue-multiselect.css'
 import { useGalleryStore } from '../../../../stores/gallery'
 import { storageUrl } from '../../../../utils/asset'
 
-const router = useRouter(); const route = useRoute(); const galleryStore = useGalleryStore()
+const router = useRouter(); const route = useRoute(); const galleryStore = useGalleryStore() 
+const unitStore = useUnitStore()
 const isEdit = computed(() => !!route.params.id)
 const formLoading = ref(false); const formError = ref('')
 
@@ -106,7 +121,7 @@ function getCurrentDateTimeLocal() {
   return now.toISOString().slice(0, 16)
 }
 
-const form = ref({ title: '', category: 'Gambar', description: '', status: 'Published', duration: null, datetime: getCurrentDateTimeLocal() })
+const form = ref({ title: '', category: 'Gambar', description: '', status: 'Published', duration: null, datetime: getCurrentDateTimeLocal() , unit_id: '' })
 const imageFile = ref(null); const imagePreview = ref(null); const imageDragOver = ref(false); const removeImageFlag = ref(false)
 const videoFile = ref(null); const videoPreview = ref(null); const videoDragOver = ref(false); const removeVideoFlag = ref(false)
 
@@ -116,11 +131,16 @@ const statusOptions = [{ name: 'Published', value: 'Published' }, { name: 'Draft
 const formCategoryOption = computed({ get: () => categoryOptions.find(o => o.value === form.value.category) || categoryOptions[0], set: (val) => { form.value.category = val.value } })
 const formStatusOption = computed({ get: () => statusOptions.find(o => o.value === form.value.status) || statusOptions[0], set: (val) => { form.value.status = val.value } })
 
+const formUnitOption = computed({
+  get: () => unitStore.units.find(u => u.id === form.value.unit_id) || null,
+  set: (val) => { form.value.unit_id = val ? val.id : '' }
+})
+
 onMounted(async () => {
   if (isEdit.value) {
     try {
       const data = await galleryStore.fetchGallery(route.params.id)
-      form.value = { title: data.title, category: data.category, description: data.description || '', status: data.status, duration: data.duration, datetime: data.datetime ? data.datetime.substring(0, 16) : '' }
+      form.value = { title: data.title, category: data.category, description: data.description || '', status: data.status, duration: data.duration, datetime: data.datetime ? data.datetime.substring(0, 16) : '', unit_id: data.unit_id || '' }
       if (data.image_path) imagePreview.value = storageUrl(data.image_path)
       if (data.video_path) videoPreview.value = storageUrl(data.video_path)
     } catch { formError.value = 'Gagal memuat data.' }
@@ -145,6 +165,9 @@ async function handleSubmit() {
   formError.value = ''; formLoading.value = true
   try {
     const fd = new FormData()
+    if (unitStore.activeUnitId === 'all' && form.value.unit_id) {
+      fd.append('unit_id', form.value.unit_id)
+    }
     fd.append('title', form.value.title); fd.append('category', form.value.category)
     fd.append('description', form.value.description || ''); fd.append('status', form.value.status)
     if (form.value.duration) fd.append('duration', form.value.duration)

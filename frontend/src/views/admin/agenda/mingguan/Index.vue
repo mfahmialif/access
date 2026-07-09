@@ -51,6 +51,7 @@
               <th class="px-4 py-4 text-sm font-semibold tracking-wide" style="color: var(--text-heading)">Pengajar</th>
               <th class="px-4 py-4 text-sm font-semibold tracking-wide" style="color: var(--text-heading)">Kategori</th>
               <th class="px-4 py-4 text-sm font-semibold tracking-wide" style="color: var(--text-heading)">Status</th>
+              <th v-if="unitStore.activeUnitId === 'all'" class="px-4 py-4 text-sm font-semibold tracking-wide" style="color: var(--text-heading)">Unit</th>
               <th class="px-4 py-4 text-sm font-semibold tracking-wide text-right" style="color: var(--text-heading)">Actions</th>
             </tr>
           </thead>
@@ -77,6 +78,9 @@
               <td class="px-4 py-4 text-sm" style="color: var(--text-body)">{{ item.teacher || '-' }}</td>
               <td class="px-4 py-4"><span :class="categoryBadge(item.category)">{{ item.category }}</span></td>
               <td class="px-4 py-4"><span :class="statusBadge(item.status)">{{ item.status }}</span></td>
+              <td v-if="unitStore.activeUnitId === 'all'" class="px-4 py-4 text-sm" style="color: var(--text-heading)">
+                {{ item.unit?.name || '-' }}
+              </td>
               <td class="px-4 py-4 text-right">
                 <div class="flex items-center justify-end gap-1">
                   <router-link :to="{ name: 'AdminAgendaMingguanEdit', params: { id: item.id } }" class="action-btn p-2 rounded-lg transition-all duration-200" title="Edit">
@@ -111,12 +115,12 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue'
-import VueMultiselect from 'vue-multiselect'
-import 'vue-multiselect/dist/vue-multiselect.css'
+import {  ref, computed, onMounted, watch  } from 'vue'
+import { useUnitStore } from '../../../../stores/unit'
 import { useWeeklyStore } from '../../../../stores/weekly'
 
-const weeklyStore = useWeeklyStore()
+const weeklyStore = useWeeklyStore() 
+const unitStore = useUnitStore()
 const searchQuery = ref('')
 
 const dayOptions = [

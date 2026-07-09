@@ -44,7 +44,12 @@ class TvDeviceController extends Controller
     {
         $this->refreshStatuses();
 
-        $query = TvDevice::query();
+        $query = TvDevice::with('unit:id,name');
+
+        $unitId = $request->header('X-Unit-Id') ?? $request->query('unit_id');
+        if ($unitId && $unitId !== 'all') {
+            $query->where('unit_id', $unitId);
+        }
 
         if ($request->filled('search')) {
             $s = $request->search;
@@ -75,7 +80,7 @@ class TvDeviceController extends Controller
         $perPage = $request->input('per_page', 12);
 
         // Eager-load per-device banner
-        $query->with('activeBanner:id,tv_device_id,title,type');
+        $query->with(['activeBanner:id,tv_device_id,title,type', 'unit:id,name']);
 
         // Also check if there's a global banner
         $globalBanner = \App\Models\ActiveBanner::whereNull('tv_device_id')->first();
@@ -102,16 +107,22 @@ class TvDeviceController extends Controller
     }
 
     // ── Admin: stats ──
-    public function stats()
+    public function stats(Request $request)
     {
         $this->refreshStatuses();
 
+        $query = TvDevice::with('unit:id,name');
+        $unitId = $request->header('X-Unit-Id') ?? $request->query('unit_id');
+        if ($unitId && $unitId !== 'all') {
+            $query->where('unit_id', $unitId);
+        }
+
         return response()->json([
-            'total'   => TvDevice::count(),
-            'online'  => TvDevice::where('status', 'online')->count(),
-            'offline' => TvDevice::where('status', 'offline')->count(),
-            'setup'   => TvDevice::where('status', 'setup')->count(),
-            'warning' => TvDevice::whereNotNull('warning_message')->count(),
+            'total'   => (clone $query)->count(),
+            'online'  => (clone $query)->where('status', 'online')->count(),
+            'offline' => (clone $query)->where('status', 'offline')->count(),
+            'setup'   => (clone $query)->where('status', 'setup')->count(),
+            'warning' => (clone $query)->whereNotNull('warning_message')->count(),
         ]);
     }
 
@@ -124,14 +135,21 @@ class TvDeviceController extends Controller
             'orientation' => 'nullable|in:landscape,portrait',
         ]);
 
-        $device = TvDevice::create([
+        $deviceData = [
             'name'          => $request->name,
             'location'      => $request->location,
             'orientation'   => $request->input('orientation', 'landscape'),
             'token'         => TvDevice::generateToken(),
             'status'        => 'setup',
             'registered_by' => $request->user()?->id,
-        ]);
+        ];
+        if ($request->hasHeader('X-Unit-Id') && $request->header('X-Unit-Id') !== 'all') {
+            $deviceData['unit_id'] = $request->header('X-Unit-Id');
+        } elseif ($request->filled('unit_id')) {
+            $deviceData['unit_id'] = $request->input('unit_id');
+        }
+
+        $device = TvDevice::create($deviceData);
 
         return response()->json($device, 201);
     }
@@ -146,9 +164,21 @@ class TvDeviceController extends Controller
             'warning_message' => 'nullable|string|max:500',
         ]);
 
-        $tvDevice->update($request->only([
+        $data = $request->only([
             'name', 'location', 'orientation', 'warning_message',
-        ]));
+        ]);
+        
+        if ($request->hasHeader('X-Unit-Id') && $request->header('X-Unit-Id') !== 'all') {
+            $data['unit_id'] = $request->header('X-Unit-Id');
+        } elseif ($request->filled('unit_id')) {
+            $data['unit_id'] = $request->input('unit_id');
+        }
+
+        if ($request->filled('unit_id')) {
+            $data['unit_id'] = $request->input('unit_id');
+        }
+        
+        $tvDevice->update($data);
 
         return response()->json($tvDevice);
     }
@@ -217,7 +247,10 @@ class TvDeviceController extends Controller
             'last_heartbeat' => now(),
         ]);
 
-        $this->safeBroadcast($device->fresh());
+        // Load unit relation so the frontend can display the unit name
+        $device->load('unit:id,name');
+
+        $this->safeBroadcast($device);
 
         return response()->json([
             'message' => 'Terhubung berhasil.',

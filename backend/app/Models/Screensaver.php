@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Screensaver extends Model
 {
     protected $fillable = [
+        'unit_id',
         'tv_device_id',
         'idle_timeout',
         'interval',
@@ -24,6 +25,11 @@ class Screensaver extends Model
     public function tvDevice(): BelongsTo
     {
         return $this->belongsTo(TvDevice::class);
+    }
+
+    public function unit(): BelongsTo
+    {
+        return $this->belongsTo(Unit::class);
     }
 
     public function images(): HasMany

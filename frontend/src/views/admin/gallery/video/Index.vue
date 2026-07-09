@@ -96,7 +96,8 @@
             <th class="px-4 py-4 text-sm font-semibold tracking-wide" style="color: var(--text-heading)">Durasi</th>
             <th class="px-4 py-4 text-sm font-semibold tracking-wide" style="color: var(--text-heading)">Upload</th>
             <th class="px-4 py-4 text-sm font-semibold tracking-wide" style="color: var(--text-heading)">Status</th>
-            <th class="px-4 py-4 text-sm font-semibold tracking-wide text-right" style="color: var(--text-heading)">Actions</th>
+            <th v-if="unitStore.activeUnitId === 'all'" class="px-4 py-4 text-sm font-semibold tracking-wide" style="color: var(--text-heading)">Unit</th>
+              <th class="px-4 py-4 text-sm font-semibold tracking-wide text-right" style="color: var(--text-heading)">Actions</th>
           </tr></thead>
           <tbody class="table-body">
             <tr v-for="(item, idx) in galleryStore.galleries" :key="item.id" class="table-row-hover">
@@ -111,6 +112,9 @@
               <td class="px-4 py-4 text-sm font-mono" style="color: var(--text-muted)">{{ formatDuration(item.duration) }}</td>
               <td class="px-4 py-4 text-sm" style="color: var(--text-muted)">{{ formatDateTime(item.datetime) }}</td>
               <td class="px-4 py-4"><span :class="statusBadge(item.status)">{{ item.status }}</span></td>
+              <td v-if="unitStore.activeUnitId === 'all'" class="px-4 py-4 text-sm" style="color: var(--text-heading)">
+                {{ item.unit?.name || '-' }}
+              </td>
               <td class="px-4 py-4 text-right">
                 <div class="flex items-center justify-end gap-1">
                   <router-link :to="{ name: 'AdminGalleryVideoEdit', params: { id: item.id } }" class="action-btn p-2 rounded-lg transition-all duration-200" title="Edit">
@@ -145,13 +149,13 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue'
-import VueMultiselect from 'vue-multiselect'
-import 'vue-multiselect/dist/vue-multiselect.css'
+import {  ref, computed, onMounted, watch  } from 'vue'
+import { useUnitStore } from '../../../../stores/unit'
 import { useGalleryStore } from '../../../../stores/gallery'
 import { storageUrl } from '../../../../utils/asset'
 
-const galleryStore = useGalleryStore()
+const galleryStore = useGalleryStore() 
+const unitStore = useUnitStore()
 const searchQuery = ref('')
 
 const typeOptions = [{ name: 'Semua', value: 'all' }, { name: 'Gambar', value: 'Gambar' }, { name: 'Video', value: 'Video' }]

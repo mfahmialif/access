@@ -16,14 +16,24 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // ── Roles ──
-        $admin = Role::create(['name' => 'Admin', 'description' => 'Full access to all system features and settings.', 'status' => 'Active']);
-        $operator = Role::create(['name' => 'Operator', 'description' => 'Can manage and publish content across the platform.', 'status' => 'Active']);
-        $user = Role::create(['name' => 'User', 'description' => 'Read-only access to specific modules.', 'status' => 'Active']);
+        $superadmin = Role::firstOrCreate(['name' => 'Superadmin'], ['description' => 'Full access to all system features and settings.', 'status' => 'Active']);
+        $admin = Role::firstOrCreate(['name' => 'Admin'], ['description' => 'Full access to all system features and settings.', 'status' => 'Active']);
+        $operator = Role::firstOrCreate(['name' => 'Operator'], ['description' => 'Can manage and publish content across the platform.', 'status' => 'Active']);
+        $userRole = Role::firstOrCreate(['name' => 'User'], ['description' => 'Read-only access to specific modules.', 'status' => 'Active']);
 
         // ── Users ──
-        $adminUser = User::create(['username' => 'admin', 'name' => 'Administrator', 'email' => 'admin@access.id', 'password' => bcrypt('password'), 'role_id' => $admin->id, 'status' => 'Active', 'last_active_at' => now()]);
-        User::create(['username' => 'operator', 'name' => 'Operator Konten', 'email' => 'operator@access.id', 'password' => bcrypt('password'), 'role_id' => $operator->id, 'status' => 'Active', 'last_active_at' => now()->subHours(2)]);
-        User::create(['username' => 'user', 'name' => 'User Biasa', 'email' => 'user@access.id', 'password' => bcrypt('password'), 'role_id' => $user->id, 'status' => 'Active', 'last_active_at' => now()->subDays(1)]);
+        $adminUser = User::create(['username' => 'admin', 'name' => 'Administrator', 'email' => 'admin@access.id', 'password' => bcrypt('password'), 'role_id' => $superadmin->id, 'status' => 'Active', 'last_active_at' => now()]);
+        $operatorUser = User::create(['username' => 'operator', 'name' => 'Operator Konten', 'email' => 'operator@access.id', 'password' => bcrypt('password'), 'role_id' => $operator->id, 'status' => 'Active', 'last_active_at' => now()->subHours(2)]);
+        $biasaUser = User::create(['username' => 'user', 'name' => 'User Biasa', 'email' => 'user@access.id', 'password' => bcrypt('password'), 'role_id' => $userRole->id, 'status' => 'Active', 'last_active_at' => now()->subDays(1)]);
+
+        // ── Assign Units to Users ──
+        $allUnits = \App\Models\Unit::pluck('id')->toArray();
+        $adminUser->units()->sync($allUnits);
+        
+        $pesantrenPutra = \App\Models\Unit::where('slug', 'pesantren-putra')->first();
+        if ($pesantrenPutra) {
+            $operatorUser->units()->sync([$pesantrenPutra->id]);
+        }
 
         $icons = ['mosque', 'menu_book', 'school', 'groups', 'auto_stories', 'record_voice_over', 'campaign', 'sports_soccer', 'live_tv', 'cleaning_services', 'videocam', 'palette', 'computer', 'flag', 'work'];
         $cats = ['Artikel', 'Video', 'Gambar'];

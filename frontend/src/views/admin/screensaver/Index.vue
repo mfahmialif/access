@@ -56,7 +56,8 @@
             <th class="px-4 py-4 text-sm font-semibold w-32" style="color: var(--text-heading)">Interval (dtk)</th>
             <th class="px-4 py-4 text-sm font-semibold w-28" style="color: var(--text-heading)">Gambar</th>
             <th class="px-4 py-4 text-sm font-semibold" style="color: var(--text-heading)">Status</th>
-            <th class="px-4 py-4 text-sm font-semibold text-right" style="color: var(--text-heading)">Actions</th>
+            <th v-if="unitStore.activeUnitId === 'all'" class="px-4 py-4 text-sm font-semibold tracking-wide" style="color: var(--text-heading)">Unit</th>
+              <th class="px-4 py-4 text-sm font-semibold text-right" style="color: var(--text-heading)">Actions</th>
           </tr></thead>
           <tbody class="table-body">
             <tr v-if="items.length === 0">
@@ -84,6 +85,9 @@
                   {{ item.is_active ? 'Aktif' : 'Nonaktif' }}
                 </span>
               </td>
+              <td v-if="unitStore.activeUnitId === 'all'" class="px-4 py-4 text-sm" style="color: var(--text-heading)">
+                {{ item.unit?.name || '-' }}
+              </td>
               <td class="px-4 py-4 text-right">
                 <div class="flex items-center justify-end gap-1">
                   <router-link :to="{ name: 'AdminScreensaverEdit', params: { id: item.id } }" class="action-btn p-2 rounded-lg cursor-pointer" title="Edit"><span class="material-symbols-outlined text-[20px] text-accent">edit</span></router-link>
@@ -106,7 +110,7 @@
       </div>
     </div>
 
-    <Teleport to="#admin-root">
+    <Teleport to="#admin-root" defer>
       <!-- ═══ DELETE CONFIRM ═══ -->
       <Transition name="modal">
         <div v-if="showDeleteConfirm" class="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -138,10 +142,11 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import {  ref, reactive, onMounted  } from 'vue'
+import { useUnitStore } from '../../../stores/unit'
 import api from '../../../axios'
-import VueMultiselect from 'vue-multiselect'
-import 'vue-multiselect/dist/vue-multiselect.css'
+
+const unitStore = useUnitStore()
 
 // ── State ──
 const loading = ref(false)

@@ -15,7 +15,7 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $query = User::with('role:id,name');
+        $query = User::with(['role:id,name', 'units:id,name']);
 
         // Search
         if ($request->filled('search')) {
@@ -55,6 +55,8 @@ class UserController extends Controller
             'password' => 'required|string|min:6',
             'role_id' => 'required|exists:roles,id',
             'status' => 'in:Active,Inactive',
+            'unit_ids' => 'nullable|array',
+            'unit_ids.*' => 'exists:units,id',
         ]);
 
         $user = User::create([
@@ -66,7 +68,11 @@ class UserController extends Controller
             'status' => $request->input('status', 'Active'),
         ]);
 
-        $user->load('role:id,name');
+        if ($request->has('unit_ids')) {
+            $user->units()->sync($request->unit_ids);
+        }
+
+        $user->load(['role:id,name', 'units:id,name']);
 
         return response()->json($user, 201);
     }
@@ -76,7 +82,7 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        $user->load('role:id,name');
+        $user->load(['role:id,name', 'units:id,name']);
         return response()->json($user);
     }
 
@@ -92,6 +98,8 @@ class UserController extends Controller
             'password' => 'nullable|string|min:6',
             'role_id' => 'required|exists:roles,id',
             'status' => 'in:Active,Inactive',
+            'unit_ids' => 'nullable|array',
+            'unit_ids.*' => 'exists:units,id',
         ]);
 
         $data = $request->only(['username', 'name', 'email', 'role_id', 'status']);
@@ -101,7 +109,12 @@ class UserController extends Controller
         }
 
         $user->update($data);
-        $user->load('role:id,name');
+
+        if ($request->has('unit_ids')) {
+            $user->units()->sync($request->unit_ids);
+        }
+
+        $user->load(['role:id,name', 'units:id,name']);
 
         return response()->json($user);
     }

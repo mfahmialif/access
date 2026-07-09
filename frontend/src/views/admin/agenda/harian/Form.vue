@@ -97,6 +97,23 @@
           </VueMultiselect>
         </div>
       </div>
+      
+      <div class="grid grid-cols-1 gap-4" v-if="unitStore.activeUnitId === 'all'">
+        <div class="flex flex-col gap-1.5">
+          <label class="text-sm font-medium" style="color: var(--text-body)">Unit *</label>
+          <VueMultiselect
+            v-model="formUnitOption"
+            :options="unitStore.units"
+            :close-on-select="true"
+            :searchable="true"
+            :allow-empty="false"
+            :show-labels="false"
+            label="name"
+            track-by="id"
+            placeholder="Pilih Unit"
+          />
+        </div>
+      </div>
 
       <!-- ── Upload Section (dynamic based on category) ── -->
       <!-- Image Upload — untuk Gambar dan Artikel (banner) -->
@@ -189,9 +206,8 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import VueMultiselect from 'vue-multiselect'
-import 'vue-multiselect/dist/vue-multiselect.css'
 import { useAgendaStore } from '../../../../stores/agenda'
+import { useUnitStore } from '../../../../stores/unit'
 
 // Quill Editor
 import { QuillEditor } from '@vueup/vue-quill'
@@ -200,6 +216,7 @@ import QuillResizeImage from 'quill-resize-image'
 import api from '../../../../axios'
 import { storageUrl } from '../../../../utils/asset'
 const quillRef = ref(null)
+const unitStore = useUnitStore()
 
 const quillToolbar = [
   [{ header: [1, 2, 3, false] }],
@@ -405,6 +422,7 @@ const form = ref({
   category: 'Artikel',
   body: '',
   status: 'Aktif',
+  unit_id: ''
 })
 
 // ── File refs ──
@@ -462,6 +480,10 @@ const formIconOption = computed({
   get: () => iconOptions.find(o => o.value === form.value.icon) || iconOptions.find(o => o.value === 'event'),
   set: (val) => { form.value.icon = val.value },
 })
+const formUnitOption = computed({
+  get: () => unitStore.units.find(u => u.id === form.value.unit_id) || null,
+  set: (val) => { form.value.unit_id = val ? val.id : '' }
+})
 
 // ── Load existing data for edit ──
 onMounted(async () => {
@@ -477,6 +499,7 @@ onMounted(async () => {
         category: data.category,
         body: data.body || '',
         status: data.status,
+        unit_id: data.unit_id || ''
       }
       if (data.image_path) {
         imagePreview.value = storageUrl(data.image_path)
@@ -550,6 +573,9 @@ async function handleSubmit() {
     fd.append('category', form.value.category)
     fd.append('body', form.value.body || '')
     fd.append('status', form.value.status)
+    if (unitStore.activeUnitId === 'all' && form.value.unit_id) {
+      fd.append('unit_id', form.value.unit_id)
+    }
 
     if (imageFile.value) fd.append('image', imageFile.value)
     if (videoFile.value) fd.append('video', videoFile.value)

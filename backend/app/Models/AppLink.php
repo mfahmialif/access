@@ -8,12 +8,17 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class AppLink extends Model
 {
     protected $fillable = [
-        'title', 'subtitle', 'icon', 'url',
+        'unit_id', 'title', 'subtitle', 'icon', 'url',
         'color', 'sort_order', 'status', 'created_by',
     ];
 
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function unit(): BelongsTo
+    {
+        return $this->belongsTo(Unit::class);
     }
 }

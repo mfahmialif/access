@@ -57,9 +57,11 @@
           <!-- ★ Page Content (router-view) ★ -->
           <div class="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full">
             <router-view v-slot="{ Component, route: viewRoute }">
-              <Transition name="page" mode="out-in">
-                <component :is="Component" :key="viewRoute.path" />
-              </Transition>
+              <template v-if="Component">
+                <Transition name="page" mode="out-in">
+                  <component :is="Component" :key="viewRoute.path" />
+                </Transition>
+              </template>
             </router-view>
           </div>
 
@@ -176,6 +178,22 @@ function toggleTheme() {
   --badge-artikel-text: #fbbf24;
   --badge-artikel-bg: rgba(251, 191, 36, 0.12);
   --badge-artikel-border: rgba(251, 191, 36, 0.3);
+
+  --badge-superadmin-text: #a78bfa;
+  --badge-superadmin-bg: rgba(167, 139, 250, 0.15);
+  --badge-superadmin-border: rgba(167, 139, 250, 0.3);
+
+  --badge-admin-text: #f472b6;
+  --badge-admin-bg: rgba(244, 114, 182, 0.15);
+  --badge-admin-border: rgba(244, 114, 182, 0.3);
+
+  --badge-operator-text: #60a5fa;
+  --badge-operator-bg: rgba(96, 165, 250, 0.15);
+  --badge-operator-border: rgba(96, 165, 250, 0.3);
+
+  --badge-user-text: #fb923c;
+  --badge-user-bg: rgba(251, 146, 60, 0.15);
+  --badge-user-border: rgba(251, 146, 60, 0.3);
 }
 
 .admin-root[data-theme="light"] {
@@ -224,6 +242,22 @@ function toggleTheme() {
   --badge-artikel-text: #d97706;
   --badge-artikel-bg: rgba(217, 119, 6, 0.1);
   --badge-artikel-border: rgba(217, 119, 6, 0.35);
+
+  --badge-superadmin-text: #7c3aed;
+  --badge-superadmin-bg: rgba(124, 58, 237, 0.1);
+  --badge-superadmin-border: rgba(124, 58, 237, 0.3);
+
+  --badge-admin-text: #db2777;
+  --badge-admin-bg: rgba(219, 39, 119, 0.1);
+  --badge-admin-border: rgba(219, 39, 119, 0.3);
+
+  --badge-operator-text: #2563eb;
+  --badge-operator-bg: rgba(37, 99, 235, 0.1);
+  --badge-operator-border: rgba(37, 99, 235, 0.3);
+
+  --badge-user-text: #ea580c;
+  --badge-user-bg: rgba(234, 88, 12, 0.1);
+  --badge-user-border: rgba(234, 88, 12, 0.3);
 }
 
 /* ═══ Overlay fade ═══ */
@@ -387,7 +421,31 @@ function toggleTheme() {
 .admin-root :deep(.badge-default) {
   color: var(--text-muted);
   background: var(--bg-input);
-  border-color: var(--border);
+  border: 1px solid var(--border);
+}
+
+.admin-root :deep(.badge-superadmin) {
+  color: var(--badge-superadmin-text);
+  background: var(--badge-superadmin-bg);
+  border: 1px solid var(--badge-superadmin-border);
+}
+
+.admin-root :deep(.badge-admin) {
+  color: var(--badge-admin-text);
+  background: var(--badge-admin-bg);
+  border: 1px solid var(--badge-admin-border);
+}
+
+.admin-root :deep(.badge-operator) {
+  color: var(--badge-operator-text);
+  background: var(--badge-operator-bg);
+  border: 1px solid var(--badge-operator-border);
+}
+
+.admin-root :deep(.badge-user) {
+  color: var(--badge-user-text);
+  background: var(--badge-user-bg);
+  border: 1px solid var(--badge-user-border);
 }
 
 /* ═══ Vue Multiselect — Admin Theme ═══ */

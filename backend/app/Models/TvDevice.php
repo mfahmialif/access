@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class TvDevice extends Model
 {
     protected $fillable = [
-        'name', 'location', 'orientation', 'token', 'status',
+        'unit_id', 'name', 'location', 'orientation', 'token', 'status',
         'ip_address', 'last_heartbeat', 'firmware_version',
         'warning_message', 'current_page', 'registered_by',
     ];
@@ -20,6 +20,11 @@ class TvDevice extends Model
     public function registeredBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'registered_by');
+    }
+
+    public function unit(): BelongsTo
+    {
+        return $this->belongsTo(Unit::class);
     }
 
     public function activeBanner(): \Illuminate\Database\Eloquent\Relations\HasOne

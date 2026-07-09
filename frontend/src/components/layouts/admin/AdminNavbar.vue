@@ -9,6 +9,28 @@
       <h2 class="text-lg sm:text-xl font-bold text-heading tracking-tight">{{ pageTitle }}</h2>
     </div>
     <div class="flex items-center gap-2 sm:gap-4">
+      <!-- ★ Unit Switcher ★ -->
+      <div v-if="unitStore.units.length > 1 || authStore.isSuperadmin" class="w-48 hidden md:block mr-2 z-50">
+        <VueMultiselect
+          v-model="selectedUnit"
+          :options="unitOptions"
+          label="name"
+          track-by="id"
+          :searchable="false"
+          :allow-empty="false"
+          :select-label="''"
+          :selected-label="''"
+          :deselect-label="''"
+          placeholder="Pilih Unit"
+          @update:model-value="handleUnitChange"
+          class="unit-multiselect"
+        />
+      </div>
+      <div v-else-if="unitStore.units.length === 1" class="hidden md:flex items-center px-3 py-1.5 bg-accent/10 border border-accent/30 rounded-lg mr-2">
+        <span class="material-symbols-outlined text-accent text-[18px] mr-1.5">domain</span>
+        <span class="text-sm font-bold text-accent">{{ unitStore.units[0].name }}</span>
+      </div>
+
       <!-- Search -->
       <div class="relative w-64 hidden md:block">
         <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-muted text-[20px]">search</span>
@@ -80,8 +102,9 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, onMounted, onBeforeUnmount, computed } from 'vue'
 import { useAuthStore } from '../../../stores/auth'
+import { useUnitStore } from '../../../stores/unit'
 
 defineProps({
   pageTitle: { type: String, default: 'Dashboard' },
@@ -95,6 +118,31 @@ const searchQuery = ref('')
 const profileOpen = ref(false)
 const profileDropdownRef = ref(null)
 const authStore = useAuthStore()
+const unitStore = useUnitStore()
+
+onMounted(() => {
+  unitStore.fetchMyUnits().then(() => {
+    if (unitStore.activeUnit) {
+      selectedUnit.value = unitOptions.value.find(u => u.id == unitStore.activeUnitId)
+    }
+  })
+})
+
+const unitOptions = computed(() => {
+  const opts = [...unitStore.units]
+  if (authStore.isSuperadmin) {
+    opts.unshift({ id: 'all', name: 'Semua Unit' })
+  }
+  return opts
+})
+
+const selectedUnit = ref(null)
+
+function handleUnitChange(option) {
+  if (option) {
+    unitStore.switchUnit(option.id)
+  }
+}
 
 function handleLogout() {
   profileOpen.value = false
@@ -152,6 +200,41 @@ onBeforeUnmount(() => document.removeEventListener('click', handleClickOutside))
 }
 .notif-btn:hover {
   background: var(--bg-input);
+  color: var(--color-accent);
+}
+
+/* ═══ VueMultiselect overrides for Navbar ═══ */
+.unit-multiselect :deep(.multiselect__tags) {
+  border-radius: 999px;
+  min-height: 38px;
+  padding: 6px 32px 0 16px;
+  background: var(--bg-input);
+  border-color: var(--border);
+}
+.unit-multiselect :deep(.multiselect__single) {
+  font-weight: 600;
+  color: var(--text-heading);
+}
+.unit-multiselect :deep(.multiselect__select) {
+  height: 38px;
+  border-radius: 999px;
+}
+.unit-multiselect :deep(.multiselect__content-wrapper) {
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+.unit-multiselect :deep(.multiselect__option) {
+  padding: 10px 16px;
+  font-size: 14px;
+}
+.unit-multiselect :deep(.multiselect__option--highlight) {
+  background: var(--color-accent);
+  color: var(--text-btn);
+}
+.unit-multiselect :deep(.multiselect__option--selected) {
+  background: rgba(251, 191, 36, 0.15);
   color: var(--color-accent);
 }
 

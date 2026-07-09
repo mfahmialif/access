@@ -422,8 +422,6 @@
 import { ref, reactive, computed, onMounted } from 'vue'
 import api from '../../../axios'
 import { fixHtmlAssetUrls } from '../../../utils/asset'
-import VueMultiselect from 'vue-multiselect'
-import 'vue-multiselect/dist/vue-multiselect.css'
 import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
 

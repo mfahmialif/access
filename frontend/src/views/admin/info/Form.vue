@@ -31,7 +31,22 @@
           <input type="datetime-local" v-model="form.datetime" class="filter-input rounded-xl py-2.5 px-4 text-sm focus:outline-none focus:ring-1 focus:ring-accent" />
         </div>
       </div>
-
+      <div class="grid grid-cols-1 gap-4" v-if="unitStore.activeUnitId === 'all'">
+        <div class="flex flex-col gap-1.5">
+          <label class="text-sm font-medium" style="color: var(--text-body)">Unit *</label>
+          <VueMultiselect
+            v-model="formUnitOption"
+            :options="unitStore.units"
+            :close-on-select="true"
+            :searchable="true"
+            :allow-empty="false"
+            :show-labels="false"
+            label="name"
+            track-by="id"
+            placeholder="Pilih Unit"
+          />
+        </div>
+      </div>
       <!-- ── Row 2: Kategori + Status ── -->
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div class="flex flex-col gap-1.5">
@@ -108,16 +123,16 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import {  ref, computed, onMounted  } from 'vue'
+import { useUnitStore } from '../../../stores/unit'
 import { useRouter, useRoute } from 'vue-router'
-import VueMultiselect from 'vue-multiselect'
-import 'vue-multiselect/dist/vue-multiselect.css'
 import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
 import QuillResizeImage from 'quill-resize-image'
 import api from '../../../axios'
 import { storageUrl } from '../../../utils/asset'
-const router = useRouter()
+const router = useRouter() 
+const unitStore = useUnitStore()
 const route = useRoute()
 const isEdit = computed(() => !!route.params.id)
 const pageLoading = ref(false)
@@ -133,8 +148,8 @@ function getCurrentDateTimeLocal() {
 const form = ref({
   title: '', category: 'Artikel', body: '',
   speaker: '', duration: '', status: 'Published',
-  datetime: getCurrentDateTimeLocal()
-})
+  datetime: getCurrentDateTimeLocal(),
+  unit_id: '' })
 
 const imageFile = ref(null); const imagePreview = ref(null); const imageDragOver = ref(false); const removeImageFlag = ref(false)
 const videoFile = ref(null); const videoPreview = ref(null); const videoDragOver = ref(false); const removeVideoFlag = ref(false)
@@ -181,7 +196,10 @@ async function uploadPendingEditorMedia() {
   for (const dataUrl of matches) {
     try {
       const res = await fetch(dataUrl); const blob = await res.blob()
-      const fd = new FormData(); fd.append('file', blob, 'editor-image.png')
+      const fd = new FormData()
+    if (unitStore.activeUnitId === 'all' && form.value.unit_id) {
+      fd.append('unit_id', form.value.unit_id)
+    }; fd.append('file', blob, 'editor-image.png')
       const { data } = await api.post('/upload-editor', fd, { headers: { 'Content-Type': 'multipart/form-data' } })
       body = body.replace(dataUrl, data.url)
     } catch (e) { console.error('Failed to upload editor image:', e) }
@@ -206,17 +224,20 @@ function setVideoFile(f) { videoFile.value = f; videoPreview.value = URL.createO
 function removeVideo() { videoFile.value = null; videoPreview.value = null; removeVideoFlag.value = true }
 
 // ── Load for edit ──
+const formUnitOption = computed({
+  get: () => unitStore.units.find(u => u.id === form.value.unit_id) || null,
+  set: (val) => { form.value.unit_id = val ? val.id : '' }
+})
+
 onMounted(async () => {
   if (isEdit.value) {
     pageLoading.value = true
     try {
       const { data } = await api.get(`/news/${route.params.id}`)
-      form.value = {
-        title: data.title || '', category: data.category || 'Artikel',
+      form.value = { title: data.title || '', category: data.category || 'Artikel',
         body: data.body || '', speaker: data.speaker || '',
         duration: data.duration || '', status: data.status || 'Published',
-        datetime: data.datetime ? data.datetime.substring(0, 16) : ''
-      }
+        datetime: data.datetime ? data.datetime.substring(0, 16) : '', unit_id: data.unit_id || '' }
       if (data.image_path) imagePreview.value = storageUrl(data.image_path)
       if (data.video_path) videoPreview.value = storageUrl(data.video_path)
     } catch { formError.value = 'Gagal memuat data.' }
@@ -230,6 +251,9 @@ async function handleSubmit() {
   try {
     if (form.value.category !== 'Gambar') await uploadPendingEditorMedia()
     const fd = new FormData()
+    if (unitStore.activeUnitId === 'all' && form.value.unit_id) {
+      fd.append('unit_id', form.value.unit_id)
+    }
     fd.append('title', form.value.title)
     fd.append('category', form.value.category)
     fd.append('status', form.value.status)

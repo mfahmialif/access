@@ -117,8 +117,9 @@
     </div>
 
     <!-- ═══ MODAL ═══ -->
-    <Transition name="fade">
-      <div v-if="showModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" @click.self="showModal = false">
+    <Teleport to="#admin-root" defer>
+      <Transition name="fade">
+        <div v-if="showModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" @click.self="showModal = false">
         <div class="modal-card w-full max-w-md rounded-2xl p-6 flex flex-col gap-5">
           <h3 class="text-lg font-bold" style="color: var(--text-heading)">{{ editingRole ? 'Edit Role' : 'Tambah Role' }}</h3>
           <div class="flex flex-col gap-4">
@@ -154,16 +155,17 @@
             </button>
           </div>
         </div>
-      </div>
-    </Transition>
+        </div>
+      </Transition>
+    </Teleport>
 
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
-import VueMultiselect from 'vue-multiselect'
-import 'vue-multiselect/dist/vue-multiselect.css'
+
+
 import { useRoleStore } from '../../../stores/role'
 
 const roleStore = useRoleStore()

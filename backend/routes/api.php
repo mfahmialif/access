@@ -17,6 +17,7 @@ use App\Http\Controllers\ProxyController;
 use App\Http\Controllers\ScreensaverController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\ContentSearchController;
+use App\Http\Controllers\UnitController;
 use Illuminate\Support\Facades\Route;
 
 // ── Public routes ──
@@ -77,9 +78,16 @@ Route::get('/tv-commands/active-banner', [TvCommandController::class, 'activeBan
 Route::get('/screensaver/tv', [ScreensaverController::class, 'forTv']);
 
 // ── Protected routes (requires Sanctum token) ──
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/user', [AuthController::class, 'user']);
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/my-units', [UnitController::class, 'myUnits']);
+});
+
+Route::middleware(['auth:sanctum', \App\Http\Middleware\UnitScope::class])->group(function () {
+    // Unit management
+    Route::apiResource('units', UnitController::class);
+    Route::post('/units/{unit}/assign-users', [UnitController::class, 'assignUsers']);
 
     // Settings (protected update)
     Route::post('/settings', [SettingController::class, 'update']);

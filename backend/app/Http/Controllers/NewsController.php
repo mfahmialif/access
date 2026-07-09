@@ -9,9 +9,21 @@ use Illuminate\Support\Facades\DB;
 
 class NewsController extends Controller
 {
-    public function stats()
+    public function stats(Request $request)
     {
-        $stats = DB::table('news')->selectRaw("
+        $query = DB::table('news');
+        $unitId = $request->header('X-Unit-Id') ?? $request->query('unit_id');
+        if ($unitId === 'null' || $unitId === 'undefined') {
+            $unitId = null;
+        }
+        
+        if ($unitId && $unitId !== 'all') {
+            $query->where(function ($q) use ($unitId) {
+                $q->where('unit_id', $unitId)->orWhereNull('unit_id');
+            });
+        }
+
+        $stats = $query->selectRaw("
             COUNT(*) as total,
             SUM(CASE WHEN category = 'Artikel' THEN 1 ELSE 0 END) as artikel,
             SUM(CASE WHEN category = 'Video' THEN 1 ELSE 0 END) as video,
@@ -23,7 +35,18 @@ class NewsController extends Controller
 
     public function index(Request $request)
     {
-        $query = News::query();
+        $query = News::with('unit:id,name');
+
+        $unitId = $request->header('X-Unit-Id') ?? $request->query('unit_id');
+        if ($unitId === 'null' || $unitId === 'undefined') {
+            $unitId = null;
+        }
+        
+        if ($unitId && $unitId !== 'all') {
+            $query->where(function ($q) use ($unitId) {
+                $q->where('unit_id', $unitId)->orWhereNull('unit_id');
+            });
+        }
 
         if ($request->filled('search')) {
             $s = $request->search;
@@ -73,6 +96,11 @@ class NewsController extends Controller
 
         $data = $request->only(['title', 'category', 'body', 'speaker', 'duration', 'status', 'datetime']);
         $data['created_by'] = $request->user()?->id;
+        if ($request->hasHeader('X-Unit-Id') && $request->header('X-Unit-Id') !== 'all') {
+            $data['unit_id'] = $request->header('X-Unit-Id');
+        } elseif ($request->filled('unit_id')) {
+            $data['unit_id'] = $request->input('unit_id');
+        }
 
         if ($request->hasFile('image')) {
             $data['image_path'] = $request->file('image')->store('news', 'public');
@@ -113,6 +141,10 @@ class NewsController extends Controller
             $data['video_path'] = null;
         }
 
+        if ($request->filled('unit_id')) {
+            $data['unit_id'] = $request->input('unit_id');
+        }
+        
         $news->update($data);
         return response()->json($news);
     }

@@ -13,7 +13,7 @@ class WeeklyController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Weekly::query()->orderBy('day')->orderBy('time');
+        $query = Weekly::with('unit:id,name')->orderBy('day')->orderBy('time');
 
         if ($request->filled('search')) {
             $s = $request->search;
@@ -64,8 +64,16 @@ class WeeklyController extends Controller
             'video'    => 'nullable|mimes:mp4,webm,ogg|max:51200',
         ]);
 
-        $data = $request->only(['title', 'day', 'time', 'location', 'teacher', 'icon', 'category', 'body', 'status']);
-        $data['created_by'] = $request->user()?->id;
+        $data = $request->only([
+            'title', 'day', 'time', 'location', 'teacher', 'icon',
+            'category', 'body', 'status',
+        ]);
+        $data['created_by'] = $request->user()->id;
+        if ($request->hasHeader('X-Unit-Id') && $request->header('X-Unit-Id') !== 'all') {
+            $data['unit_id'] = $request->header('X-Unit-Id');
+        } elseif ($request->filled('unit_id')) {
+            $data['unit_id'] = $request->input('unit_id');
+        }
 
         if ($request->hasFile('image')) {
             $data['image_path'] = $request->file('image')->store('weeklies', 'public');
@@ -125,6 +133,10 @@ class WeeklyController extends Controller
             $data['video_path'] = null;
         }
 
+        if ($request->filled('unit_id')) {
+            $data['unit_id'] = $request->input('unit_id');
+        }
+        
         $weekly->update($data);
 
         return response()->json($weekly);

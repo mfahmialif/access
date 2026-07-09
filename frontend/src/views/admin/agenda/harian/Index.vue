@@ -89,6 +89,7 @@
               <th class="px-4 py-4 text-sm font-semibold tracking-wide" style="color: var(--text-heading)">Pengajar</th>
               <th class="px-4 py-4 text-sm font-semibold tracking-wide" style="color: var(--text-heading)">Kategori</th>
               <th class="px-4 py-4 text-sm font-semibold tracking-wide" style="color: var(--text-heading)">Status</th>
+              <th v-if="unitStore.activeUnitId === 'all'" class="px-4 py-4 text-sm font-semibold tracking-wide" style="color: var(--text-heading)">Unit</th>
               <th class="px-4 py-4 text-sm font-semibold tracking-wide text-right" style="color: var(--text-heading)">Actions</th>
             </tr>
           </thead>
@@ -123,6 +124,10 @@
               <!-- Status -->
               <td class="px-4 py-4">
                 <span :class="agendaStatusBadge(item.status)">{{ item.status }}</span>
+              </td>
+              <!-- Unit -->
+              <td v-if="unitStore.activeUnitId === 'all'" class="px-4 py-4 text-sm" style="color: var(--text-heading)">
+                {{ item.unit?.name || '-' }}
               </td>
               <!-- Actions -->
               <td class="px-4 py-4 text-right">
@@ -163,11 +168,13 @@
 
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
-import VueMultiselect from 'vue-multiselect'
-import 'vue-multiselect/dist/vue-multiselect.css'
+import { useRouter } from 'vue-router'
 import { useAgendaStore } from '../../../../stores/agenda'
+import { useUnitStore } from '../../../../stores/unit'
 
 const agendaStore = useAgendaStore()
+const unitStore = useUnitStore()
+const router = useRouter()
 const searchQuery = ref('')
 
 const categoryOptions = [

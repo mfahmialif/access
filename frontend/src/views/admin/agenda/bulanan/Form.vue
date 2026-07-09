@@ -30,7 +30,22 @@
           <input v-model="form.time" type="time" class="filter-input rounded-xl py-2.5 px-4 text-sm focus:outline-none focus:ring-1 focus:ring-accent" />
         </div>
       </div>
-
+      <div class="grid grid-cols-1 gap-4" v-if="unitStore.activeUnitId === 'all'">
+        <div class="flex flex-col gap-1.5">
+          <label class="text-sm font-medium" style="color: var(--text-body)">Unit *</label>
+          <VueMultiselect
+            v-model="formUnitOption"
+            :options="unitStore.units"
+            :close-on-select="true"
+            :searchable="true"
+            :allow-empty="false"
+            :show-labels="false"
+            label="name"
+            track-by="id"
+            placeholder="Pilih Unit"
+          />
+        </div>
+      </div>
       <!-- ── Row 2: Lokasi + Pengajar ── -->
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div class="flex flex-col gap-1.5">
@@ -116,10 +131,9 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import {  ref, computed, onMounted  } from 'vue'
+import { useUnitStore } from '../../../../stores/unit'
 import { useRouter, useRoute } from 'vue-router'
-import VueMultiselect from 'vue-multiselect'
-import 'vue-multiselect/dist/vue-multiselect.css'
 import { useMonthlyStore } from '../../../../stores/monthly'
 import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
@@ -165,7 +179,10 @@ async function uploadPendingEditorMedia() {
   const imgRegex = /src="(data:image\/[^"]+)"/g; const base64Matches = []; let match
   while ((match = imgRegex.exec(body)) !== null) base64Matches.push(match[1])
   for (const dataUrl of base64Matches) {
-    try { const res = await fetch(dataUrl); const blob = await res.blob(); const fd = new FormData(); fd.append('file', blob, 'editor-image.png')
+    try { const res = await fetch(dataUrl); const blob = await res.blob(); const fd = new FormData()
+    if (unitStore.activeUnitId === 'all' && form.value.unit_id) {
+      fd.append('unit_id', form.value.unit_id)
+    }; fd.append('file', blob, 'editor-image.png')
       const { data } = await api.post('/upload-editor', fd, { headers: { 'Content-Type': 'multipart/form-data' } }); body = body.replace(dataUrl, data.url)
     } catch (e) { console.error('Failed to upload editor image:', e) }
   }
@@ -199,11 +216,12 @@ function onQuillReady() {
   initialMediaUrls = extractEditorMediaUrls(form.value.body)
 }
 
-const router = useRouter(); const route = useRoute(); const monthlyStore = useMonthlyStore()
+const router = useRouter(); const route = useRoute(); const monthlyStore = useMonthlyStore() 
+const unitStore = useUnitStore()
 const isEdit = computed(() => !!route.params.id)
 const formLoading = ref(false); const formError = ref('')
 
-const form = ref({ title: '', date: '', time: '', location: '', teacher: '', icon: 'event', category: 'Artikel', body: '', status: 'Aktif' })
+const form = ref({ title: '', date: '', time: '', location: '', teacher: '', icon: 'event', category: 'Artikel', body: '', status: 'Aktif' , unit_id: '' })
 const imageFile = ref(null); const imagePreview = ref(null); const imageDragOver = ref(false); const removeImageFlag = ref(false)
 const videoFile = ref(null); const videoPreview = ref(null); const videoDragOver = ref(false); const removeVideoFlag = ref(false)
 
@@ -221,11 +239,16 @@ const formCategoryOption = computed({ get: () => categoryOptions.find(o => o.val
 const formStatusOption = computed({ get: () => statusOptions.find(o => o.value === form.value.status) || statusOptions[0], set: (val) => { form.value.status = val.value } })
 const formIconOption = computed({ get: () => iconOptions.find(o => o.value === form.value.icon) || iconOptions[0], set: (val) => { form.value.icon = val.value } })
 
+const formUnitOption = computed({
+  get: () => unitStore.units.find(u => u.id === form.value.unit_id) || null,
+  set: (val) => { form.value.unit_id = val ? val.id : '' }
+})
+
 onMounted(async () => {
   if (isEdit.value) {
     try {
       const data = await monthlyStore.fetchMonthly(route.params.id)
-      form.value = { title: data.title, date: data.date?.substring(0, 10) || '', time: data.time?.substring(0, 5) || '', location: data.location || '', teacher: data.teacher || '', icon: data.icon || 'event', category: data.category, body: data.body || '', status: data.status }
+      form.value = { title: data.title, date: data.date?.substring(0, 10) || '', time: data.time?.substring(0, 5) || '', location: data.location || '', teacher: data.teacher || '', icon: data.icon || 'event', category: data.category, body: data.body || '', status: data.status, unit_id: data.unit_id || '' }
       if (data.image_path) imagePreview.value = storageUrl(data.image_path)
       if (data.video_path) videoPreview.value = storageUrl(data.video_path)
     } catch { formError.value = 'Gagal memuat data.' }
@@ -246,6 +269,9 @@ async function handleSubmit() {
   try {
     await uploadPendingEditorMedia()
     const fd = new FormData()
+    if (unitStore.activeUnitId === 'all' && form.value.unit_id) {
+      fd.append('unit_id', form.value.unit_id)
+    }
     fd.append('title', form.value.title); fd.append('date', form.value.date); fd.append('time', form.value.time)
     fd.append('location', form.value.location || ''); fd.append('teacher', form.value.teacher || '')
     fd.append('icon', form.value.icon || 'event'); fd.append('category', form.value.category)

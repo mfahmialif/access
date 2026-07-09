@@ -221,6 +221,19 @@
             </div>
           </div>
 
+          <!-- Manajemen Unit (Superadmin only) -->
+          <router-link v-if="authStore.isSuperadmin" to="/administrator/manajemen-unit"
+                       :class="[
+                         'flex items-center gap-3 px-3 py-2 mt-1 rounded-lg transition-colors sidebar-link',
+                         isActiveRoute('/administrator/manajemen-unit')
+                           ? 'bg-accent text-btn-text font-bold'
+                           : 'nav-item text-body font-medium cursor-pointer'
+                       ]"
+                       :title="collapsed ? 'Manajemen Unit' : ''">
+            <span class="material-symbols-outlined text-[24px] shrink-0">domain</span>
+            <span class="sidebar-label text-sm leading-normal">Manajemen Unit</span>
+          </router-link>
+
           <!-- Separator: Website -->
           <div class="mt-4 mb-1 px-3" v-if="!collapsed">
             <p class="text-xs font-bold uppercase tracking-wider text-muted">Website</p>
