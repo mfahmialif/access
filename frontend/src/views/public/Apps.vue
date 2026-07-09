@@ -105,7 +105,7 @@
           <transition name="slide-up">
             <div v-if="dockExpanded"
                  class="app-switcher-panel absolute bottom-full right-0 left-0 mx-2 mb-2 z-50 flex flex-col gap-1 p-2 rounded-2xl border shadow-2xl max-h-[50vh] overflow-y-auto no-scrollbar"
-                 :class="isDark ? 'border-white/10 bg-[#0a1128]/95' : 'border-slate-200 bg-white/95'">
+                 :class="isDark ? 'border-white/10 bg-[#0a1128] opacity-95' : 'border-slate-200 bg-white opacity-95'">
 
               <!-- App List -->
               <button @click="closeEmbed"
@@ -144,7 +144,7 @@
 
           <!-- Toolbar Bar -->
           <div class="flex items-center h-12 md:h-14 px-2 md:px-3 gap-1 border-t"
-               :class="isDark ? 'bg-gradient-to-t from-[#0a1128]/98 to-[#0a1128]/92 border-white/10' : 'bg-white/95 border-slate-200'">
+               :class="isDark ? 'bg-[#0a1128] opacity-95 border-white/10' : 'bg-white opacity-95 border-slate-200'">
 
             <!-- History Nav -->
             <button @click="goIframeBack"

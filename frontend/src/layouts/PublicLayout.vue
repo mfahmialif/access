@@ -30,7 +30,7 @@
       <div v-if="showConfigMenu" 
            class="fixed right-[16px] z-50 flex flex-col gap-1 p-1.5 rounded-full shadow-[0_10px_40px_rgba(0,0,0,0.3)] border transition-all duration-300"
            :class="[
-             isDark ? 'bg-[#0f172a]/95 border-white/10' : 'bg-white/95 border-slate-200',
+             isDark ? 'bg-[#0f172a] opacity-95 border-white/10' : 'bg-white opacity-95 border-slate-200',
              route.name !== 'Landing' ? 'bottom-[170px]' : 'bottom-[115px]'
            ]">
         
@@ -52,7 +52,7 @@
             <Transition name="fade">
               <div v-if="showTvMenu" 
                    class="absolute right-[calc(100%+12px)] top-1/2 -translate-y-1/2 z-50 flex items-center gap-3 p-2.5 rounded-2xl shadow-xl border whitespace-nowrap"
-                   :class="isDark ? 'bg-[#0f172a]/95 border-white/10' : 'bg-white/95 border-slate-200'">
+                   :class="isDark ? 'bg-[#0f172a] opacity-95 border-white/10' : 'bg-white opacity-95 border-slate-200'">
                 <template v-if="disconnectCountdown > 0">
                   <div class="flex items-center gap-2 px-1">
                     <div class="relative flex items-center justify-center size-7 shrink-0">
@@ -126,7 +126,7 @@
               @click="router.push({ name: 'Landing' })"
               class="fixed right-[16px] z-40 flex items-center justify-center size-[44px] rounded-full shadow-[0_4px_15px_rgba(0,0,0,0.3)] transition-all cursor-pointer"
               style="bottom: 115px;"
-              :class="isDark ? 'bg-[#0f172a]/80 border border-white/15 text-accent hover:bg-accent/20 hover:border-accent hover:shadow-[0_0_20px_rgba(251,191,36,0.3)]' : 'bg-white/90 border border-black/10 text-slate-600 hover:bg-white hover:border-black/20 hover:shadow-[0_4px_20px_rgba(0,0,0,0.15)]'"
+              :class="isDark ? 'bg-[#0f172a] opacity-90 border border-white/15 text-accent hover:opacity-100 hover:border-accent hover:shadow-[0_0_20px_rgba(251,191,36,0.3)]' : 'bg-white opacity-90 border border-black/10 text-slate-600 hover:opacity-100 hover:border-black/20 hover:shadow-[0_4px_20px_rgba(0,0,0,0.15)]'"
               title="Kembali ke Beranda">
         <span class="material-symbols-outlined text-[22px]">home</span>
       </button>

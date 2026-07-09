@@ -1,6 +1,6 @@
 <template>
   <div class="fixed bottom-0 left-0 w-full z-50 h-10 md:h-12 flex items-center">
-    <div class="absolute inset-0 bg-[#020617]/90 backdrop-blur-md border-t border-accent/20"></div>
+    <div class="absolute inset-0 bg-[#020617] opacity-90 border-t border-accent/20"></div>
     <div class="relative bg-accent h-full px-3 md:px-8 flex items-center justify-center shrink-0 z-20 shadow-[5px_0_20px_rgba(0,0,0,0.5)]">
       <span class="text-[#0f172a] font-bold uppercase tracking-widest text-[10px] md:text-sm flex items-center gap-1.5 md:gap-2">
         <span class="material-symbols-outlined animate-pulse text-base md:text-2xl">campaign</span>
