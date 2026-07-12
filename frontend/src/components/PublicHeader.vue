@@ -97,7 +97,7 @@ const unitLogoFull = computed(() => {
       return storageUrl(device.unit.logo_full_path)
     }
   } catch { /* ignore */ }
-  return '/img/logo-full.png'
+  return '/img/logo-full-2.png'
 })
 
 const hijriAdjustment = ref(0)

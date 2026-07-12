@@ -12,7 +12,7 @@
           <div class="flex items-center gap-3 mb-6">
             <h2 class="text-accent text-xl font-medium tracking-widest uppercase">Secure Portal</h2>
           </div>
-          <img src="/img/logo-full.png" alt="Access" class="h-24 object-contain drop-shadow-lg mb-6 max-w-full" style="object-position: left;" />
+          <img src="/img/logo-full-2.png" alt="Access" class="h-24 object-contain drop-shadow-lg mb-6 max-w-full" style="object-position: left;" />
           <p class="text-white/80 text-2xl font-light max-w-xl leading-relaxed">
             Portal administratif premium untuk kontrol dan manajemen penyiaran Access secara menyeluruh.
           </p>
@@ -23,7 +23,7 @@
       <div class="w-full lg:w-[40%] flex flex-col bg-[#111b3d] border-l-0 lg:border-l border-[#1c2c5c] shadow-2xl z-20 overflow-y-auto">
         <!-- Mobile header -->
         <div class="lg:hidden p-8 pb-0 flex flex-col gap-2">
-          <img src="/img/logo-full.png" alt="Access" class="h-14 object-contain drop-shadow-lg max-w-full" style="object-position: left;" />
+          <img src="/img/logo-full-2.png" alt="Access" class="h-14 object-contain drop-shadow-lg max-w-full" style="object-position: left;" />
           <p class="text-accent/80 text-sm font-medium uppercase tracking-wider">
             Secure Portal
           </p>

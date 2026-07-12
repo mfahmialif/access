@@ -237,14 +237,14 @@ const logoPreview = computed(() => {
   if (unitLogos.value.logo_path) {
     return storageUrl(unitLogos.value.logo_path)
   }
-  return '/img/logo.png'
+  return '/img/logo-2.png'
 })
 
 const logoFullPreview = computed(() => {
   if (unitLogos.value.logo_full_path) {
     return storageUrl(unitLogos.value.logo_full_path)
   }
-  return '/img/logo-full.png'
+  return '/img/logo-full-2.png'
 })
 
 // Load units for selector

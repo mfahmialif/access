@@ -3,8 +3,8 @@
     <!-- Logo — fixed at top -->
     <div class="flex items-center px-3 pb-4 shrink-0" :class="collapsed ? 'justify-center' : 'justify-between'">
       <div class="overflow-hidden transition-all duration-300 flex items-center" :style="collapsed ? 'width: 0; opacity: 0' : 'width: auto; opacity: 1'">
-        <div class="overflow-hidden h-14">
-          <img :src="sidebarLogoFull" alt="Access Admin" class="h-17 object-contain -mt-[15px]" />
+        <div class="flex items-center h-14">
+          <img :src="sidebarLogoFull" alt="Access Admin" class="h-12 w-auto object-contain" />
         </div>
       </div>
       <img v-if="collapsed" :src="sidebarLogo" alt="Access" class="w-12 h-12 object-contain mx-auto" />
@@ -317,17 +317,17 @@ const authStore = useAuthStore()
 
 // ── Dynamic Logos ──
 const sidebarLogoFull = computed(() => {
-  if (authStore.isSuperadmin) return '/img/logo-full.png'
+  if (authStore.isSuperadmin) return '/img/logo-full-2.png'
   const unit = authStore.user?.units?.[0]
   if (unit?.logo_full_path) return storageUrl(unit.logo_full_path)
-  return '/img/logo-full.png'
+  return '/img/logo-full-2.png'
 })
 
 const sidebarLogo = computed(() => {
-  if (authStore.isSuperadmin) return '/img/logo.png'
+  if (authStore.isSuperadmin) return '/img/logo-2.png'
   const unit = authStore.user?.units?.[0]
   if (unit?.logo_path) return storageUrl(unit.logo_path)
-  return '/img/logo.png'
+  return '/img/logo-2.png'
 })
 
 const navItems = [
