@@ -34,6 +34,7 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { storageUrl } from '../utils/asset'
+import api from '../axios'
 
 const router = useRouter()
 
@@ -103,19 +104,14 @@ const unitLogoFull = computed(() => {
 const hijriAdjustment = ref(0)
 
 function fetchSettings() {
-  const token = localStorage.getItem('tv_token')
-  // We can fetch from public settings API if available, or just standard /settings
-  // Wait, PublicHeader is used on TV (has /api/tv/...) and also maybe logged-in user?
-  // Let's use the standard axios instance to get /settings/hijri_adjustment
-  // Import axios first
-  fetch('/api/settings/hijri_adjustment', {
-    headers: { 'Accept': 'application/json' }
-  }).then(res => res.json()).then(data => {
-    if (data?.value !== undefined) {
-      hijriAdjustment.value = parseInt(data.value) || 0
-      updateTime() // Force update right after getting adjustment
-    }
-  }).catch(() => {})
+  api.get('/settings/hijri_adjustment')
+    .then(({ data }) => {
+      if (data?.value !== undefined) {
+        hijriAdjustment.value = parseInt(data.value) || 0
+        updateTime() // Force update right after getting adjustment
+      }
+    })
+    .catch(() => {})
 }
 
 onMounted(() => {

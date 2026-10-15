@@ -265,8 +265,9 @@ async function checkNeedsProxy(url) {
 async function resolveEmbedUrl(url) {
   const needsProxy = await checkNeedsProxy(url)
   isProxied.value = needsProxy
+  const apiBase = (import.meta.env.VITE_API_URL || '/api').replace(/\/+$/, '')
   embedUrl.value = needsProxy
-    ? `/api/proxy?url=${encodeURIComponent(url)}`
+    ? `${apiBase}/proxy?url=${encodeURIComponent(url)}`
     : url
     
   // Hide loader early so user doesn't have to wait for the entire page to finish loading
