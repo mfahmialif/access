@@ -129,8 +129,7 @@ class ProxyController extends Controller
                    || str_contains($contentType, 'application/xhtml');
 
             if ($isHtml) {
-                $body = $this->injectBaseTag($body, $url);
-                $body = $this->neutralizeFrameBusting($body);
+                $body = $this->prepareHtmlForIframe($body, $url);
             }
 
             // Build response — strip all frame-blocking headers
@@ -160,45 +159,88 @@ class ProxyController extends Controller
     }
 
     /**
-     * Inject a <base href> tag so that relative URLs (CSS, JS, images)
-     * resolve against the original domain, not our proxy.
+     * Prepare an HTML page for iframe embedding:
+     * 1. Inject <base href> so relative resources resolve against origin.
+     * 2. Inject localStorage polyfill for third-party / sandboxed iframes.
+     * 3. Inject frame-busting neutralizer and screensaver activity listeners.
      */
-    private function injectBaseTag(string $html, string $url): string
+    private function prepareHtmlForIframe(string $html, string $url): string
     {
-        // Derive the base URL (scheme + host + path up to last slash)
+        // ── Base tag ──
         $parsed = parse_url($url);
         $base   = ($parsed['scheme'] ?? 'https') . '://' . ($parsed['host'] ?? '');
         if (!empty($parsed['port'])) {
             $base .= ':' . $parsed['port'];
         }
-        // Keep the directory path for relative assets
         $path = $parsed['path'] ?? '/';
         if (substr($path, -1) !== '/') {
-            $path = dirname($path) . '/';
+            $dir = str_replace('\\', '/', dirname($path));
+            $path = rtrim($dir, '/') . '/';
         }
         $base .= $path;
-
         $baseTag = '<base href="' . htmlspecialchars($base, ENT_QUOTES, 'UTF-8') . '" target="_self">';
 
-        // Insert after <head> if it exists
-        if (preg_match('/<head(\s[^>]*)?>/i', $html, $match, PREG_OFFSET_CAPTURE)) {
-            $insertPos = $match[0][1] + strlen($match[0][0]);
-            return substr($html, 0, $insertPos) . "\n" . $baseTag . "\n" . substr($html, $insertPos);
-        }
-
-        // Fallback: prepend to entire HTML
-        return $baseTag . "\n" . $html;
-    }
-
-    /**
-     * Neutralize common JavaScript frame-busting patterns.
-     * Injects a script that overrides top/parent references.
-     */
-    private function neutralizeFrameBusting(string $html): string
-    {
+        // ── Neutralization & Polyfill script ──
         $script = <<<'JS'
 <script>
 (function() {
+    // In-memory storage mock for third-party / sandboxed iframe environments
+    // In cross-origin / sandboxed iframes, the native getter on Window.prototype throws SecurityError: Access is denied
+    try {
+        var _store = {};
+        var _mockStorage = {
+            getItem: function(k) { return _store.hasOwnProperty(k) ? _store[k] : null; },
+            setItem: function(k, v) { _store[k] = String(v); },
+            removeItem: function(k) { delete _store[k]; },
+            clear: function() { _store = {}; },
+            get length() { return Object.keys(_store).length; },
+            key: function(i) { return Object.keys(_store)[i] || null; }
+        };
+
+        var _nativeStorageWorks = false;
+        try {
+            var _test = window.localStorage;
+            if (_test) {
+                _test.setItem('__test_storage', '1');
+                _test.removeItem('__test_storage');
+                _nativeStorageWorks = true;
+            }
+        } catch(_e) {
+            _nativeStorageWorks = false;
+        }
+
+        if (!_nativeStorageWorks) {
+            try {
+                Object.defineProperty(Window.prototype, 'localStorage', {
+                    get: function() { return _mockStorage; },
+                    set: function() {},
+                    configurable: true
+                });
+            } catch(e) {}
+            try {
+                Object.defineProperty(Window.prototype, 'sessionStorage', {
+                    get: function() { return _mockStorage; },
+                    set: function() {},
+                    configurable: true
+                });
+            } catch(e) {}
+            try {
+                Object.defineProperty(window, 'localStorage', {
+                    value: _mockStorage,
+                    configurable: true,
+                    writable: true
+                });
+            } catch(e) {}
+            try {
+                Object.defineProperty(window, 'sessionStorage', {
+                    value: _mockStorage,
+                    configurable: true,
+                    writable: true
+                });
+            } catch(e) {}
+        }
+    } catch(e) {}
+
     // Neutralize frame-busting
     try {
         if (window.top !== window.self) {
@@ -241,18 +283,32 @@ class ProxyController extends Controller
 </script>
 JS;
 
-        // Insert the script right after <head> (after our base tag)
+        // Neutralize anti-iframe checks that attempt to access cross-origin top
+        $html = str_replace('Object.keys(top)', 'Object.keys(window)', $html);
+        $html = str_replace('top[t(', 'window[t(', $html);
+
+        $injected = $baseTag . "\n" . $script;
+
+        // 1. Insert after <head> if it exists
         if (preg_match('/<head(\s[^>]*)?>/i', $html, $match, PREG_OFFSET_CAPTURE)) {
             $insertPos = $match[0][1] + strlen($match[0][0]);
-            // Skip past any existing base tag we may have added
-            $afterHead = substr($html, $insertPos);
-            if (preg_match('/^(\s*<base[^>]*>\s*)/i', $afterHead, $baseMatch)) {
-                $insertPos += strlen($baseMatch[0]);
-            }
-            return substr($html, 0, $insertPos) . "\n" . $script . "\n" . substr($html, $insertPos);
+            return substr($html, 0, $insertPos) . "\n" . $injected . "\n" . substr($html, $insertPos);
         }
 
-        return $script . "\n" . $html;
+        // 2. If no <head>, insert right after <html...> wrapped in <head>
+        if (preg_match('/<html(\s[^>]*)?>/i', $html, $match, PREG_OFFSET_CAPTURE)) {
+            $insertPos = $match[0][1] + strlen($match[0][0]);
+            return substr($html, 0, $insertPos) . "\n<head>\n" . $injected . "\n</head>\n" . substr($html, $insertPos);
+        }
+
+        // 3. If no <html>, insert after <!doctype...>
+        if (preg_match('/<!doctype[^>]*>/i', $html, $match, PREG_OFFSET_CAPTURE)) {
+            $insertPos = $match[0][1] + strlen($match[0][0]);
+            return substr($html, 0, $insertPos) . "\n<head>\n" . $injected . "\n</head>\n" . substr($html, $insertPos);
+        }
+
+        // 4. Fallback: prepend with <head>
+        return "<head>\n" . $injected . "\n</head>\n" . $html;
     }
 
     /**
