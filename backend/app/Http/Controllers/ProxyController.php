@@ -48,8 +48,11 @@ class ProxyController extends Controller
             // Do a HEAD request to check response headers
             $response = Http::withOptions([
                 'verify'          => false,
-                'timeout'         => 8,
-                'connect_timeout' => 5,
+                'timeout'         => 12,
+                'connect_timeout' => 8,
+                'curl'            => [
+                    CURLOPT_ENCODING => '', // Enable automatic decompression (gzip, deflate, br)
+                ],
             ])
             ->withHeaders([
                 'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
@@ -101,11 +104,14 @@ class ProxyController extends Controller
         }
 
         try {
-            // Fetch the page with a browser-like User-Agent
+            // Fetch the page with a browser-like User-Agent and automatic decompression
             $response = Http::withOptions([
                 'verify'          => false,   // skip SSL verification (local/offline env)
-                'timeout'         => 15,
-                'connect_timeout' => 10,
+                'timeout'         => 30,
+                'connect_timeout' => 15,
+                'curl'            => [
+                    CURLOPT_ENCODING => '', // Enable gzip, deflate, br decompression
+                ],
             ])
             ->withHeaders([
                 'User-Agent'      => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
@@ -134,7 +140,10 @@ class ProxyController extends Controller
                 // Explicitly REMOVE frame-blocking headers
                 ->withoutHeader('X-Frame-Options')
                 ->withoutHeader('Content-Security-Policy')
-                ->withoutHeader('Content-Security-Policy-Report-Only');
+                ->withoutHeader('Content-Security-Policy-Report-Only')
+                ->withoutHeader('Cross-Origin-Embedder-Policy')
+                ->withoutHeader('Cross-Origin-Opener-Policy')
+                ->withoutHeader('Cross-Origin-Resource-Policy');
 
         } catch (\Illuminate\Http\Client\ConnectionException $e) {
             return response()->json([
