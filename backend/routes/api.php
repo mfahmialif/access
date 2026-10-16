@@ -155,6 +155,7 @@ Route::middleware(['auth:sanctum', \App\Http\Middleware\UnitScope::class])->grou
     Route::post('/tv-commands/push', [TvCommandController::class, 'push']);
     Route::post('/tv-commands/broadcast', [TvCommandController::class, 'broadcast']);
     Route::post('/tv-commands/reload', [TvCommandController::class, 'reload']);
+    Route::post('/tv-commands/clear-cache', [TvCommandController::class, 'clearCache']);
     Route::post('/tv-commands/home', [TvCommandController::class, 'home']);
     Route::post('/tv-commands/banner', [TvCommandController::class, 'banner']);
     Route::post('/tv-commands/targeted-banner', [TvCommandController::class, 'targetedBanner']);

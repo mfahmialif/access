@@ -429,4 +429,26 @@ router.beforeEach((to) => {
   }
 })
 
+// ── Auto-recover from stale chunk 404s after system update ──
+router.onError((error, to) => {
+  const msg = error?.message || ''
+  const isChunkError = /Failed to fetch dynamically imported module/i.test(msg) ||
+                       /Loading chunk/i.test(msg) ||
+                       /Importing a module script failed/i.test(msg) ||
+                       /error loading dynamically imported module/i.test(msg)
+
+  if (isChunkError) {
+    const lastRetry = sessionStorage.getItem('chunk_reload_retry')
+    const now = Date.now()
+    if (!lastRetry || now - Number(lastRetry) > 10000) {
+      sessionStorage.setItem('chunk_reload_retry', String(now))
+      const targetUrl = new URL(to?.fullPath || window.location.href, window.location.origin)
+      targetUrl.searchParams.set('_v', String(now))
+      window.location.replace(targetUrl.toString())
+      return
+    }
+  }
+  console.error('[Router Error]', error)
+})
+
 export default router

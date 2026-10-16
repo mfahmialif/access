@@ -8,6 +8,7 @@ use App\Models\TvCommandLog;
 use App\Models\TvDevice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Artisan;
 
 class TvCommandController extends Controller
 {
@@ -131,6 +132,60 @@ class TvCommandController extends Controller
             'message' => $sent ? "Force Reload dikirim ke {$targetName}" : 'Gagal — broadcast server tidak aktif',
             'success' => $sent,
             'log'     => $log,
+        ]);
+    }
+
+    /**
+     * POST /tv-commands/clear-cache — Clear cache & auto refresh target TV(s)
+     */
+    public function clearCache(Request $request)
+    {
+        $request->validate([
+            'target'       => 'required|string', // "all" or device ID
+            'clear_server' => 'nullable|boolean',
+        ]);
+
+        $targetName = 'Semua TV';
+        $targetToken = null;
+        $targetId = null;
+
+        if ($request->target !== 'all') {
+            $device = TvDevice::findOrFail($request->target);
+            $targetName = $device->name;
+            $targetToken = $device->token;
+            $targetId = $device->id;
+        }
+
+        $serverCleared = false;
+        if ($request->boolean('clear_server', true) || $request->target === 'all') {
+            try {
+                Artisan::call('optimize:clear');
+                $serverCleared = true;
+            } catch (\Throwable $e) {
+                Log::warning('Artisan optimize:clear failed during clearCache: ' . $e->getMessage());
+            }
+        }
+
+        $payload = [
+            'timestamp'      => now()->timestamp,
+            'server_cleared' => $serverCleared,
+        ];
+
+        $event = new TvCommand('clear_cache', $targetToken, $targetId, $payload);
+        $sent = $this->safeBroadcast($event);
+
+        $log = $this->logCommand($request, 'clear_cache', $targetName, $payload);
+        $log->update(['status' => $sent ? 'sent' : 'failed']);
+
+        $message = $sent
+            ? "Clear Cache & Refresh dikirim ke {$targetName}" . ($serverCleared ? ' (Cache server juga dibersihkan)' : '')
+            : 'Gagal — broadcast server tidak aktif';
+
+        return response()->json([
+            'message'        => $message,
+            'success'        => $sent,
+            'server_cleared' => $serverCleared,
+            'log'            => $log,
         ]);
     }
 

@@ -109,7 +109,7 @@
     </div>
 
     <!-- ═══ ACTION CARDS GRID ═══ -->
-    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
 
       <!-- Force Reload -->
       <div class="action-card rounded-xl p-6 flex flex-col gap-4">
@@ -132,6 +132,34 @@
           <span v-if="sending.reload" class="material-symbols-outlined text-[18px] animate-spin">progress_activity</span>
           <span v-else class="material-symbols-outlined text-[18px]">sync</span>
           Force Reload
+        </button>
+      </div>
+
+      <!-- Clear Cache & Refresh -->
+      <div class="action-card rounded-xl p-6 flex flex-col gap-4">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-xl bg-orange-500/15 flex items-center justify-center border border-orange-500/30">
+            <span class="material-symbols-outlined text-orange-400 text-[28px]">cleaning_services</span>
+          </div>
+          <div>
+            <h3 class="font-bold text-sm" style="color: var(--text-heading)">Clear Cache & Refresh</h3>
+            <p class="text-xs" style="color: var(--text-muted)">Bersihkan cache TV & reload otomatis</p>
+          </div>
+        </div>
+        <div class="flex flex-col gap-3 flex-1">
+          <div>
+            <label class="text-xs font-medium mb-1.5 block" style="color: var(--text-muted)">Target</label>
+            <VueMultiselect v-model="clearCacheTarget" :options="targetOptions" :close-on-select="true" :searchable="true" :allow-empty="false" :show-labels="false" label="name" track-by="value" placeholder="Pilih target..." />
+          </div>
+          <label class="flex items-center gap-2 cursor-pointer text-xs select-none" style="color: var(--text-muted)">
+            <input type="checkbox" v-model="clearServerCache" class="accent-orange-500 w-3.5 h-3.5 rounded cursor-pointer" />
+            <span>Sertakan cache server (Laravel)</span>
+          </label>
+        </div>
+        <button @click="clearCache" :disabled="sending.clearCache" class="action-btn-orange w-full flex items-center justify-center gap-2 rounded-lg h-10 font-bold text-sm cursor-pointer active:scale-[0.98] transition-all disabled:opacity-50">
+          <span v-if="sending.clearCache" class="material-symbols-outlined text-[18px] animate-spin">progress_activity</span>
+          <span v-else class="material-symbols-outlined text-[18px]">cleaning_services</span>
+          Clear Cache & Refresh
         </button>
       </div>
 
@@ -463,7 +491,7 @@ const commandLogs = ref([])
 const logsLoading = ref(false)
 
 const sending = reactive({
-  push: false, broadcast: false, reload: false,
+  push: false, broadcast: false, reload: false, clearCache: false,
   home: false, banner: false, bannerDismiss: false,
   targetedPush: false, targetedRemove: false,
   screensaver: false,
@@ -552,6 +580,8 @@ const showOnlineTvList = ref(false)
 const onlineTvDevices = computed(() => tvDevices.value.filter(d => d.status === 'online'))
 
 const reloadTarget = ref(null)
+const clearCacheTarget = ref(null)
+const clearServerCache = ref(true)
 const homeTarget = ref(null)
 const screensaverTarget = ref(null)
 const bannerTitle = ref('')
@@ -782,6 +812,22 @@ async function forceReload() {
   sending.reload = false
 }
 
+async function clearCache() {
+  if (!clearCacheTarget.value) return showToast('Pilih target terlebih dahulu', 'error')
+  sending.clearCache = true
+  try {
+    const { data } = await api.post('/tv-commands/clear-cache', {
+      target: clearCacheTarget.value.value,
+      clear_server: clearServerCache.value,
+    })
+    showToast(data.message, data.success ? 'success' : 'error')
+    fetchLogs()
+  } catch (e) {
+    showToast(e.response?.data?.message || 'Gagal clear cache', 'error')
+  }
+  sending.clearCache = false
+}
+
 async function forceHome() {
   if (!homeTarget.value) return showToast('Pilih target terlebih dahulu', 'error')
   sending.home = true
@@ -853,6 +899,7 @@ function commandLabel(cmd) {
   const map = {
     navigate: 'Navigate',
     reload: 'Reload',
+    clear_cache: 'Clear Cache & Refresh',
     home: 'Home',
     banner_show: 'Banner',
     banner_dismiss: 'Dismiss Banner',
@@ -896,6 +943,9 @@ onMounted(() => {
 
 .action-btn-green { background: #22c55e; color: white; box-shadow: 0 0 15px rgba(34, 197, 94, 0.3); }
 .action-btn-green:hover { box-shadow: 0 0 25px rgba(34, 197, 94, 0.5); }
+
+.action-btn-orange { background: #f97316; color: white; box-shadow: 0 0 15px rgba(249, 115, 22, 0.3); }
+.action-btn-orange:hover { box-shadow: 0 0 25px rgba(249, 115, 22, 0.5); }
 
 .action-btn-purple { background: #a855f7; color: white; box-shadow: 0 0 15px rgba(168, 85, 247, 0.3); }
 .action-btn-purple:hover { box-shadow: 0 0 25px rgba(168, 85, 247, 0.5); }

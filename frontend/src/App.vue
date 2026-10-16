@@ -233,6 +233,9 @@ function handleTvCommand(e) {
     case 'reload':
       window.location.reload()
       break
+    case 'clear_cache':
+      executeTvClearCache()
+      break
     case 'home':
       router.push('/')
       break
@@ -255,6 +258,90 @@ function handleTvCommand(e) {
       window.dispatchEvent(new Event('screensaver-force-deactivate'))
       break
   }
+}
+
+// ── Clear TV Cache and force fresh reload ──
+async function executeTvClearCache() {
+  console.log('[TV Command] Clear Cache & Refresh initiated...')
+
+  // 1. Clear CacheStorage (window.caches)
+  if ('caches' in window) {
+    try {
+      const keys = await caches.keys()
+      await Promise.all(keys.map(k => caches.delete(k)))
+      console.log('[TV Command] Caches deleted:', keys)
+    } catch (err) {
+      console.warn('[TV Command] Error clearing caches:', err)
+    }
+  }
+
+  // 2. Unregister Service Workers
+  if ('serviceWorker' in navigator) {
+    try {
+      const registrations = await navigator.serviceWorker.getRegistrations()
+      await Promise.all(registrations.map(r => r.unregister()))
+      console.log('[TV Command] Service workers unregistered:', registrations.length)
+    } catch (err) {
+      console.warn('[TV Command] Error unregistering service workers:', err)
+    }
+  }
+
+  // 3. Clear IndexedDB if available
+  if (window.indexedDB && typeof window.indexedDB.databases === 'function') {
+    try {
+      const dbs = await window.indexedDB.databases()
+      for (const db of dbs) {
+        if (db.name) window.indexedDB.deleteDatabase(db.name)
+      }
+    } catch (err) {}
+  }
+
+  // 4. Clear sessionStorage
+  try {
+    sessionStorage.clear()
+  } catch (err) {}
+
+  // 5. Safely clear localStorage without losing TV pairing / device token
+  try {
+    const keepKeys = [
+      'tv_token',
+      'tv_device',
+      'tv_remembered_token',
+      'tv_remembered_device',
+      'public-theme',
+      'access_theme',
+      'impersonate_unit_id'
+    ]
+    const backup = {}
+    for (const k of keepKeys) {
+      const val = localStorage.getItem(k)
+      if (val !== null) backup[k] = val
+    }
+    localStorage.clear()
+    for (const [k, v] of Object.entries(backup)) {
+      localStorage.setItem(k, v)
+    }
+  } catch (err) {}
+
+  // 6. Force fresh fetch of index page to bypass HTTP cache
+  const timestamp = Date.now()
+  try {
+    await fetch(`/?_cb=${timestamp}`, {
+      cache: 'reload',
+      headers: {
+        'Pragma': 'no-cache',
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+      },
+    })
+  } catch (err) {}
+
+  // 7. Navigate with cache-busting timestamp parameter and reload
+  const currentUrl = new URL(window.location.href)
+  currentUrl.searchParams.set('_v', timestamp.toString())
+  window.location.replace(currentUrl.toString())
+  setTimeout(() => {
+    window.location.reload()
+  }, 100)
 }
 
 // ── Listen for force-disconnect + TV commands ──
